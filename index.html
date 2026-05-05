@@ -106,6 +106,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <button onclick="closeExit()">لا</button>
 </div>
 </div>
+</div>
 <div class="site-wrapper">
 <img src="20260429_130547.png" class="logo" alt="Logo">
 <div class="container">
@@ -118,6 +119,8 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <div class="btn" onclick="openFancyMenu('أسماء الظلال')" style="background-image:url('20260505_102309.png')" aria-label="أسماء الظلال"></div>
 <div class="btn" onclick="openFancyMenu('تحميل ملفات')" style="background-image:url('20260505_094803.png')" aria-label="تحميل ملفات"></div>
 <div id="character3D"></div>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -134,31 +137,13 @@ let menuData = {"أنمي":"قسم الأنمي","فضائح عصابات":"أر
 function playClick(){const audio=document.getElementById('clickSound');if(audio){audio.currentTime=0;audio.play().catch(()=>{})}}
 function openPortal(callback){const portal=document.getElementById("portalOverlay");portal.classList.add("active");setTimeout(()=>{portal.classList.remove("active");if(callback)callback()},800)}
 window.openFancyMenu=function(title){playClick();openPortal()}
-
-function setExitGuard(){
-history.pushState({guard:true},"");
-}
-function showExitPopup(){
-document.getElementById("exitPopup").classList.add("active");
-}
-setExitGuard();
-
+history.pushState({page:"home"},"");
 window.addEventListener("popstate",function(e){
-showExitPopup();
-setExitGuard();
+document.getElementById("exitPopup").classList.add("active");
+history.pushState({page:"home"},"");
 });
-
-window.confirmExit=function(){
-playClick();
-window.location.href="https://www.google.com/?hl=ar"
-}
-
-window.closeExit=function(){
-playClick();
-document.getElementById("exitPopup").classList.remove("active");
-setExitGuard();
-}
-
+window.confirmExit=function(){playClick();window.close();window.location.href="about:blank"}
+window.closeExit=function(){playClick();document.getElementById("exitPopup").classList.remove("active")}
 const waveLayer=document.getElementById("waveLayer");let canWave=true;document.addEventListener("pointerdown",createWave);
 function createWave(e){if(!canWave)return;canWave=false;const wave=document.createElement("div");wave.className="wave";wave.style.left=e.clientX+"px";wave.style.top=e.clientY+"px";waveLayer.appendChild(wave);setTimeout(()=>{wave.remove();canWave=true},1200)}
 document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>{el.addEventListener('click',playClick)});
