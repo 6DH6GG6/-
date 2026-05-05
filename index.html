@@ -6,7 +6,7 @@
 <title>Kage No Teio</title>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma;-webkit-tap-highlight-color:transparent}
-html,body{height:100%;overflow:hidden;position:fixed;width:100%}
+html,body{height:100%;overflow:hidden;position:fixed;width:100%;touch-action:none}
 body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repeat fixed;color:white}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 @keyframes moveStars{from{background-position:0 0}to{background-position:1000px}}
@@ -19,9 +19,10 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .top-frame{position:fixed;top:0;left:0;right:0;height:40px;background:linear-gradient(270deg,#8b0000,#ff1a1a,#6a0dad,#8b0000);background-size:600% 600%;animation:gradientShift 8s ease infinite;z-index:10007;display:flex;align-items:center;overflow:hidden;border-bottom:1px solid rgba(255,0,0,0.5)}
 .top-frame-text{position:absolute;width:100%;height:100%;display:flex;align-items:center;overflow:hidden;pointer-events:none}
 .top-frame-text span{position:absolute;color:#fff;font-weight:bold;font-size:14px;white-space:nowrap;text-shadow:0 0 5px #000;animation:scrollTextLeft 15s linear infinite}
-.top-nav{position:fixed;top:40px;left:0;right:0;height:50px;background:rgba(0,0,0,0.6);border-bottom:1px solid rgba(255,0,0,0.3);backdrop-filter:blur(8px);z-index:10006;display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:0 10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch}
+.top-nav{position:fixed;top:40px;left:0;right:0;height:50px;background:rgba(0,0,0,0.6);border-bottom:1px solid rgba(255,0,0,0.3);backdrop-filter:blur(8px);z-index:10006;display:flex;align-items:center;justify-content:flex-start;gap:8px;padding:0 10px;overflow-x:auto;overflow-y:hidden;-webkit-overflow-scrolling:touch;touch-action:pan-x}
+.top-nav::-webkit-scrollbar{display:none}
 .nav-btn{background:rgba(255,0,0,0.08);border:1px solid rgba(255,0,0,0.3);border-radius:6px;color:#ff4444;font-size:13px;font-weight:bold;padding:6px 12px;cursor:pointer;white-space:nowrap;transition:0.1s;text-shadow:0 0 8px #ff0000;min-height:32px;position:relative;z-index:2;flex-shrink:0}
-.nav-btn:active{background:rgba(255,0,0,0.3);transform:scale(0.95)}
+.nav-btn:active{background:rgba(255,0,0,0.3)}
 .profile-header{position:fixed;top:100px;right:15px;display:flex;align-items:center;z-index:10005}
 .profile-name{background:rgba(0,0,0,0.7);color:#ff0000;font-size:15px;font-weight:bold;text-shadow:0 0 10px #ff0000;padding:6px 14px 6px 6px;border-radius:50px;border:2px solid #ff0000;box-shadow:0 0 20px rgba(255,0,0,0.5);display:flex;align-items:center;gap:8px}
 .profile-img{width:32px;height:32px;border-radius:50%;border:2px solid #ff0000;object-fit:cover;box-shadow:0 0 15px rgba(255,0,0,0.6)}
@@ -41,13 +42,13 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .exit-box h2{color:#ff0000;font-size:26px;margin-bottom:15px;text-shadow:0 0 15px #ff0000}
 .exit-buttons{margin-top:20px;display:flex;gap:15px;justify-content:center}
 .exit-buttons button{padding:12px 30px;border:2px solid #ff0000;background:#1a0000;color:#ff0000;border-radius:10px;cursor:pointer;min-height:44px;font-weight:bold;font-size:16px;transition:0.2s}
-.exit-buttons button:active{background:#ff0000;color:black;transform:scale(0.95)}
+.exit-buttons button:active{background:#ff0000;color:black}
 .site-wrapper{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;z-index:3;padding-top:170px;padding-bottom:120px}
 .logo{width:clamp(160px,40vw,380px);margin-bottom:20px;filter:drop-shadow(0 0 25px #ff0000);z-index:2}
 .container{z-index:2;width:100%;display:flex;justify-content:center;padding:10px;flex:1;align-items:center}
 .fighter-grid{width:clamp(380px,90vw,900px);position:relative;height:clamp(380px,80vw,700px)}
 .hexagram-menu{position:relative;width:100%;height:100%}
-.btn{position:absolute;width:26%;aspect-ratio:1/1;background-size:contain;background-position:center;background-repeat:no-repeat;background-color:transparent;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;min-height:90px;touch-action:manipulation;animation:hexGlow 3s ease-in-out infinite;border:none;transition:0.15s}
+.btn{position:absolute;width:26%;aspect-ratio:1/1;background-size:contain;background-position:center;background-repeat:no-repeat;background-color:transparent;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;min-height:90px;touch-action:manipulation;animation:hexGlow 3s ease-in-out infinite;border:none}
 .btn::after{content:"";position:absolute;inset:0;z-index:1}
 .btn:nth-child(1){top:0;left:50%;transform:translateX(-50%);animation-delay:0.2s}
 .btn:nth-child(2){top:18%;right:5%;animation-delay:0.4s}
@@ -55,16 +56,14 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%);animation-delay:0.8s}
 .btn:nth-child(5){bottom:18%;left:5%;animation-delay:1s}
 .btn:nth-child(6){top:18%;left:5%;animation-delay:1.2s}
-.btn:active{transform:scale(1.08)}
 #character3D{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:38%;height:38%;z-index:5;border-radius:10px;display:flex;align-items:center;justify-content:center}
 .bottom-buttons{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10005}
-.bottom-btn{width:clamp(70px,20vw,110px);height:clamp(60px,18vw,90px);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:transparent;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;touch-action:manipulation;filter:drop-shadow(0 0 15px #ff0000);border:none;transition:0.15s}
+.bottom-btn{width:clamp(70px,20vw,110px);height:clamp(60px,18vw,90px);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:transparent;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;touch-action:manipulation;filter:drop-shadow(0 0 15px #ff0000);border:none}
 .bottom-btn:nth-child(1){animation-delay:1.4s}
 .bottom-btn:nth-child(2){animation-delay:1.5s}
 .bottom-btn:nth-child(3){animation-delay:1.6s}
 .bottom-btn:nth-child(4){animation-delay:1.7s}
 .bottom-btn:nth-child(5){animation-delay:1.8s}
-.bottom-btn:active{transform:scale(1.08)}
 @media (max-width:768px){.top-nav{padding:0 10px;justify-content:flex-start}.nav-btn{font-size:11px;padding:5px 8px}.fighter-grid{width:96vw;height:clamp(360px,90vw,600px)}.btn{width:28%;min-height:80px}#character3D{width:40%;height:40%}}
 @media (max-width:480px){.profile-name{font-size:13px;padding:5px 12px 5px 6px}.profile-img{width:28px;height:28px}.bottom-buttons{gap:8px;bottom:10px}.btn{width:30%;min-height:70px}.bottom-btn{width:clamp(65px,19vw,95px);height:clamp(55px,17vw,80px)}}
 </style>
@@ -138,7 +137,6 @@ let menuData = {"أنمي":"قسم الأنمي","فضائح عصابات":"أر
 function playClick(){const audio=document.getElementById('clickSound');if(audio){audio.currentTime=0;audio.play().catch(()=>{})}}
 function openPortal(callback){const portal=document.getElementById("portalOverlay");portal.classList.add("active");setTimeout(()=>{portal.classList.remove("active");if(callback)callback()},800)}
 window.openFancyMenu=function(title){playClick();openPortal()}
-window.closeMenuPage=function(){playClick()}
 history.pushState({page:"home"},"");
 window.addEventListener("popstate",function(e){
 document.getElementById("exitPopup").classList.add("active");
@@ -150,7 +148,7 @@ const waveLayer=document.getElementById("waveLayer");let canWave=true;document.a
 function createWave(e){if(!canWave)return;canWave=false;const wave=document.createElement("div");wave.className="wave";wave.style.left=e.clientX+"px";wave.style.top=e.clientY+"px";waveLayer.appendChild(wave);setTimeout(()=>{wave.remove();canWave=true},1200)}
 document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>{el.addEventListener('click',playClick)});
 window.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.btn').forEach(btn=>{btn.style.opacity='1'})},100)})
-document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
+document.addEventListener('touchmove',function(e){if(!e.target.closest('.top-nav')){e.preventDefault()}},{passive:false});
 </script>
 </body>
 </html>
