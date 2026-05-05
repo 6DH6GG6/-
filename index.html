@@ -54,16 +54,18 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .site-wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;position:relative;z-index:3;padding-top:170px;padding-bottom:100px}
 .logo{width:clamp(180px,45vw,420px);margin-top:15px;margin-bottom:15px;filter:drop-shadow(0 0 25px #ff0000);z-index:2}
 .container{z-index:2;width:100%;display:flex;justify-content:center;padding:10px}
-.fighter-grid{width:clamp(320px,80vw,800px);position:relative}
-.menu{display:grid;grid-template-columns:repeat(3,1fr);grid-template-rows:repeat(2,1fr);column-gap:1.5%;row-gap:4%;width:100%}
-.btn{position:relative;aspect-ratio:16/9;background-size:100% 100%;background-position:center;background-repeat:no-repeat;cursor:pointer;opacity:0;transform:translateY(40px);animation:fadeUp 0.8s ease forwards;min-height:60px;touch-action:manipulation}
+.fighter-grid{width:clamp(320px,80vw,800px);position:relative;height:clamp(280px,60vw,500px)}
+.hexagon-menu{position:relative;width:100%;height:100%}
+.btn{position:absolute;width:28%;aspect-ratio:16/9;background-size:100% 100%;background-position:center;background-repeat:no-repeat;cursor:pointer;opacity:0;transform:translateY(40px);animation:fadeUp 0.8s ease forwards;min-height:60px;touch-action:manipulation}
 .btn::after{content:"";position:absolute;inset:0;z-index:1}
-.btn:nth-child(1){animation-delay:0.2s;margin-bottom:2%}
-.btn:nth-child(2){animation-delay:0.4s;margin-bottom:2%}
-.btn:nth-child(3){animation-delay:0.6s;margin-bottom:2%}
-.btn:nth-child(4){animation-delay:0.8s}
-.btn:nth-child(5){animation-delay:1s}
-.btn:nth-child(6){animation-delay:1.2s}
+.btn:nth-child(1){top:0;left:50%;transform:translateX(-50%) translateY(40px);animation-delay:0.2s}
+.btn:nth-child(1).show{transform:translateX(-50%) translateY(0)}
+.btn:nth-child(2){top:25%;right:0;animation-delay:0.4s}
+.btn:nth-child(3){bottom:25%;right:0;animation-delay:0.6s}
+.btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%) translateY(40px);animation-delay:0.8s}
+.btn:nth-child(4).show{transform:translateX(-50%) translateY(0)}
+.btn:nth-child(5){bottom:25%;left:0;animation-delay:1s}
+.btn:nth-child(6){top:25%;left:0;animation-delay:1.2s}
 .btn:active{transform:scale(0.97);filter:drop-shadow(0 0 20px #ff0000)}
 .bottom-buttons{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:10px;z-index:10005}
 .bottom-btn{width:clamp(50px,15vw,80px);height:clamp(40px,12vw,60px);background-size:100% 100%;background-position:center;background-repeat:no-repeat;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;touch-action:manipulation}
@@ -74,7 +76,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .bottom-btn:nth-child(5){animation-delay:1.8s}
 .bottom-btn:active{transform:scale(0.95);filter:drop-shadow(0 0 15px #ff0000)}
 @media (max-width:768px){.top-nav{padding:0 10px;justify-content:flex-start}.nav-btn{font-size:11px;padding:5px 8px}}
-@media (max-width:480px){.profile-name{font-size:13px;padding:5px 12px 5px 6px}.profile-img{width:28px;height:28px}.menu{row-gap:6%}.btn:nth-child(1){margin-bottom:3%}.btn:nth-child(2){margin-bottom:3%}.btn:nth-child(3){margin-bottom:3%}.side-left-buttons{left:8px;gap:8px}.side-right-buttons{right:8px;gap:8px}.side-btn{width:42px;height:42px}.bottom-buttons{gap:8px;bottom:10px}.fancy-box h2{font-size:22px}.fancy-box p{font-size:17px}}
+@media (max-width:480px){.profile-name{font-size:13px;padding:5px 12px 5px 6px}.profile-img{width:28px;height:28px}.side-left-buttons{left:8px;gap:8px}.side-right-buttons{right:8px;gap:8px}.side-btn{width:42px;height:42px}.bottom-buttons{gap:8px;bottom:10px}.fancy-box h2{font-size:22px}.fancy-box p{font-size:17px}.btn{width:30%}}
 </style>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
@@ -108,7 +110,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 </div>
 <div class="profile-header">
 <div class="profile-name">
-<img src="20260420_113331.jpg" class="profile-img" alt="Profile"> Kage no teio
+<img src="profile.jpg" class="profile-img" alt="Profile"> Kage no teio
 </div>
 </div>
 <div id="mainSite">
@@ -138,7 +140,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <img src="20260429_130547.png" class="logo" alt="Logo">
 <div class="container">
 <div class="fighter-grid">
-<div class="menu">
+<div class="hexagon-menu">
 <div class="btn" onclick="openFancyMenu('أنمي')" style="background-image:url('20260426_155749.png')" aria-label="أنمي"></div>
 <div class="btn" onclick="openFancyMenu('فضائح عصابات')" style="background-image:url('20260426_160952.png')" aria-label="فضائح عصابات"></div>
 <div class="btn" onclick="openFancyMenu('قوانين الدعس')" style="background-image:url('20260426_155319.png')" aria-label="قوانين الدعس"></div>
@@ -170,6 +172,7 @@ window.confirmExit=function(){window.close()}
 window.closeExit=function(){document.getElementById("exitPopup").classList.remove("active")}
 const waveLayer=document.getElementById("waveLayer");let canWave=true;document.addEventListener("pointerdown",createWave);
 function createWave(e){if(!canWave)return;canWave=false;const wave=document.createElement("div");wave.className="wave";wave.style.left=e.clientX+"px";wave.style.top=e.clientY+"px";waveLayer.appendChild(wave);setTimeout(()=>{wave.remove();canWave=true},1200)}
+window.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.btn').forEach(btn=>{btn.style.opacity='1';if(btn.style.transform.includes('translateX')){btn.classList.add('show')}else{btn.style.transform='translateY(0)'}})},100)})
 </script>
 </body>
-</html>[title]
+</html>
