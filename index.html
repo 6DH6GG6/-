@@ -137,13 +137,35 @@ let menuData = {"أنمي":"قسم الأنمي","فضائح عصابات":"أر
 function playClick(){const audio=document.getElementById('clickSound');if(audio){audio.currentTime=0;audio.play().catch(()=>{})}}
 function openPortal(callback){const portal=document.getElementById("portalOverlay");portal.classList.add("active");setTimeout(()=>{portal.classList.remove("active");if(callback)callback()},800)}
 window.openFancyMenu=function(title){playClick();openPortal()}
-history.pushState({page:"home"},"");
-window.addEventListener("popstate",function(e){
+
+// الفخ الأبدي للرجوع
+function setTrap(){
+history.pushState({trap:true},"");
+}
+function showExitPopup(){
 document.getElementById("exitPopup").classList.add("active");
-history.pushState({page:"home"},"");
+}
+// أول ما تفتح الصفحة نرمي الفخ
+setTrap();
+
+// أي محاولة رجوع = لافتة + فخ جديد
+window.addEventListener("popstate",function(e){
+showExitPopup();
+setTrap();
 });
-window.confirmExit=function(){playClick();window.close();window.location.href="about:blank"}
-window.closeExit=function(){playClick();document.getElementById("exitPopup").classList.remove("active")}
+
+window.confirmExit=function(){
+playClick();
+// حتى لو خرج ورجع، أول ما تحمل الصفحة بيرجع الفخ
+window.location.href="about:blank"
+}
+
+window.closeExit=function(){
+playClick();
+document.getElementById("exitPopup").classList.remove("active");
+setTrap(); // نرجع الفخ بعد الإغلاق
+}
+
 const waveLayer=document.getElementById("waveLayer");let canWave=true;document.addEventListener("pointerdown",createWave);
 function createWave(e){if(!canWave)return;canWave=false;const wave=document.createElement("div");wave.className="wave";wave.style.left=e.clientX+"px";wave.style.top=e.clientY+"px";waveLayer.appendChild(wave);setTimeout(()=>{wave.remove();canWave=true},1200)}
 document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>{el.addEventListener('click',playClick)});
