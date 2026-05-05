@@ -2,12 +2,13 @@
 <html lang="ar" dir="rtl">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kage No Teio</title>
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma;-webkit-tap-highlight-color:transparent}
-body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repeat fixed;color:white;overflow-x:hidden;overflow-y:auto}
+html,body{height:100%;overflow:hidden;position:fixed;width:100%}
+body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repeat fixed;color:white}
 @keyframes fadeUp{to{opacity:1;transform:translateY(0)}}
 @keyframes moveStars{from{background-position:0 0}to{background-position:1000px}}
 @keyframes scrollTextLeft{from{left:-100%}to{left:100%}}
@@ -26,7 +27,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .profile-header{position:fixed;top:100px;right:15px;display:flex;align-items:center;z-index:10005}
 .profile-name{background:rgba(0,0,0,0.7);color:#ff0000;font-size:15px;font-weight:bold;text-shadow:0 0 10px #ff0000;padding:6px 14px 6px 6px;border-radius:50px;border:2px solid #ff0000;box-shadow:0 0 20px rgba(255,0,0,0.5);display:flex;align-items:center;gap:8px}
 .profile-img{width:32px;height:32px;border-radius:50%;border:2px solid #ff0000;object-fit:cover;box-shadow:0 0 15px rgba(255,0,0,0.6)}
-#mainSite{display:block;position:relative;min-height:100vh}
+#mainSite{display:block;position:fixed;inset:0;width:100%;height:100%}
 .wave-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
 .wave{position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,rgba(255,0,0,0.35) 0%,rgba(255,0,0,0.15) 40%,transparent 70%);transform:translate(-50%,-50%);animation:waveMove 1.4s ease-out forwards;filter:blur(2px)}
 .bg-overlay{position:fixed;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,0.6),rgba(0,0,0,0.85));z-index:1;pointer-events:none}
@@ -50,34 +51,32 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 .exit-buttons{margin-top:20px;display:flex;gap:15px;justify-content:center}
 .exit-buttons button{padding:12px 30px;border:2px solid #ff0000;background:#1a0000;color:#ff0000;border-radius:10px;cursor:pointer;min-height:44px;font-weight:bold;font-size:16px;transition:0.2s}
 .exit-buttons button:active{background:#ff0000;color:black;transform:scale(0.95)}
-.site-wrapper{min-height:100vh;display:flex;flex-direction:column;align-items:center;position:relative;z-index:3;padding-top:170px;padding-bottom:120px}
-.logo{width:clamp(180px,45vw,420px);margin-top:15px;margin-bottom:15px;filter:drop-shadow(0 0 25px #ff0000);z-index:2}
-.container{z-index:2;width:100%;display:flex;justify-content:center;padding:10px}
-.fighter-grid{width:clamp(420px,95vw,1000px);position:relative;height:clamp(400px,85vw,750px)}
+.site-wrapper{position:fixed;inset:0;display:flex;flex-direction:column;align-items:center;z-index:3;padding-top:170px;padding-bottom:120px}
+.logo{width:clamp(160px,40vw,380px);margin-bottom:20px;filter:drop-shadow(0 0 25px #ff0000);z-index:2}
+.container{z-index:2;width:100%;display:flex;justify-content:center;padding:10px;flex:1;align-items:center}
+.fighter-grid{width:clamp(380px,90vw,900px);position:relative;height:clamp(380px,80vw,700px)}
 .hexagram-menu{position:relative;width:100%;height:100%}
-.btn{position:absolute;width:30%;aspect-ratio:16/9;background-size:100% 100%;background-position:center;background-repeat:no-repeat;cursor:pointer;opacity:0;transform:translateY(40px);animation:fadeUp 0.8s ease forwards;min-height:100px;touch-action:manipulation;animation:hexGlow 3s ease-in-out infinite}
+.btn{position:absolute;width:28%;aspect-ratio:1/1;background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#000;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;min-height:90px;touch-action:manipulation;animation:hexGlow 3s ease-in-out infinite;border:2px solid #ff0000;border-radius:8px}
 .btn::after{content:"";position:absolute;inset:0;z-index:1}
-.btn:nth-child(1){top:0;left:50%;transform:translateX(-50%) translateY(40px);animation-delay:0.2s}
-.btn:nth-child(1).show{transform:translateX(-50%) translateY(0)}
-.btn:nth-child(2){top:16%;right:8%;animation-delay:0.4s}
-.btn:nth-child(3){bottom:16%;right:8%;animation-delay:0.6s}
-.btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%) translateY(40px);animation-delay:0.8s}
-.btn:nth-child(4).show{transform:translateX(-50%) translateY(0)}
-.btn:nth-child(5){bottom:16%;left:8%;animation-delay:1s}
-.btn:nth-child(6){top:16%;left:8%;animation-delay:1.2s}
+.btn:nth-child(1){top:0;left:50%;transform:translateX(-50%);animation-delay:0.2s}
+.btn:nth-child(2){top:20%;right:8%;animation-delay:0.4s}
+.btn:nth-child(3){bottom:20%;right:8%;animation-delay:0.6s}
+.btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%);animation-delay:0.8s}
+.btn:nth-child(5){bottom:20%;left:8%;animation-delay:1s}
+.btn:nth-child(6){top:20%;left:8%;animation-delay:1.2s}
 .btn:active{transform:scale(0.97);filter:drop-shadow(0 0 40px #ff0000)}
-#character3D{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:35%;height:35%;z-index:5;cursor:pointer;border-radius:10px;display:flex;align-items:center;justify-content:center}
+#character3D{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:32%;height:32%;z-index:5;cursor:pointer;border-radius:10px;display:flex;align-items:center;justify-content:center}
 #character3D model-viewer{width:100%;height:100%;background:transparent}
 .bottom-buttons{position:fixed;bottom:15px;left:50%;transform:translateX(-50%);display:flex;gap:12px;z-index:10005}
-.bottom-btn{width:clamp(70px,20vw,110px);height:clamp(60px,18vw,90px);background-size:100% 100%;background-position:center;background-repeat:no-repeat;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;touch-action:manipulation;filter:drop-shadow(0 0 10px #ff0000)}
+.bottom-btn{width:clamp(70px,20vw,110px);height:clamp(60px,18vw,90px);background-size:contain;background-position:center;background-repeat:no-repeat;background-color:#000;cursor:pointer;opacity:0;animation:fadeUp 0.8s ease forwards;touch-action:manipulation;filter:drop-shadow(0 0 10px #ff0000);border:2px solid #ff0000;border-radius:8px}
 .bottom-btn:nth-child(1){animation-delay:1.4s}
 .bottom-btn:nth-child(2){animation-delay:1.5s}
 .bottom-btn:nth-child(3){animation-delay:1.6s}
 .bottom-btn:nth-child(4){animation-delay:1.7s}
 .bottom-btn:nth-child(5){animation-delay:1.8s}
 .bottom-btn:active{transform:scale(0.95);filter:drop-shadow(0 0 25px #ff0000)}
-@media (max-width:768px){.top-nav{padding:0 10px;justify-content:flex-start}.nav-btn{font-size:11px;padding:5px 8px}.fighter-grid{width:98vw;height:clamp(380px,95vw,650px)}.btn{width:32%;min-height:85px}#character3D{width:38%;height:38%}}
-@media (max-width:480px){.profile-name{font-size:13px;padding:5px 12px 5px 6px}.profile-img{width:28px;height:28px}.bottom-buttons{gap:8px;bottom:10px}.fancy-box h2{font-size:22px}.fancy-box p{font-size:17px}.btn{width:34%;min-height:75px}.bottom-btn{width:clamp(65px,19vw,95px);height:clamp(55px,17vw,80px)}}
+@media (max-width:768px){.top-nav{padding:0 10px;justify-content:flex-start}.nav-btn{font-size:11px;padding:5px 8px}.fighter-grid{width:96vw;height:clamp(360px,90vw,600px)}.btn{width:30%;min-height:80px}#character3D{width:34%;height:34%}}
+@media (max-width:480px){.profile-name{font-size:13px;padding:5px 12px 5px 6px}.profile-img{width:28px;height:28px}.bottom-buttons{gap:8px;bottom:10px}.fancy-box h2{font-size:22px}.fancy-box p{font-size:17px}.btn{width:32%;min-height:70px}.bottom-btn{width:clamp(65px,19vw,95px);height:clamp(55px,17vw,80px)}}
 </style>
 </head>
 <body>
@@ -138,8 +137,7 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <div class="btn" onclick="openFancyMenu('أسماء الظلال')" style="background-image:url('20260505_102309.png')" aria-label="أسماء الظلال"></div>
 <div class="btn" onclick="openFancyMenu('تحميل ملفات')" style="background-image:url('20260505_094803.png')" aria-label="تحميل ملفات"></div>
 <div id="character3D" onclick="playCharacterSound()">
-<!-- حط هنا model-viewer للشخصية GLB -->
-<!-- <model-viewer src="character.glb" camera-controls auto-rotate></model-viewer> -->
+<model-viewer src="character.glb" camera-controls auto-rotate shadow-intensity="1"></model-viewer>
 </div>
 </div>
 </div>
@@ -164,7 +162,6 @@ window.openFancyMenu=function(title){playClick();openPortal(()=>{document.getEle
 window.openMenuPortal=function(title){window.openFancyMenu(title)}
 window.openMenu=function(title){window.openFancyMenu(title)}
 window.closeMenuPage=function(){playClick();document.getElementById("menuPage").classList.remove("active")}
-let exitArmed=false;
 history.pushState({page:"home"},"");
 window.addEventListener("popstate",function(e){
 let menu=document.getElementById("menuPage");
@@ -177,7 +174,8 @@ window.closeExit=function(){playClick();document.getElementById("exitPopup").cla
 const waveLayer=document.getElementById("waveLayer");let canWave=true;document.addEventListener("pointerdown",createWave);
 function createWave(e){if(!canWave)return;canWave=false;const wave=document.createElement("div");wave.className="wave";wave.style.left=e.clientX+"px";wave.style.top=e.clientY+"px";waveLayer.appendChild(wave);setTimeout(()=>{wave.remove();canWave=true},1200)}
 document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>{el.addEventListener('click',playClick)});
-window.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.btn').forEach(btn=>{btn.style.opacity='1';if(btn.style.transform.includes('translateX')){btn.classList.add('show')}else{btn.style.transform='translateY(0)'}})},100)})
+window.addEventListener('DOMContentLoaded',()=>{setTimeout(()=>{document.querySelectorAll('.btn').forEach(btn=>{btn.style.opacity='1'})},100)})
+document.addEventListener('touchmove',function(e){e.preventDefault()},{passive:false});
 </script>
 </body>
 </html>
