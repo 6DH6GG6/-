@@ -106,7 +106,6 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <button onclick="closeExit()">لا</button>
 </div>
 </div>
-</div>
 <div class="site-wrapper">
 <img src="20260429_130547.png" class="logo" alt="Logo">
 <div class="container">
@@ -119,8 +118,6 @@ body{min-height:100vh;background:#000 url('background.jpg') center/cover no-repe
 <div class="btn" onclick="openFancyMenu('أسماء الظلال')" style="background-image:url('20260505_102309.png')" aria-label="أسماء الظلال"></div>
 <div class="btn" onclick="openFancyMenu('تحميل ملفات')" style="background-image:url('20260505_094803.png')" aria-label="تحميل ملفات"></div>
 <div id="character3D"></div>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -138,32 +135,28 @@ function playClick(){const audio=document.getElementById('clickSound');if(audio)
 function openPortal(callback){const portal=document.getElementById("portalOverlay");portal.classList.add("active");setTimeout(()=>{portal.classList.remove("active");if(callback)callback()},800)}
 window.openFancyMenu=function(title){playClick();openPortal()}
 
-// الفخ الأبدي للرجوع
-function setTrap(){
-history.pushState({trap:true},"");
+function setExitGuard(){
+history.pushState({guard:true},"");
 }
 function showExitPopup(){
 document.getElementById("exitPopup").classList.add("active");
 }
-// أول ما تفتح الصفحة نرمي الفخ
-setTrap();
+setExitGuard();
 
-// أي محاولة رجوع = لافتة + فخ جديد
 window.addEventListener("popstate",function(e){
 showExitPopup();
-setTrap();
+setExitGuard();
 });
 
 window.confirmExit=function(){
 playClick();
-// حتى لو خرج ورجع، أول ما تحمل الصفحة بيرجع الفخ
-window.location.href="about:blank"
+window.location.href="https://www.google.com/?hl=ar"
 }
 
 window.closeExit=function(){
 playClick();
 document.getElementById("exitPopup").classList.remove("active");
-setTrap(); // نرجع الفخ بعد الإغلاق
+setExitGuard();
 }
 
 const waveLayer=document.getElementById("waveLayer");let canWave=true;document.addEventListener("pointerdown",createWave);
