@@ -1,8 +1,10 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
+
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <title>Kage No Teio</title>
 
 <style>
@@ -12,6 +14,7 @@ margin:0;
 padding:0;
 box-sizing:border-box;
 font-family:Tahoma,sans-serif;
+-webkit-tap-highlight-color:transparent;
 }
 
 body{
@@ -20,11 +23,11 @@ height:100vh;
 overflow:hidden;
 background:
 radial-gradient(circle at center,
-rgba(255,0,0,0.35) 0%,
-rgba(80,0,0,0.15) 25%,
+rgba(255,0,0,.25) 0%,
+rgba(40,0,0,.15) 25%,
 rgba(0,0,0,1) 70%);
-color:white;
 position:relative;
+color:white;
 }
 
 /* ★ النجوم ★ */
@@ -32,13 +35,18 @@ body::before{
 content:"";
 position:absolute;
 inset:0;
+
 background-image:
-radial-gradient(white 1px, transparent 1px),
-radial-gradient(red 1px, transparent 1px);
-background-size:60px 60px,120px 120px;
-background-position:0 0,30px 30px;
-opacity:.25;
-animation:stars 20s linear infinite;
+radial-gradient(rgba(255,255,255,.8) 1px, transparent 1px),
+radial-gradient(rgba(255,0,0,.5) 1px, transparent 1px);
+
+background-size:70px 70px,120px 120px;
+background-position:0 0,40px 40px;
+
+opacity:.22;
+
+animation:stars 25s linear infinite;
+
 pointer-events:none;
 }
 
@@ -47,35 +55,53 @@ from{
 transform:translateY(0);
 }
 to{
-transform:translateY(-80px);
+transform:translateY(-100px);
 }
 }
 
-/* ★ الشريط العلوي ★ */
+/* ★ الشريط الأحمر ★ */
 .top-alert{
+
 width:100%;
 height:48px;
-background:linear-gradient(to right,#700,#d00,#700);
+
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:15px;
+
+background:
+linear-gradient(to right,
+#400,
+#c00,
+#400);
+
 font-weight:bold;
-box-shadow:0 0 20px red;
+font-size:15px;
+
+box-shadow:
+0 0 15px red;
+
+z-index:5;
 position:relative;
-z-index:10;
 }
 
-/* ★ شريط الأزرار ★ */
+/* ★ شريط التنقل ★ */
 .top-menu{
+
 width:100%;
-overflow-x:auto;
-white-space:nowrap;
-background:#050505;
-border-bottom:2px solid #300;
-padding:10px 5px;
+
 display:flex;
 gap:10px;
+
+overflow-x:auto;
+white-space:nowrap;
+
+padding:12px 10px;
+
+background:#050505;
+
+border-bottom:1px solid rgba(255,0,0,.3);
+
 scrollbar-width:none;
 }
 
@@ -83,196 +109,331 @@ scrollbar-width:none;
 display:none;
 }
 
+/* ★ الأزرار العلوية ★ */
 .menu-btn{
+
 flex:none;
-padding:12px 20px;
-border-radius:12px;
-background:#120000;
-border:1px solid #500;
-color:#ff5a5a;
+
+padding:12px 22px;
+
+background:rgba(255,0,0,.05);
+
+border:1px solid rgba(255,0,0,.45);
+
+color:#ff5555;
+
 font-weight:bold;
+
+clip-path:polygon(
+12% 0%,
+88% 0%,
+100% 20%,
+100% 80%,
+88% 100%,
+12% 100%,
+0% 80%,
+0% 20%
+);
+
 box-shadow:
 0 0 10px rgba(255,0,0,.3),
-inset 0 0 10px rgba(255,0,0,.2);
+inset 0 0 12px rgba(255,0,0,.15);
+
 transition:.3s;
 }
 
 .menu-btn:hover{
-background:#300;
-transform:scale(1.05);
+
+transform:translateY(-2px);
+
+box-shadow:
+0 0 15px red,
+0 0 30px rgba(255,0,0,.5);
 }
 
-/* ★ محتوى الصفحة ★ */
+/* ★ الصفحة ★ */
 .main{
-height:calc(100vh - 120px);
+
+height:calc(100vh - 115px);
+
 display:flex;
 flex-direction:column;
 justify-content:space-between;
 align-items:center;
+
 padding:10px;
+
 position:relative;
 }
 
 /* ★ بطاقة الحساب ★ */
 .profile-box{
+
 position:absolute;
-top:10px;
+top:8px;
 right:10px;
+
 display:flex;
 align-items:center;
 gap:10px;
-padding:8px 15px;
-border-radius:40px;
-background:rgba(20,0,0,.9);
-border:2px solid red;
-box-shadow:0 0 20px red;
-z-index:5;
-}
 
-.profile-box img{
-width:55px;
-height:55px;
-border-radius:50%;
-border:2px solid #ff4444;
-object-fit:cover;
+padding:8px 14px;
+
+background:rgba(255,0,0,.05);
+
+border:2px solid rgba(255,0,0,.7);
+
+clip-path:polygon(
+10% 0%,
+90% 0%,
+100% 25%,
+100% 75%,
+90% 100%,
+10% 100%,
+0% 75%,
+0% 25%
+);
+
+box-shadow:
+0 0 15px red,
+inset 0 0 15px rgba(255,0,0,.2);
+
+z-index:10;
 }
 
 .profile-name{
+font-size:18px;
 font-weight:bold;
 color:#ff4444;
-font-size:18px;
+}
+
+.profile-box img{
+
+width:55px;
+height:55px;
+
+object-fit:cover;
+
+border-radius:50%;
+
+border:2px solid red;
+
+box-shadow:
+0 0 15px red;
 }
 
 /* ★ الشعار ★ */
 .logo{
-margin-top:60px;
-text-align:center;
+
+margin-top:55px;
+
+display:flex;
+justify-content:center;
+align-items:center;
 }
 
-.logo h1{
-font-size:42px;
-color:#fff;
-text-shadow:
-0 0 10px red,
-0 0 20px red,
-0 0 40px red;
-letter-spacing:3px;
+.logo-img{
+
+width:320px;
+max-width:85%;
+
+object-fit:contain;
+
+filter:
+drop-shadow(0 0 10px red)
+drop-shadow(0 0 35px red);
 }
 
-.logo span{
-display:block;
-margin-top:5px;
-font-size:18px;
-color:#ff4444;
-}
-
-/* ★ شبكة البوابات ★ */
+/* ★ الشبكة ★ */
 .portal-grid{
+
 width:100%;
-max-width:900px;
+max-width:950px;
+
 display:grid;
 grid-template-columns:repeat(3,1fr);
-gap:35px;
+
 justify-items:center;
+
+gap:55px 10px;
+
 padding:20px;
 }
 
 /* ★ البوابات ★ */
 .portal{
+
 width:150px;
 height:150px;
-border-radius:50%;
+
 position:relative;
-background:
-radial-gradient(circle,
-rgba(255,80,0,.8),
-rgba(80,0,0,.95));
-border:4px solid #ff3300;
-box-shadow:
-0 0 20px red,
-0 0 50px rgba(255,0,0,.7),
-inset 0 0 30px orange;
+
 display:flex;
 align-items:center;
 justify-content:center;
+
+background:transparent;
+
+clip-path:polygon(
+25% 6%,
+75% 6%,
+100% 50%,
+75% 94%,
+25% 94%,
+0% 50%
+);
+
+border:3px solid rgba(255,0,0,.9);
+
+box-shadow:
+0 0 15px red,
+0 0 40px rgba(255,0,0,.5),
+inset 0 0 20px rgba(255,0,0,.2);
+
 overflow:hidden;
+
 transition:.4s;
 }
 
+/* ★ تأثير البوابات ★ */
 .portal:hover{
-transform:scale(1.08) rotate(2deg);
+
+transform:
+scale(1.08)
+translateY(-5px);
+
 box-shadow:
-0 0 30px red,
-0 0 70px orange;
+0 0 25px red,
+0 0 60px orange;
 }
 
+/* ★ صور البوابات ★ */
 .portal img{
-width:85%;
-height:85%;
+
+width:88%;
+height:88%;
+
 object-fit:cover;
-border-radius:50%;
-border:3px solid rgba(255,255,255,.15);
+
+clip-path:polygon(
+25% 6%,
+75% 6%,
+100% 50%,
+75% 94%,
+25% 94%,
+0% 50%
+);
+
+border:2px solid rgba(255,255,255,.15);
 }
 
 /* ★ اسم البوابة ★ */
 .portal-title{
+
 position:absolute;
-bottom:-28px;
+
+bottom:-30px;
 left:50%;
+
 transform:translateX(-50%);
-background:linear-gradient(to right,#700,#d00,#700);
-padding:6px 15px;
-border-radius:20px;
+
+padding:6px 14px;
+
 font-size:13px;
 white-space:nowrap;
-box-shadow:0 0 10px red;
+
+background:rgba(255,0,0,.05);
+
+border:1px solid rgba(255,0,0,.6);
+
+border-radius:15px;
+
+box-shadow:
+0 0 12px rgba(255,0,0,.4);
 }
 
 /* ★ الشريط السفلي ★ */
 .bottom-bar{
+
 width:100%;
+
 display:flex;
 justify-content:space-around;
 align-items:center;
-padding:10px 0;
+
+padding-bottom:15px;
+
+/* يصعد لفوق قليلا */
+transform:translateY(-12px);
 }
 
+/* ★ أزرار الأسفل ★ */
 .bottom-icon{
-width:65px;
-height:65px;
-border-radius:20px;
-background:
-linear-gradient(to bottom,#300,#100);
+
+width:72px;
+height:72px;
+
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:28px;
+
+font-size:30px;
+
+background:transparent;
+
+border:2px solid rgba(255,0,0,.7);
+
+clip-path:polygon(
+15% 0%,
+85% 0%,
+100% 15%,
+100% 85%,
+85% 100%,
+15% 100%,
+0% 85%,
+0% 15%
+);
+
 box-shadow:
-0 0 15px rgba(255,0,0,.5);
-border:2px solid #500;
+0 0 15px rgba(255,0,0,.5),
+inset 0 0 15px rgba(255,0,0,.15);
+
 transition:.3s;
 }
 
+/* ★ تأثير الأزرار ★ */
 .bottom-icon:hover{
-transform:translateY(-5px) scale(1.05);
-box-shadow:0 0 20px red;
+
+transform:
+translateY(-8px)
+scale(1.08);
+
+box-shadow:
+0 0 25px red,
+0 0 50px rgba(255,0,0,.8);
 }
 
 /* ★ الهاتف ★ */
 @media(max-width:700px){
 
-.logo h1{
-font-size:28px;
+.logo-img{
+width:250px;
 }
 
 .portal-grid{
+
 grid-template-columns:repeat(2,1fr);
-gap:50px 10px;
+
+gap:55px 10px;
 }
 
 .portal{
 width:120px;
 height:120px;
+}
+
+.portal-title{
+font-size:11px;
 }
 
 .profile-box{
@@ -281,9 +442,11 @@ transform-origin:top right;
 }
 
 .bottom-icon{
-width:55px;
-height:55px;
-font-size:22px;
+
+width:58px;
+height:58px;
+
+font-size:24px;
 }
 
 }
@@ -293,18 +456,18 @@ font-size:22px;
 
 <body>
 
-<!-- ★ الشريط الأحمر ★ -->
+<!-- ★ الشريط العلوي ★ -->
 <div class="top-alert">
 ☠ الظلال تترس في الظلام ☠ طائفة الظلام 2019
 </div>
 
-<!-- ★ شريط التنقل ★ -->
+<!-- ★ أزرار الأعلى ★ -->
 <div class="top-menu">
 
 <div class="menu-btn">الأرشيف</div>
 <div class="menu-btn">الإعدادات</div>
 <div class="menu-btn">قسم النقاط</div>
-<div class="menu-btn">قسم شراء وبيع</div>
+<div class="menu-btn">قسم البيع</div>
 <div class="menu-btn">السجل</div>
 <div class="menu-btn">المهام</div>
 <div class="menu-btn">المتجر</div>
@@ -330,8 +493,8 @@ Kage No Teio
 <!-- ★ الشعار ★ -->
 <div class="logo">
 
-<h1>KAGE NO TEIO</h1>
-<span>SHADOW ORGANIZATION</span>
+<!-- ضع شعار PNG هنا -->
+<img src="logo.png" class="logo-img">
 
 </div>
 
@@ -370,13 +533,17 @@ Kage No Teio
 
 </div>
 
-<!-- ★ الشريط السفلي ★ -->
+<!-- ★ الأزرار السفلية ★ -->
 <div class="bottom-bar">
 
 <div class="bottom-icon">🏆</div>
+
 <div class="bottom-icon">📰</div>
+
 <div class="bottom-icon">🎮</div>
+
 <div class="bottom-icon">💰</div>
+
 <div class="bottom-icon">🤖</div>
 
 </div>
