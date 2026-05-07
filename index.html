@@ -5,628 +5,208 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kage No Teio</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: Tahoma;
-            -webkit-tap-highlight-color: transparent
-        }
+        * { margin:0; padding:0; box-sizing:border-box; font-family:Tahoma; -webkit-tap-highlight-color:transparent }
 
-.menu-page {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: rgba(0, 0, 0, 0.8);
-    z-index: 10010;
-    display: none;
-}
+        .menu-page { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10010; display:none }
+        .menu-page.active { display:block }
+        .menu-header { background:#ff0000; padding:10px; text-align:center }
+        .menu-content { padding:20px }
+        .category-tabs { display:flex; gap:10px; margin-bottom:20px }
+        .tab { background:#1a0000; padding:10px 20px; border-radius:10px; cursor:pointer }
+        .tab.active { background:#ff0000 }
+        .anime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px }
+        .anime-card { background:#1a0000; padding:10px; border-radius:10px; text-align:center }
 
-.menu-page.active {
-    display: block;
-}
+        html,body { height:100%; overflow:hidden; position:fixed; width:100%; touch-action:none }
+        body { min-height:100vh; background:#000 url('background.jpg') center/cover no-repeat fixed; color:white }
 
-.menu-header {
-    background: #ff0000;
-    padding: 10px;
-    text-align: center;
-}
-
-.menu-content {
-    padding: 20px;
-}
-
-.category-tabs {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 20px;
-}
-
-.tab {
-    background: #1a0000;
-    padding: 10px 20px;
-    border-radius: 10px;
-    cursor: pointer;
-}
-
-.tab.active {
-    background: #ff0000;
-}
-
-.anime-grid {
-    display: grid;
-    grid-template-columns: repeat(3, 1fr);
-    gap: 10px;
-}
-
-.anime-card {
-    background: #1a0000;
-    padding: 10px;
-    border-radius: 10px;
-    text-align: center;
-}
-
-        html,
-        body {
-            height: 100%;
-            overflow: hidden;
-            position: fixed;
-            width: 100%;
-            touch-action: none
-        }
-
-        body {
-            min-height: 100vh;
-            background: #000 url('background.jpg') center/cover no-repeat fixed;
-            color: white
-        }
-
-        @keyframes fadeUp {
-            to {
-                opacity: 1;
-                transform: translateY(0)
-            }
-        }
-
-        ::-webkit-scrollbar { width: 8px }
-        ::-webkit-scrollbar-track { background: #1a0000 }
-        ::-webkit-scrollbar-thumb { background: #ff0000; border-radius: 4px }
-        ::-webkit-scrollbar-thumb:hover { background: #8b0000 }
-
-        @keyframes moveStars {
-            from { background-position: 0 0 }
-            to { background-position: 1000px 0 }
-        }
-
-        @keyframes scrollTextLeft {
-            from { left: -100% }
-            to { left: 100% }
-        }
-
+        @keyframes fadeUp { to { opacity:1; transform:translateY(0) } }
+        ::-webkit-scrollbar { width:8px }
+        ::-webkit-scrollbar-track { background:#1a0000 }
+        ::-webkit-scrollbar-thumb { background:#ff0000; border-radius:4px }
+        @keyframes moveStars { from { background-position:0 0 } to { background-position:1000px 0 } }
+        @keyframes scrollTextLeft { from { left:-100% } to { left:100% } }
         @keyframes waveMove {
-            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.9 }
-            100% { transform: translate(-50%, -50%) scale(25); opacity: 0 }
+            0% { transform:translate(-50%,-50%) scale(1); opacity:0.9 }
+            100% { transform:translate(-50%,-50%) scale(25); opacity:0 }
         }
-
         @keyframes gradientShift {
-            0% { background-position: 0% 50% }
-            50% { background-position: 100% 50% }
-            100% { background-position: 0% 50% }
+            0%,100% { background-position:0% 50% }
+            50% { background-position:100% 50% }
         }
-
-        @keyframes portalSpin {
-            from { transform: rotate(0deg) }
-            to { transform: rotate(360deg) }
-        }
-
+        @keyframes portalSpin { from { transform:rotate(0deg) } to { transform:rotate(360deg) } }
         @keyframes portalPulse {
-            0%, 100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #8b0000 }
-            50% { box-shadow: 0 0 40px #ff0000, 0 0 80px #ff0000, 0 0 120px #8b0000 }
+            0%,100% { box-shadow:0 0 20px #ff0000,0 0 40px #ff0000,0 0 60px #8b0000 }
+            50% { box-shadow:0 0 40px #ff0000,0 0 80px #ff0000,0 0 120px #8b0000 }
         }
-
         @keyframes hexGlow {
-            0%, 100% { filter: drop-shadow(0 0 20px #ff0000) }
-            50% { filter: drop-shadow(0 0 35px #ff0000) drop-shadow(0 0 60px #8b0000) }
-        }
-
-        /* ===== PENTAGRAM ANIMATIONS ===== */
-        @keyframes pentagramRotate {
-            0% { transform: translate(-50%, -50%) rotate(0deg) }
-            100% { transform: translate(-50%, -50%) rotate(360deg) }
+            0%,100% { filter:drop-shadow(0 0 20px #ff0000) }
+            50% { filter:drop-shadow(0 0 35px #ff0000) drop-shadow(0 0 60px #8b0000) }
         }
         @keyframes pentagramPulse {
-            0%, 100% { opacity: 0.18; filter: drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000) }
-            50% { opacity: 0.30; filter: drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000) }
+            0%,100% { opacity:0.18; filter:drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000) }
+            50% { opacity:0.30; filter:drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000) }
         }
         @keyframes skullGlow {
-            0%, 100% { opacity: 0.22; filter: drop-shadow(0 0 12px #ff0000) }
-            50% { opacity: 0.38; filter: drop-shadow(0 0 28px #ff3333) drop-shadow(0 0 50px #8b0000) }
+            0%,100% { opacity:0.22; filter:drop-shadow(0 0 12px #ff0000) }
+            50% { opacity:0.38; filter:drop-shadow(0 0 28px #ff3333) drop-shadow(0 0 50px #8b0000) }
         }
         @keyframes outerRingRotate {
-            0% { transform: translate(-50%, -50%) rotate(0deg) }
-            100% { transform: translate(-50%, -50%) rotate(-360deg) }
+            0% { transform:translate(-50%,-50%) rotate(0deg) }
+            100% { transform:translate(-50%,-50%) rotate(-360deg) }
         }
 
         .top-frame {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 40px;
-            background: linear-gradient(270deg, #8b0000, #ff1a1a, #6a0dad, #8b0000);
-            background-size: 600% 600%;
-            animation: gradientShift 8s ease infinite;
-            z-index: 10007;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            border-bottom: 1px solid rgba(255, 0, 0, 0.5)
+            position:fixed; top:0; left:0; right:0; height:40px;
+            background:linear-gradient(270deg,#8b0000,#ff1a1a,#6a0dad,#8b0000);
+            background-size:600% 600%; animation:gradientShift 8s ease infinite;
+            z-index:10007; display:flex; align-items:center; overflow:hidden;
+            border-bottom:1px solid rgba(255,0,0,0.5)
         }
-
-        .top-frame-text {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            overflow: hidden;
-            pointer-events: none
-        }
-
-        .top-frame-text span {
-            position: absolute;
-            color: #fff;
-            font-weight: bold;
-            font-size: 14px;
-            white-space: nowrap;
-            text-shadow: 0 0 5px #000;
-            animation: scrollTextLeft 15s linear infinite
-        }
+        .top-frame-text { position:absolute; width:100%; height:100%; display:flex; align-items:center; overflow:hidden; pointer-events:none }
+        .top-frame-text span { position:absolute; color:#fff; font-weight:bold; font-size:14px; white-space:nowrap; text-shadow:0 0 5px #000; animation:scrollTextLeft 15s linear infinite }
 
         .top-nav {
-            position: fixed;
-            top: 40px;
-            left: 0;
-            right: 0;
-            height: 50px;
-            background: rgba(0, 0, 0, 0.6);
-            border-bottom: 1px solid rgba(255, 0, 0, 0.3);
-            backdrop-filter: blur(8px);
-            z-index: 10006;
-            display: flex;
-            align-items: center;
-            justify-content: flex-start;
-            gap: 8px;
-            padding: 0 10px;
-            overflow-x: auto;
-            overflow-y: hidden;
-            -webkit-overflow-scrolling: touch;
-            touch-action: pan-x
+            position:fixed; top:40px; left:0; right:0; height:50px;
+            background:rgba(0,0,0,0.6); border-bottom:1px solid rgba(255,0,0,0.3);
+            backdrop-filter:blur(8px); z-index:10006;
+            display:flex; align-items:center; gap:8px; padding:0 10px;
+            overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; touch-action:pan-x
         }
-
-        .top-nav::-webkit-scrollbar { display: none }
-
+        .top-nav::-webkit-scrollbar { display:none }
         .nav-btn {
-            background: rgba(255, 0, 0, 0.08);
-            border: 1px solid rgba(255, 0, 0, 0.3);
-            border-radius: 6px;
-            color: #ff4444;
-            font-size: 13px;
-            font-weight: bold;
-            padding: 6px 12px;
-            cursor: pointer;
-            white-space: nowrap;
-            transition: 0.1s;
-            text-shadow: 0 0 8px #ff0000;
-            min-height: 32px;
-            position: relative;
-            z-index: 2;
-            flex-shrink: 0
+            background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.3);
+            border-radius:6px; color:#ff4444; font-size:13px; font-weight:bold;
+            padding:6px 12px; cursor:pointer; white-space:nowrap;
+            text-shadow:0 0 8px #ff0000; min-height:32px; flex-shrink:0
         }
+        .nav-btn:active { background:rgba(255,0,0,0.3) }
 
-        .nav-btn:active { background: rgba(255, 0, 0, 0.3) }
-
-        .profile-header {
-            position: fixed;
-            top: 100px;
-            right: 15px;
-            display: flex;
-            align-items: center;
-            z-index: 10005
-        }
-
+        .profile-header { position:fixed; top:100px; right:15px; display:flex; align-items:center; z-index:10005 }
         .profile-name {
-            background: rgba(0, 0, 0, 0.7);
-            color: #ff0000;
-            font-size: 15px;
-            font-weight: bold;
-            text-shadow: 0 0 10px #ff0000;
-            padding: 6px 14px 6px 6px;
-            border-radius: 50px;
-            border: 2px solid #ff0000;
-            box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
-            display: flex;
-            align-items: center;
-            gap: 8px
+            background:rgba(0,0,0,0.7); color:#ff0000; font-size:15px; font-weight:bold;
+            text-shadow:0 0 10px #ff0000; padding:6px 14px 6px 6px; border-radius:50px;
+            border:2px solid #ff0000; box-shadow:0 0 20px rgba(255,0,0,0.5);
+            display:flex; align-items:center; gap:8px
         }
+        .profile-img { width:32px; height:32px; border-radius:50%; border:2px solid #ff0000; object-fit:cover }
 
-        .profile-img {
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            border: 2px solid #ff0000;
-            object-fit: cover;
-            box-shadow: 0 0 15px rgba(255, 0, 0, 0.6)
-        }
-
-        .wave-layer {
-            position: fixed;
-            inset: 0;
-            pointer-events: none;
-            z-index: 9998;
-            overflow: hidden
-        }
-
+        .wave-layer { position:fixed; inset:0; pointer-events:none; z-index:9998; overflow:hidden }
         .wave {
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.35) 0%, rgba(255, 0, 0, 0.15) 40%, transparent 70%);
-            transform: translate(-50%, -50%);
-            animation: waveMove 1.4s ease-out forwards;
-            filter: blur(2px)
+            position:absolute; width:12px; height:12px; border-radius:50%;
+            background:radial-gradient(circle,rgba(255,0,0,0.35) 0%,rgba(255,0,0,0.15) 40%,transparent 70%);
+            transform:translate(-50%,-50%); animation:waveMove 1.4s ease-out forwards; filter:blur(2px)
         }
 
-        .bg-overlay {
-            position: fixed;
-            inset: 0;
-            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.85));
-            z-index: 1;
-            pointer-events: none
-        }
+        .portal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:20000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.3s }
+        .portal-overlay.active { opacity:1; pointer-events:auto }
+        .portal-circle { width:200px; height:200px; border-radius:50%; border:4px solid #ff0000; background:radial-gradient(circle,rgba(255,0,0,0.2),transparent); animation:portalSpin 2s linear infinite,portalPulse 1.5s ease-in-out infinite; position:relative }
+        .portal-circle::before { content:""; position:absolute; inset:10px; border-radius:50%; border:3px solid #8b0000; animation:portalSpin 1.5s linear infinite reverse }
+        .portal-circle::after { content:"☠"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:60px; color:#ff0000; text-shadow:0 0 30px #ff0000 }
 
-        .stars {
-            position: fixed;
-            inset: 0;
-            background: url('866f30792413dcb70ce06c91c1ad3f4e.gif');
-            opacity: 0.12;
-            animation: moveStars 120s linear infinite;
-            z-index: 2
-        }
+        .exit-popup { position:fixed; inset:0; background:url('exit-background.jpg') center/cover no-repeat; background-color:#000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.15s; z-index:20001 }
+        .exit-popup.active { opacity:1; pointer-events:auto }
+        .exit-box { background:rgba(0,0,0,0.85); padding:40px; border-radius:20px; text-align:center; box-shadow:0 0 40px #ff0000; border:3px solid #ff0000; width:90%; max-width:400px }
+        .exit-box h2 { color:#ff0000; font-size:26px; margin-bottom:15px; text-shadow:0 0 15px #ff0000 }
+        .exit-buttons { margin-top:20px; display:flex; gap:15px; justify-content:center }
+        .exit-buttons button { padding:12px 30px; border:2px solid #ff0000; background:#1a0000; color:#ff0000; border-radius:10px; cursor:pointer; min-height:44px; font-weight:bold; font-size:16px }
+        .exit-buttons button:active { background:#ff0000; color:black }
 
-        .portal-overlay {
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.98);
-            z-index: 20000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.3s
-        }
+        .site-wrapper { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; z-index:3; padding-top:170px; padding-bottom:120px }
+        .logo { width:clamp(160px,40vw,380px); margin-bottom:20px; filter:drop-shadow(0 0 25px #ff0000); z-index:2 }
+        .container { z-index:2; width:100%; display:flex; justify-content:center; padding:10px; flex:1; align-items:center }
+        .fighter-grid { width:clamp(380px,90vw,900px); position:relative; height:clamp(380px,80vw,700px) }
 
-        .portal-overlay.active {
-            opacity: 1;
-            pointer-events: auto
-        }
+        /* ── نجمة الشيطان ── */
+        .pentagram-bg { position:absolute; top:50%; left:50%; width:92%; height:92%; transform:translate(-50%,-50%); pointer-events:none; z-index:1 }
+        .penta-outer-ring { position:absolute; top:50%; left:50%; width:96%; height:96%; border-radius:50%; border:1.5px dashed rgba(255,0,0,0.25); animation:outerRingRotate 30s linear infinite; transform:translate(-50%,-50%) }
+        .penta-svg { position:absolute; top:50%; left:50%; width:100%; height:100%; transform:translate(-50%,-50%); animation:pentagramPulse 4s ease-in-out infinite }
+        .penta-skull { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:clamp(38px,9vw,72px); line-height:1; animation:skullGlow 3s ease-in-out infinite; user-select:none; z-index:2 }
 
-        .portal-circle {
-            width: 200px;
-            height: 200px;
-            border-radius: 50%;
-            border: 4px solid #ff0000;
-            background: radial-gradient(circle, rgba(255, 0, 0, 0.2), transparent);
-            animation: portalSpin 2s linear infinite, portalPulse 1.5s ease-in-out infinite;
-            position: relative
-        }
+        .hexagram-menu { position:relative; width:100%; height:100%; z-index:4 }
 
-        .portal-circle::before {
-            content: "";
-            position: absolute;
-            inset: 10px;
-            border-radius: 50%;
-            border: 3px solid #8b0000;
-            animation: portalSpin 1.5s linear infinite reverse
-        }
-
-        .portal-circle::after {
-            content: "☠";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 60px;
-            color: #ff0000;
-            text-shadow: 0 0 30px #ff0000
-        }
-
-        .exit-popup {
-            position: fixed;
-            inset: 0;
-            background: url('exit-background.jpg') center/cover no-repeat;
-            background-color: #000;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: 0.15s;
-            z-index: 20001
-        }
-
-        .exit-popup.active {
-            opacity: 1;
-            pointer-events: auto
-        }
-
-        .exit-box {
-            background: rgba(0, 0, 0, 0.85);
-            padding: 40px;
-            border-radius: 20px;
-            text-align: center;
-            box-shadow: 0 0 40px #ff0000;
-            border: 3px solid #ff0000;
-            width: 90%;
-            max-width: 400px
-        }
-
-        .exit-box h2 {
-            color: #ff0000;
-            font-size: 26px;
-            margin-bottom: 15px;
-            text-shadow: 0 0 15px #ff0000
-        }
-
-        .exit-buttons {
-            margin-top: 20px;
-            display: flex;
-            gap: 15px;
-            justify-content: center
-        }
-
-        .exit-buttons button {
-            padding: 12px 30px;
-            border: 2px solid #ff0000;
-            background: #1a0000;
-            color: #ff0000;
-            border-radius: 10px;
-            cursor: pointer;
-            min-height: 44px;
-            font-weight: bold;
-            font-size: 16px;
-            transition: 0.2s
-        }
-
-        .exit-buttons button:active {
-            background: #ff0000;
-            color: black
-        }
-
-        .site-wrapper {
-            position: fixed;
-            inset: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            z-index: 3;
-            padding-top: 170px;
-            padding-bottom: 120px
-        }
-
-        .logo {
-            width: clamp(160px, 40vw, 380px);
-            margin-bottom: 20px;
-            filter: drop-shadow(0 0 25px #ff0000);
-            z-index: 2
-        }
-
-        .container {
-            z-index: 2;
-            width: 100%;
-            display: flex;
-            justify-content: center;
-            padding: 10px;
-            flex: 1;
-            align-items: center
-        }
-
-        .fighter-grid {
-            width: clamp(380px, 90vw, 900px);
-            position: relative;
-            height: clamp(380px, 80vw, 700px)
-        }
-
-        /* ===== PENTAGRAM CONTAINER ===== */
-        .pentagram-bg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 92%;
-            height: 92%;
-            transform: translate(-50%, -50%);
-            pointer-events: none;
-            z-index: 1;
-        }
-
-        /* Slow rotating outer dashed ring */
-        .penta-outer-ring {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 96%;
-            height: 96%;
-            border-radius: 50%;
-            border: 1.5px dashed rgba(255, 0, 0, 0.25);
-            animation: outerRingRotate 30s linear infinite;
-            transform: translate(-50%, -50%);
-        }
-
-        /* SVG pentagram star */
-        .penta-svg {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            width: 100%;
-            height: 100%;
-            transform: translate(-50%, -50%);
-            animation: pentagramPulse 4s ease-in-out infinite;
-        }
-
-        /* Skull in center */
-        .penta-skull {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: clamp(38px, 9vw, 72px);
-            line-height: 1;
-            animation: skullGlow 3s ease-in-out infinite;
-            user-select: none;
-            z-index: 2;
-        }
-
-        .hexagram-menu {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            z-index: 4
-        }
-
+        /* ══════════════════════════════════════════════════════════════
+           🔴  الأزرار الستة الشفافة — غيّر اسم الملف فقط
+               btn:nth-child(1) → أعلى الوسط
+               btn:nth-child(2) → أعلى اليمين
+               btn:nth-child(3) → أسفل اليمين
+               btn:nth-child(4) → أسفل الوسط
+               btn:nth-child(5) → أسفل اليسار
+               btn:nth-child(6) → أعلى اليسار
+           ══════════════════════════════════════════════════════════════ */
         .btn {
             position: absolute;
             width: 26%;
             aspect-ratio: 1/1;
-            background-size: contain;
+            min-height: 90px;
+
+            /* ── الصورة ── */
+            background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
+
+            /* ── شفافية كاملة: لا لون، لا حدود، لا خلفية ── */
             background-color: transparent;
+            border: none;
+            outline: none;
+
             cursor: pointer;
-            opacity: 0;
-            min-height: 90px;
             touch-action: manipulation;
             animation: hexGlow 3s ease-in-out infinite;
-            border: none
+            border-radius: 12px;
         }
 
-        .btn::after {
-            content: "";
-            position: absolute;
-            inset: 0;
-            z-index: 1
-        }
+        /* طبقة حماية فوق الصورة */
+        .btn::after { content:""; position:absolute; inset:0; z-index:1 }
 
+        /* الموقع + مسار الصورة لكل زر */
         .btn:nth-child(1) {
-            top: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            animation-delay: 0.2s
+            top: 0; left: 50%; transform: translateX(-50%);
+            animation-delay: 0.2s;
+            background-image: url('1العاب1.png'); /* ← 🖼️ زر 1 */
         }
-
         .btn:nth-child(2) {
-            top: 18%;
-            right: 5%;
-            animation-delay: 0.4s
+            top: 18%; right: 5%;
+            animation-delay: 0.4s;
+            background-image: url('1روابط1مقراتنا1.png'); /* ← 🖼️ زر 2 */
         }
-
         .btn:nth-child(3) {
-            bottom: 18%;
-            right: 5%;
-            animation-delay: 0.6s
+            bottom: 18%; right: 5%;
+            animation-delay: 0.6s;
+            background-image: url('1ظلال1الطائفة1وحلفائها1.png'); /* ← 🖼️ زر 3 */
         }
-
         .btn:nth-child(4) {
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%);
-            animation-delay: 0.8s
+            bottom: 0; left: 50%; transform: translateX(-50%);
+            animation-delay: 0.8s;
+            background-image: url('1عالم1الأنمي1.png'); /* ← 🖼️ زر 4 */
         }
-
         .btn:nth-child(5) {
-            bottom: 18%;
-            left: 5%;
-            animation-delay: 1s
+            bottom: 18%; left: 5%;
+            animation-delay: 1s;
+            background-image: url('1قصص1إعدام1العصابات1.png'); /* ← 🖼️ زر 5 */
         }
-
         .btn:nth-child(6) {
-            top: 18%;
-            left: 5%;
-            animation-delay: 1.2s
+            top: 18%; left: 5%;
+            animation-delay: 1.2s;
+            background-image: url('فضائح1كلاب1العصابات1.png'); /* ← 🖼️ زر 6 */
         }
+        /* ══════════════════════════════════════════════════════════════ */
 
-        #character3D {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            width: 38%;
-            height: 38%;
-            z-index: 5;
-            border-radius: 10px;
-            display: flex;
-            align-items: center;
-            justify-content: center
-        }
+        #character3D { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:38%; height:38%; z-index:5; border-radius:10px; display:flex; align-items:center; justify-content:center }
 
-        .bottom-buttons {
-            position: fixed;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 10005
-        }
+        .bottom-buttons { position:fixed; bottom:15px; left:50%; transform:translateX(-50%); display:flex; gap:12px; z-index:10005 }
+        .bottom-btn { width:clamp(70px,20vw,110px); height:clamp(60px,18vw,90px); background-size:contain; background-position:center; background-repeat:no-repeat; background-color:transparent; cursor:pointer; opacity:0; animation:fadeUp 0.8s ease forwards; touch-action:manipulation; filter:drop-shadow(0 0 15px #ff0000); border:none }
+        .bottom-btn:nth-child(1){animation-delay:1.4s} .bottom-btn:nth-child(2){animation-delay:1.5s} .bottom-btn:nth-child(3){animation-delay:1.6s} .bottom-btn:nth-child(4){animation-delay:1.7s} .bottom-btn:nth-child(5){animation-delay:1.8s}
 
-        .bottom-btn {
-            width: clamp(70px, 20vw, 110px);
-            height: clamp(60px, 18vw, 90px);
-            background-size: contain;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-color: transparent;
-            cursor: pointer;
-            opacity: 0;
-            animation: fadeUp 0.8s ease forwards;
-            touch-action: manipulation;
-            filter: drop-shadow(0 0 15px #ff0000);
-            border: none
-        }
-
-        .bottom-btn:nth-child(1) { animation-delay: 1.4s }
-        .bottom-btn:nth-child(2) { animation-delay: 1.5s }
-        .bottom-btn:nth-child(3) { animation-delay: 1.6s }
-        .bottom-btn:nth-child(4) { animation-delay: 1.7s }
-        .bottom-btn:nth-child(5) { animation-delay: 1.8s }
-
-        @media (max-width: 768px) {
-            .top-nav { padding: 0 10px; justify-content: flex-start }
-            .nav-btn { font-size: 11px; padding: 5px 8px }
-            .fighter-grid { width: 96vw; height: clamp(360px, 90vw, 600px) }
-            .btn { width: 28%; min-height: 80px }
-            #character3D { width: 40%; height: 40% }
-        }
-
-        @media (max-width: 480px) {
-            .profile-name { font-size: 13px; padding: 5px 12px 5px 6px }
-            .profile-img { width: 28px; height: 28px }
-            .bottom-buttons { gap: 8px; bottom: 10px }
-            .btn { width: 30%; min-height: 70px }
-            .bottom-btn { width: clamp(65px, 19vw, 95px); height: clamp(55px, 17vw, 80px) }
-        }
+        @media (max-width:768px) { .fighter-grid{width:96vw;height:clamp(360px,90vw,600px)} .btn{width:28%;min-height:80px} #character3D{width:40%;height:40%} }
+        @media (max-width:480px) { .profile-name{font-size:13px;padding:5px 12px 5px 6px} .profile-img{width:28px;height:28px} .bottom-buttons{gap:8px;bottom:10px} .btn{width:30%;min-height:70px} .bottom-btn{width:clamp(65px,19vw,95px);height:clamp(55px,17vw,80px)} }
     </style>
 </head>
 <body>
     <audio id="clickSound" src="clickSound.mp3" preload="auto"></audio>
     <div id="waveLayer" class="wave-layer"></div>
 
-    <div id="portalOverlay" class="portal-overlay">
-        <div class="portal-circle"></div>
-    </div>
+    <div id="portalOverlay" class="portal-overlay"><div class="portal-circle"></div></div>
 
     <div id="exitPopup" class="exit-popup">
         <div class="exit-box">
@@ -639,17 +219,14 @@
     </div>
 
     <div id="menuPage" class="menu-page">
-        <div class="menu-header">
-            <h2>قسم الأنمي</h2>
-            <button class="close-btn" onclick="closeMenu()">رجوع</button>
-        </div>
+        <div class="menu-header"><h2>قسم الأنمي</h2><button onclick="closeMenu()">رجوع</button></div>
         <div class="menu-content">
             <div class="category-tabs">
-                <div class="tab active" onclick="filterAnime('naruto', event)">ناروتو</div>
-                <div class="tab" onclick="filterAnime('onepiece', event)">ون بيس</div>
-                <div class="tab" onclick="filterAnime('attack', event)">اتاك</div>
-                <div class="tab" onclick="filterAnime('hunter', event)">هنتر</div>
-                <div class="tab" onclick="filterAnime('dragonball', event)">دراغون بول</div>
+                <div class="tab active" onclick="filterAnime('naruto',event)">ناروتو</div>
+                <div class="tab" onclick="filterAnime('onepiece',event)">ون بيس</div>
+                <div class="tab" onclick="filterAnime('attack',event)">اتاك</div>
+                <div class="tab" onclick="filterAnime('hunter',event)">هنتر</div>
+                <div class="tab" onclick="filterAnime('dragonball',event)">دراغون بول</div>
             </div>
             <div class="anime-grid" id="animeGrid">
                 <div class="anime-card" data-cat="naruto">ناروتو أوزوماكي</div>
@@ -661,11 +238,7 @@
         </div>
     </div>
 
-    <div class="top-frame">
-        <div class="top-frame-text">
-            <span>مرحبا بك في Kage No Teio</span>
-        </div>
-    </div>
+    <div class="top-frame"><div class="top-frame-text"><span>مرحبا بك في Kage No Teio</span></div></div>
 
     <div class="top-nav">
         <button class="nav-btn" onclick="openMenu()">أنمي</button>
@@ -678,7 +251,7 @@
     <div class="profile-header">
         <div class="profile-name">
             <img src="20260420_113331.jpg" class="profile-img">
-            <span>اسم المستخدم</span>
+            <span>Kage No Teio</span>
         </div>
     </div>
 
@@ -687,88 +260,40 @@
         <div class="container">
             <div class="fighter-grid">
 
-                <!-- ===== PENTAGRAM BACKGROUND ===== -->
+                <!-- نجمة الشيطان -->
                 <div class="pentagram-bg">
-                    <!-- Outer rotating dashed ring -->
                     <div class="penta-outer-ring"></div>
-
-                    <!-- SVG Pentagram Star -->
                     <svg class="penta-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <filter id="redGlow">
                                 <feGaussianBlur stdDeviation="4" result="blur"/>
-                                <feMerge>
-                                    <feMergeNode in="blur"/>
-                                    <feMergeNode in="SourceGraphic"/>
-                                </feMerge>
+                                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
                             </filter>
                         </defs>
-
-                        <!-- Outer circle -->
-                        <circle cx="200" cy="200" r="188"
-                            fill="none"
-                            stroke="rgba(180,0,0,0.35)"
-                            stroke-width="1.2"
-                            filter="url(#redGlow)"
-                        />
-
-                        <!-- Inner circle -->
-                        <circle cx="200" cy="200" r="155"
-                            fill="none"
-                            stroke="rgba(255,0,0,0.15)"
-                            stroke-width="0.8"
-                        />
-
-                        <!--
-                            Pentagram points at angles: 270°, 342°, 54°, 126°, 198°
-                            (top point first, going clockwise)
-                            r=188 from center (200,200)
-                        -->
-                        <polygon
-                            points="
-                                200,12
-                                237.7,120.6
-                                354.3,120.6
-                                260.3,188.2
-                                295.5,297.4
-                                200,229.2
-                                104.5,297.4
-                                139.7,188.2
-                                45.7,120.6
-                                162.3,120.6
-                            "
-                            fill="rgba(120,0,0,0.12)"
-                            stroke="rgba(255,0,0,0.45)"
-                            stroke-width="1.5"
-                            stroke-linejoin="round"
-                            filter="url(#redGlow)"
-                        />
-
-                        <!-- Inner pentagon outline (connecting tips of pentagram inward) -->
-                        <polygon
-                            points="
-                                200,80
-                                228.5,168.5
-                                322,168.5
-                                247.5,221
-                                275.5,310
-                                200,257
-                                124.5,310
-                                152.5,221
-                                78,168.5
-                                171.5,168.5
-                            "
-                            fill="none"
-                            stroke="rgba(180,0,0,0.18)"
-                            stroke-width="0.8"
-                        />
+                        <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(180,0,0,0.35)" stroke-width="1.2" filter="url(#redGlow)"/>
+                        <circle cx="200" cy="200" r="155" fill="none" stroke="rgba(255,0,0,0.15)" stroke-width="0.8"/>
+                        <polygon points="200,12 237.7,120.6 354.3,120.6 260.3,188.2 295.5,297.4 200,229.2 104.5,297.4 139.7,188.2 45.7,120.6 162.3,120.6"
+                            fill="rgba(120,0,0,0.12)" stroke="rgba(255,0,0,0.45)" stroke-width="1.5" stroke-linejoin="round" filter="url(#redGlow)"/>
+                        <polygon points="200,80 228.5,168.5 322,168.5 247.5,221 275.5,310 200,257 124.5,310 152.5,221 78,168.5 171.5,168.5"
+                            fill="none" stroke="rgba(180,0,0,0.18)" stroke-width="0.8"/>
                     </svg>
-
-                    <!-- Skull emoji in center -->
                     <div class="penta-skull">💀</div>
                 </div>
-                <!-- ===== END PENTAGRAM ===== -->
 
+                <!--
+                ┌─────────────────────────────────────────────┐
+                │  🔴  مسارات صور الأزرار الستة  🔴           │
+                │  عدّل CSS فقط — ابحث عن السطر:             │
+                │  background-image: url('btnX.png');          │
+                │                                              │
+                │  زر 1 → btn1.png  (أعلى الوسط)             │
+                │  زر 2 → btn2.png  (أعلى اليمين)            │
+                │  زر 3 → btn3.png  (أسفل اليمين)            │
+                │  زر 4 → btn4.png  (أسفل الوسط)             │
+                │  زر 5 → btn5.png  (أسفل اليسار)            │
+                │  زر 6 → btn6.png  (أعلى اليسار)            │
+                └─────────────────────────────────────────────┘
+                -->
                 <div class="hexagram-menu">
                     <button class="btn"></button>
                     <button class="btn"></button>
@@ -777,6 +302,7 @@
                     <button class="btn"></button>
                     <button class="btn"></button>
                 </div>
+
                 <div id="character3D"></div>
             </div>
         </div>
@@ -791,117 +317,45 @@
     </div>
 
 <script>
-    let menuData = {
-        "أنمي": "قسم الأنمي",
-        "فضائح عصابات": "أرشيف الفضائح",
-        "قوانين الدعس": "قوانين الطائفة",
-        "ترسيم أعضاء": "نظام الترسيم",
-        "أسماء الظلال": "قائمة الظلال",
-        "تحميل ملفات": "قسم التحميل",
-        "B1": "زر سفلي 1",
-        "B2": "زر سفلي 2",
-        "B3": "زر سفلي 3",
-        "B4": "زر سفلي 4",
-        "B5": "زر سفلي 5"
-    };
-
     function playClick() {
-        const audio = document.getElementById('clickSound');
-        if (audio) { audio.currentTime = 0; audio.play().catch(() => {}) }
+        const a = document.getElementById('clickSound');
+        if (a) { a.currentTime = 0; a.play().catch(()=>{}) }
     }
-
-    function openPortal(callback) {
-        const portal = document.getElementById("portalOverlay");
-        portal.classList.add("active");
-        setTimeout(() => {
-            portal.classList.remove("active");
-            if (callback) callback()
-        }, 800)
+    function openPortal(cb) {
+        const p = document.getElementById("portalOverlay");
+        p.classList.add("active");
+        setTimeout(()=>{ p.classList.remove("active"); if(cb) cb() }, 800)
     }
+    function openMenu()  { playClick(); document.getElementById("menuPage").classList.add("active") }
+    function closeMenu() { playClick(); document.getElementById("menuPage").classList.remove("active") }
+    window.confirmExit = function() { playClick(); window.close(); window.location.href="about:blank" }
+    window.closeExit   = function() { playClick(); document.getElementById("exitPopup").classList.remove("active") }
 
-    function openMenu() {
-        playClick();
-        document.getElementById("menuPage").classList.add("active");
-    }
+    history.pushState({page:"home"},"");
 
-    function closeMenu() {
-        playClick();
-        document.getElementById("menuPage").classList.remove("active");
-    }
-
-    window.openFancyMenu = function(title) {
-        playClick();
-        openPortal()
-    }
-
-    history.pushState({ page: "home" }, "");
-
-    document.addEventListener('DOMContentLoaded', () => {
-        setTimeout(() => {
-            document.querySelectorAll('.btn').forEach(btn => {
-                btn.style.opacity = '1'
-            })
-        }, 100)
-
-        const cards = document.querySelectorAll('.anime-card');
-        cards.forEach(card => {
-            card.addEventListener('click', () => { playClick() });
-        });
-
+    document.addEventListener('DOMContentLoaded', ()=>{
+        document.querySelectorAll('.btn').forEach(b=>b.style.opacity='1');
+        document.querySelectorAll('.anime-card').forEach(c=>c.addEventListener('click', playClick));
         filterAnime('naruto');
     });
 
-    window.confirmExit = function() {
-        playClick();
-        window.close();
-        window.location.href = "about:blank"
-    }
-
-    window.closeExit = function() {
-        playClick();
-        document.getElementById("exitPopup").classList.remove("active")
-    }
-
     const waveLayer = document.getElementById("waveLayer");
     let canWave = true;
-
-    document.addEventListener("pointerdown", createWave);
-
-    function createWave(e) {
-        if (!canWave) return;
-        canWave = false;
-        const wave = document.createElement("div");
-        wave.className = "wave";
-        wave.style.left = e.clientX + "px";
-        wave.style.top = e.clientY + "px";
-        waveLayer.appendChild(wave);
-        setTimeout(() => { wave.remove(); canWave = true }, 1200)
-    }
-
-    document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el => {
-        el.addEventListener('click', playClick)
+    document.addEventListener("pointerdown", e=>{
+        if (!canWave) return; canWave = false;
+        const w = document.createElement("div"); w.className="wave";
+        w.style.left = e.clientX+"px"; w.style.top = e.clientY+"px";
+        waveLayer.appendChild(w);
+        setTimeout(()=>{ w.remove(); canWave=true }, 1200)
     });
 
-    document.addEventListener('touchmove', function(e) {
-        if (!e.target.closest('.top-nav')) { e.preventDefault() }
-    }, { passive: false });
+    document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>el.addEventListener('click', playClick));
+    document.addEventListener('touchmove', e=>{ if(!e.target.closest('.top-nav')) e.preventDefault() }, {passive:false});
 
-    function filterAnime(category, event) {
-        if (event) {
-            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-            event.target.classList.add('active');
-        } else {
-            document.querySelectorAll('.tab').forEach(t => {
-                if (t.innerText === category) {
-                    t.classList.add('active');
-                } else {
-                    t.classList.remove('active');
-                }
-            });
-        }
-        document.querySelectorAll('.anime-card').forEach(card => {
-            card.style.display = (card.dataset.cat === category) ? 'block' : 'none';
-        });
+    function filterAnime(cat, ev) {
+        if (ev) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); ev.target.classList.add('active') }
+        else { document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.innerText===cat)) }
+        document.querySelectorAll('.anime-card').forEach(c=>{ c.style.display = c.dataset.cat===cat ? 'block' : 'none' });
     }
 </script>
 </body>
