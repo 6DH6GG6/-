@@ -21,42 +21,37 @@ body{
 width:100%;
 height:100vh;
 overflow:hidden;
-background:
-radial-gradient(circle at center,
-rgba(255,0,0,.25) 0%,
-rgba(40,0,0,.15) 25%,
-rgba(0,0,0,1) 70%);
 position:relative;
 color:white;
+
+/* ★ خلفية الموقع ★ */
+background:
+radial-gradient(circle at center,
+rgba(255,0,0,.20) 0%,
+rgba(30,0,0,.35) 30%,
+rgba(0,0,0,1) 75%);
+
+/* ★ ضع صورة الخلفية هنا ★ */
+background-image:
+url("background.png");
+
+background-size:cover;
+background-position:center;
+background-repeat:no-repeat;
 }
 
-/* ★ النجوم ★ */
+/* ★ طبقة حمراء سوداء فوق الخلفية ★ */
 body::before{
 content:"";
 position:absolute;
 inset:0;
 
-background-image:
-radial-gradient(rgba(255,255,255,.8) 1px, transparent 1px),
-radial-gradient(rgba(255,0,0,.5) 1px, transparent 1px);
-
-background-size:70px 70px,120px 120px;
-background-position:0 0,40px 40px;
-
-opacity:.22;
-
-animation:stars 25s linear infinite;
+background:
+radial-gradient(circle at center,
+rgba(255,0,0,.25),
+rgba(0,0,0,.92));
 
 pointer-events:none;
-}
-
-@keyframes stars{
-from{
-transform:translateY(0);
-}
-to{
-transform:translateY(-100px);
-}
 }
 
 /* ★ الشريط الأحمر ★ */
@@ -71,9 +66,9 @@ justify-content:center;
 
 background:
 linear-gradient(to right,
-#400,
+#300,
 #c00,
-#400);
+#300);
 
 font-weight:bold;
 font-size:15px;
@@ -81,11 +76,11 @@ font-size:15px;
 box-shadow:
 0 0 15px red;
 
-z-index:5;
 position:relative;
+z-index:5;
 }
 
-/* ★ شريط التنقل ★ */
+/* ★ شريط الأزرار ★ */
 .top-menu{
 
 width:100%;
@@ -103,6 +98,9 @@ background:#050505;
 border-bottom:1px solid rgba(255,0,0,.3);
 
 scrollbar-width:none;
+
+position:relative;
+z-index:5;
 }
 
 .top-menu::-webkit-scrollbar{
@@ -116,11 +114,11 @@ flex:none;
 
 padding:12px 22px;
 
-background:rgba(255,0,0,.05);
+background:rgba(255,0,0,.04);
 
-border:1px solid rgba(255,0,0,.45);
+border:1px solid rgba(255,0,0,.55);
 
-color:#ff5555;
+color:#ff4444;
 
 font-weight:bold;
 
@@ -136,7 +134,7 @@ clip-path:polygon(
 );
 
 box-shadow:
-0 0 10px rgba(255,0,0,.3),
+0 0 10px rgba(255,0,0,.35),
 inset 0 0 12px rgba(255,0,0,.15);
 
 transition:.3s;
@@ -144,11 +142,12 @@ transition:.3s;
 
 .menu-btn:hover{
 
-transform:translateY(-2px);
+transform:
+translateY(-3px);
 
 box-shadow:
-0 0 15px red,
-0 0 30px rgba(255,0,0,.5);
+0 0 18px red,
+0 0 35px rgba(255,0,0,.7);
 }
 
 /* ★ الصفحة ★ */
@@ -164,6 +163,7 @@ align-items:center;
 padding:10px;
 
 position:relative;
+z-index:2;
 }
 
 /* ★ بطاقة الحساب ★ */
@@ -197,8 +197,6 @@ clip-path:polygon(
 box-shadow:
 0 0 15px red,
 inset 0 0 15px rgba(255,0,0,.2);
-
-z-index:10;
 }
 
 .profile-name{
@@ -207,6 +205,7 @@ font-weight:bold;
 color:#ff4444;
 }
 
+/* ★ صورة الحساب ★ */
 .profile-box img{
 
 width:55px;
@@ -232,6 +231,7 @@ justify-content:center;
 align-items:center;
 }
 
+/* ★ ضع شعار png هنا ★ */
 .logo-img{
 
 width:320px;
@@ -240,31 +240,45 @@ max-width:85%;
 object-fit:contain;
 
 filter:
-drop-shadow(0 0 10px red)
+drop-shadow(0 0 12px red)
 drop-shadow(0 0 35px red);
 }
 
-/* ★ الشبكة ★ */
-.portal-grid{
+/* ★ تشكيل النجمة ★ */
+.portal-star{
 
 width:100%;
-max-width:950px;
+max-width:850px;
 
 display:grid;
-grid-template-columns:repeat(3,1fr);
+
+grid-template-columns:
+repeat(3,1fr);
 
 justify-items:center;
+align-items:center;
 
-gap:55px 10px;
-
-padding:20px;
+row-gap:25px;
 }
 
-/* ★ البوابات ★ */
+/* ★ الصفوف ★ */
+.row1,
+.row2,
+.row3,
+.row4{
+
+width:100%;
+
+display:flex;
+justify-content:center;
+gap:140px;
+}
+
+/* ★ البوابة ★ */
 .portal{
 
-width:150px;
-height:150px;
+width:145px;
+height:145px;
 
 position:relative;
 
@@ -286,9 +300,9 @@ clip-path:polygon(
 border:3px solid rgba(255,0,0,.9);
 
 box-shadow:
-0 0 15px red,
-0 0 40px rgba(255,0,0,.5),
-inset 0 0 20px rgba(255,0,0,.2);
+0 0 18px red,
+0 0 45px rgba(255,0,0,.5),
+inset 0 0 25px rgba(255,0,0,.2);
 
 overflow:hidden;
 
@@ -299,12 +313,12 @@ transition:.4s;
 .portal:hover{
 
 transform:
-scale(1.08)
-translateY(-5px);
+translateY(-6px)
+scale(1.08);
 
 box-shadow:
 0 0 25px red,
-0 0 60px orange;
+0 0 60px red;
 }
 
 /* ★ صور البوابات ★ */
@@ -324,7 +338,7 @@ clip-path:polygon(
 0% 50%
 );
 
-border:2px solid rgba(255,255,255,.15);
+/* ★ ضع صورة البوابة هنا ★ */
 }
 
 /* ★ اسم البوابة ★ */
@@ -361,9 +375,8 @@ display:flex;
 justify-content:space-around;
 align-items:center;
 
-padding-bottom:15px;
+padding-bottom:18px;
 
-/* يصعد لفوق قليلا */
 transform:translateY(-12px);
 }
 
@@ -376,8 +389,6 @@ height:72px;
 display:flex;
 align-items:center;
 justify-content:center;
-
-font-size:30px;
 
 background:transparent;
 
@@ -401,7 +412,18 @@ inset 0 0 15px rgba(255,0,0,.15);
 transition:.3s;
 }
 
-/* ★ تأثير الأزرار ★ */
+/* ★ صور أزرار الأسفل ★ */
+.bottom-icon img{
+
+width:65%;
+height:65%;
+
+object-fit:contain;
+
+/* ★ ضع png هنا ★ */
+}
+
+/* ★ تأثير أزرار الأسفل ★ */
 .bottom-icon:hover{
 
 transform:
@@ -420,16 +442,14 @@ box-shadow:
 width:250px;
 }
 
-.portal-grid{
-
-grid-template-columns:repeat(2,1fr);
-
-gap:55px 10px;
+.portal{
+width:110px;
+height:110px;
 }
 
-.portal{
-width:120px;
-height:120px;
+.row2,
+.row3{
+gap:40px;
 }
 
 .portal-title{
@@ -437,16 +457,13 @@ font-size:11px;
 }
 
 .profile-box{
-transform:scale(.85);
+transform:scale(.82);
 transform-origin:top right;
 }
 
 .bottom-icon{
-
 width:58px;
 height:58px;
-
-font-size:24px;
 }
 
 }
@@ -461,7 +478,7 @@ font-size:24px;
 ☠ الظلال تترس في الظلام ☠ طائفة الظلام 2019
 </div>
 
-<!-- ★ أزرار الأعلى ★ -->
+<!-- ★ الأزرار العلوية ★ -->
 <div class="top-menu">
 
 <div class="menu-btn">الأرشيف</div>
@@ -486,65 +503,96 @@ font-size:24px;
 Kage No Teio
 </div>
 
-<img src="https://i.imgur.com/8Km9tLL.jpeg">
+<!-- ★ ضع صورة الحساب هنا ★ -->
+<img src="profile.png">
 
 </div>
 
 <!-- ★ الشعار ★ -->
 <div class="logo">
 
-<!-- ضع شعار PNG هنا -->
+<!-- ★ ضع الشعار هنا ★ -->
 <img src="logo.png" class="logo-img">
 
 </div>
 
-<!-- ★ البوابات ★ -->
-<div class="portal-grid">
+<!-- ★ تشكيل النجمة ★ -->
+<div class="portal-star">
+
+<!-- ★ 1 ★ -->
+<div class="row1">
 
 <div class="portal">
-<img src="https://i.imgur.com/8Km9tLL.jpeg">
-<div class="portal-title">زعيم الظلال</div>
+<img src="">
+<div class="portal-title">البوابة العليا</div>
+</div>
+
+</div>
+
+<!-- ★ 2 ★ -->
+<div class="row2">
+
+<div class="portal">
+<img src="">
+<div class="portal-title">الظلال</div>
 </div>
 
 <div class="portal">
-<img src="https://i.imgur.com/tXqF8Jw.jpeg">
-<div class="portal-title">دار النار</div>
+<img src="">
+<div class="portal-title">الجحيم</div>
 </div>
 
-<div class="portal">
-<img src="https://i.imgur.com/6VBx3io.jpeg">
-<div class="portal-title">قسم المهام</div>
 </div>
 
-<div class="portal">
-<img src="https://i.imgur.com/mYmmbrp.jpeg">
-<div class="portal-title">مركز الأرواح</div>
-</div>
+<!-- ★ 2 ★ -->
+<div class="row3">
 
 <div class="portal">
-<img src="https://i.imgur.com/oYiTqum.jpeg">
-<div class="portal-title">بوابة الجحيم</div>
-</div>
-
-<div class="portal">
-<img src="https://i.imgur.com/GZy7GQp.jpeg">
+<img src="">
 <div class="portal-title">الطائفة</div>
 </div>
 
+<div class="portal">
+<img src="">
+<div class="portal-title">المعبد</div>
 </div>
 
-<!-- ★ الأزرار السفلية ★ -->
+</div>
+
+<!-- ★ 1 ★ -->
+<div class="row4">
+
+<div class="portal">
+<img src="">
+<div class="portal-title">الزعيم</div>
+</div>
+
+</div>
+
+</div>
+
+<!-- ★ أزرار الأسفل ★ -->
 <div class="bottom-bar">
 
-<div class="bottom-icon">🏆</div>
+<div class="bottom-icon">
+<img src="icon1.png">
+</div>
 
-<div class="bottom-icon">📰</div>
+<div class="bottom-icon">
+<img src="icon2.png">
+</div>
 
-<div class="bottom-icon">🎮</div>
+<div class="bottom-icon">
+<img src="icon3.png">
+</div>
 
-<div class="bottom-icon">💰</div>
+<div class="bottom-icon">
+<img src="icon4.png">
+</div>
 
-<div class="bottom-icon">🤖</div>
+<div class="bottom-icon">
+<img src="icon5.png">
+</div>
 
 </div>
 
