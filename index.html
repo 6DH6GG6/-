@@ -3,230 +3,893 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>بوابة الجحيم</title>
+<title>Darck Seckt 1</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700;900&display=swap" rel="stylesheet">
 
 <style>
-*{margin:0;padding:0;box-sizing:border-box;font-family:Tahoma,sans-serif}
-body{background:#000;overflow:hidden}
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:'Cairo',sans-serif;
+}
 
-/* ===== البوابة ===== */
-.portal-screen{
+body{
+background:black;
+overflow:hidden;
+color:white;
+}
+
+video,canvas{
+display:block;
+}
+
+.hidden{
+display:none !important;
+}
+
+/* 🔥 INTRO */
+
+#introFade{
 position:fixed;
 inset:0;
-z-index:40000;
-background:url('ALBOMS/IMAGE/SiteBackground/file_000000006e2c722f9a965efdf432912b.png') center/cover no-repeat;
-display:flex;
-flex-direction:column;
-align-items:center;
-justify-content:center;
-transition:1s;
+background:black;
+z-index:99999;
+animation:introFade 4s forwards;
 }
 
-.portal-screen.hidden{
-opacity:0;
-pointer-events:none;
+@keyframes introFade{
+0%{opacity:1}
+100%{opacity:0;visibility:hidden}
 }
 
-.kingdom-title{
-font-size:38px;
-color:#8a2be2;
-text-shadow:0 0 30px #8a2be2;
-margin-bottom:30px;
-animation:breath 4s infinite;
-}
+/* 🚪 GATE PAGE */
 
-@keyframes breath{
-0%,100%{opacity:0.3}
-50%{opacity:1}
-}
-
-/* ===== البوابة ===== */
-.door-container{
-width:320px;
-height:420px;
-cursor:pointer;
-transition:0.3s;
-}
-
-.door-container.disabled{
-pointer-events:none;
-filter:grayscale(1);
-opacity:0.5;
-}
-
-/* ===== العداد ===== */
-.attempts-counter{
+#gatePage{
 position:fixed;
-top:20px;
-left:50%;
-transform:translateX(-50%);
-background:rgba(0,0,0,0.7);
-color:red;
-padding:10px 20px;
-border:2px solid red;
-border-radius:10px;
-z-index:50000;
+inset:0;
+background:url('background.jpg') center/cover;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
 }
 
-/* ===== الفورم ===== */
-.shadow-form{
+#gatePage::before{
+content:'';
+position:absolute;
+inset:0;
+background:rgba(0,0,0,0.75);
+backdrop-filter:blur(2px);
+}
+
+#stars{
+position:absolute;
+inset:0;
+background:url('866f30792413dcb70ce06c91c1ad3f4e.gif') center/cover;
+opactiy:.4;
+mix-blend-mode:screen;
+pointer-events:none;
+}
+
+.devCapsule{
+position:absolute;
+top:15px;
+right:15px;
+background:rgba(20,0,0,0.8);
+border:2px solid red;
+border-radius:999px;
+padding:6px 14px;
+display:flex;
+align-items:center;
+gap:10px;
+box-shadow:0 0 20px red;
+z-index:5;
+}
+
+.devCapsule img{
+width:45px;
+height:45px;
+border-radius:50%;
+object-fit:cover;
+border:2px solid crimson;
+}
+
+.devCapsule span{
+font-weight:700;
+color:white;
+}
+
+.logo{
+width:240px;
+position:relative;
+z-index:5;
+filter:drop-shadow(0 0 20px purple);
+}
+
+.title{
+font-size:42px;
+color:#b700ff;
+margin-top:15px;
+text-shadow:0 0 20px purple;
+position:relative;
+z-index:5;
+}
+
+.gateWrap{
+position:relative;
+width:340px;
+height:340px;
+margin-top:30px;
+perspective:1200px;
+z-index:5;
+cursor:pointer;
+}
+
+.gateFrame{
+position:absolute;
+inset:0;
+border:5px solid #3a0000;
+background:rgba(0,0,0,0.7);
+box-shadow:0 0 30px red;
+}
+
+.door{
+position:absolute;
+top:0;
+width:50%;
+height:100%;
+background:linear-gradient(180deg,#180000,#000);
+border:2px solid #520000;
+transition:transform 5s ease;
+}
+
+.leftDoor{
+left:0;
+transform-origin:left;
+}
+
+.rightDoor{
+right:0;
+transform-origin:right;
+}
+
+.gateWrap.open .leftDoor{
+transform:rotateY(-120deg);
+}
+
+.gateWrap.open .rightDoor{
+transform:rotateY(120deg);
+}
+
+.gateCenter{
+position:absolute;
+inset:0;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:90px;
+text-shadow:0 0 30px red;
+}
+
+.desc{
+margin-top:25px;
+position:relative;
+z-index:5;
+font-size:18px;
+text-align:center;
+width:90%;
+max-width:700px;
+color:#ddd;
+}
+
+/* 📦 LOGIN */
+
+#loginBox{
 position:fixed;
 top:50%;
 left:50%;
-transform:translate(-50%,-50%);
-background:#000;
-border:3px solid red;
-padding:20px;
-width:300px;
-display:none;
-z-index:50000;
+transform:translate(-50%,-50%) scale(0);
+width:330px;
+background:rgba(0,0,0,0.92);
+border:2px solid red;
+border-radius:20px;
+padding:25px;
+z-index:999;
+box-shadow:0 0 40px red;
+transition:.5s;
 }
 
-.shadow-form.active{display:block}
+#loginBox.show{
+transform:translate(-50%,-50%) scale(1);
+}
 
-.shadow-form input,
-.shadow-form select{
-width:100%;
-margin:10px 0;
-padding:10px;
-background:#111;
+#loginBox h2{
+text-align:center;
+margin-bottom:20px;
 color:red;
-border:1px solid red;
 }
 
-.shadow-form button{
+.inputBox{
 width:100%;
-padding:10px;
+padding:14px;
+margin-bottom:15px;
+background:black;
+border:1px solid red;
+color:white;
+border-radius:12px;
+}
+
+.btns{
+display:flex;
+gap:10px;
+}
+
+.btn{
+flex:1;
+padding:12px;
+border:none;
+border-radius:12px;
+font-weight:bold;
+cursor:pointer;
+}
+
+.redBtn{
 background:red;
-color:#fff;
+color:white;
+}
+
+.darkBtn{
+background:#1a1a1a;
+color:white;
+}
+
+/* ♦ MAIN SITE */
+
+#mainSite{
+position:fixed;
+inset:0;
+display:none;
+background:url('background.jpg') center/cover;
+overflow:auto;
+}
+
+#mainSite::before{
+content:'';
+position:absolute;
+inset:0;
+background:rgba(0,0,0,.7);
+}
+
+#mainStars{
+position:absolute;
+inset:0;
+background:url('866f30792413dcb70ce06c91c1ad3f4e.gif') center/cover;
+mix-blend-mode:screen;
+pointer-events:none;
+}
+
+.topBorder{
+position:relative;
+height:8px;
+background:linear-gradient(90deg,red,purple,yellow,black,red);
+background-size:400% 400%;
+animation:borderMove 8s linear infinite;
+z-index:2;
+}
+
+@keyframes borderMove{
+0%{background-position:0% 50%}
+100%{background-position:100% 50%}
+}
+
+.glitchBar{
+position:relative;
+height:45px;
+overflow:hidden;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:20px;
+font-weight:bold;
+color:red;
+text-shadow:0 0 15px red;
+z-index:2;
+}
+
+.glitchText{
+animation:glitch 5s infinite;
+}
+
+@keyframes glitch{
+0%{transform:translateX(100%);opacity:0}
+10%{opacity:1}
+50%{transform:translateX(0)}
+90%{opacity:1}
+100%{transform:translateX(-100%);opacity:0}
+}
+
+.navbar{
+position:relative;
+display:flex;
+gap:12px;
+padding:10px;
+overflow:auto;
+z-index:2;
+}
+
+.navbar button{
+min-width:140px;
+padding:12px;
+background:black;
+color:red;
+border:2px solid red;
+border-radius:12px;
+font-weight:bold;
+}
+
+.mainLogo{
+width:250px;
+display:block;
+margin:40px auto 20px;
+position:relative;
+z-index:2;
+filter:drop-shadow(0 0 25px purple);
+}
+
+.hexGrid{
+position:relative;
+z-index:2;
+display:grid;
+grid-template-columns:repeat(2,1fr);
+gap:20px;
+width:90%;
+max-width:800px;
+margin:20px auto 100px;
+}
+
+.hexBtn{
+position:relative;
+height:170px;
+background:transparent;
 border:none;
 cursor:pointer;
 }
 
-/* ===== الحظر ===== */
-.ban-form{
+.hexBtn img{
+width:100%;
+height:100%;
+object-fit:contain;
+filter:drop-shadow(0 0 20px red);
+transition:.4s;
+}
+
+.hexBtn:hover img{
+transform:scale(1.05);
+}
+
+/* 💀 LOADER */
+
+#loader{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.9);
+display:none;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+z-index:9999;
+}
+
+.loaderCircle{
+width:160px;
+height:160px;
+border-radius:50%;
+border:10px solid darkred;
+border-top:10px solid red;
+animation:spin 1s linear infinite;
+display:flex;
+justify-content:center;
+align-items:center;
+box-shadow:0 0 40px red;
+}
+
+.loaderCircle span{
+font-size:60px;
+}
+
+@keyframes spin{
+100%{transform:rotate(360deg)}
+}
+
+/* 🎌 MENU */
+
+.fullMenu{
+position:fixed;
+inset:0;
+background:rgba(0,0,0,.96);
+display:none;
+flex-direction:column;
+z-index:99999;
+overflow:auto;
+}
+
+.menuHeader{
+display:flex;
+justify-content:space-between;
+align-items:center;
+padding:15px;
+border-bottom:2px solid red;
+background:#120000;
+}
+
+.menuHeader h1{
+color:red;
+}
+
+.menuHeader button{
+padding:10px 18px;
+background:red;
+border:none;
+color:white;
+border-radius:10px;
+}
+
+.animeGrid{
+display:grid;
+grid-template-columns:repeat(auto-fit,minmax(250px,1fr));
+gap:25px;
+padding:30px;
+}
+
+.animeCard{
+background:url('background.jpg') center/cover;
+height:300px;
+border:3px solid red;
+border-radius:20px;
+overflow:hidden;
+position:relative;
+}
+
+.animeCard::before{
+content:'';
+position:absolute;
+inset:0;
+background:rgba(0,0,0,.65);
+}
+
+.animeCard h2{
+position:absolute;
+bottom:20px;
+width:100%;
+text-align:center;
+font-size:28px;
+color:white;
+text-shadow:0 0 20px red;
+}
+
+/* 👥 MEMBERS */
+
+.memberList{
+padding:20px;
+display:flex;
+flex-direction:column;
+gap:15px;
+}
+
+.memberCard{
+display:flex;
+align-items:center;
+gap:15px;
+padding:12px;
+border:2px solid red;
+border-radius:16px;
+background:#120012;
+box-shadow:0 0 20px rgba(255,0,0,.4);
+}
+
+.memberCard img{
+width:70px;
+height:70px;
+border-radius:50%;
+object-fit:cover;
+border:2px solid red;
+}
+
+.statusDot{
+width:15px;
+height:15px;
+border-radius:50%;
+}
+
+.green{background:lime;}
+.red{background:red;}
+.orange{background:orange;}
+.purple{background:violet;}
+
+/* 📜 MEMBER INFO */
+
+#memberInfo{
 position:fixed;
 top:50%;
 left:50%;
 transform:translate(-50%,-50%);
-background:#000;
-border:3px solid red;
+width:90%;
+max-width:450px;
+background:#140014;
+border:2px solid purple;
+border-radius:20px;
 padding:20px;
-color:red;
+display:none;
+z-index:999999;
+box-shadow:0 0 40px purple;
+}
+
+#memberInfo img{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
+display:block;
+margin:auto;
+border:3px solid red;
+}
+
+#memberInfo h2{
 text-align:center;
-display:none;
-z-index:60000;
-}
-
-.ban-form.active{display:block}
-
-/* ===== الموقع الرئيسي ===== */
-.main-site{
-position:fixed;
-inset:0;
-background:#111;
-display:none;
-justify-content:center;
-align-items:center;
+margin-top:15px;
 color:red;
-font-size:26px;
-z-index:10000;
+text-shadow:0 0 20px purple;
 }
 
-.main-site.active{display:flex}
+#memberInfo p{
+margin-top:15px;
+line-height:1.8;
+}
+
+.closeInfo{
+position:absolute;
+top:10px;
+right:10px;
+background:red;
+width:35px;
+height:35px;
+border:none;
+border-radius:50%;
+color:white;
+font-weight:bold;
+}
+
+/* 📱 MOBILE */
+
+@media(max-width:700px){
+.logo{width:180px}
+.title{font-size:32px}
+.gateWrap{width:270px;height:270px}
+.hexGrid{grid-template-columns:1fr}
+}
+
 </style>
-
-<script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 </head>
-
 <body>
 
-<!-- عداد -->
-<div class="attempts-counter" id="counter">0</div>
+<div id="introFade"></div>
 
-<!-- البوابة -->
-<div class="portal-screen" id="portal">
+<!-- 🔊 AUDIO -->
+<audio id="gateClick" src="gate_click.mp3"></audio>
+<audio id="menuOpen" src="menu_open.mp3"></audio>
+<audio id="gateOpen" src="1صوت1فتح1البوابة1.mp3"></audio>
+<audio id="mainMusic" src="km_20260504_1080p_30f_20260504_223643.mp3" loop></audio>
+<audio id="memberSound" src="member_click.mp3"></audio>
 
-<div class="kingdom-title">مملكة الظلال</div>
+<!-- 🚪 GATE PAGE -->
+<section id="gatePage">
 
-<div class="door-container" id="door">
-<model-viewer src="ALBOMS/3D/GLB/بوابة_العبور.glb"
-camera-controls disable-zoom disable-pan></model-viewer>
+<div id="stars"></div>
+
+<div class="devCapsule">
+<img src="1777112464942.jpg">
+<span>Kage No Teio</span>
+</div>
+
+<img class="logo" src="20260429_130547.png">
+<h1 class="title">Hell Gate</h1>
+
+<div class="gateWrap" id="gateBtn">
+<div class="gateFrame"></div>
+<div class="door leftDoor"></div>
+<div class="door rightDoor"></div>
+<div class="gateCenter">🚪</div>
+</div>
+
+<p class="desc">
+If you wish to enter the Kingdom, you must first pass through the gate safely
+</p>
+
+</section>
+
+<!-- 📦 LOGIN -->
+
+<div id="loginBox">
+<h2>بوابة الدخول</h2>
+<input class="inputBox" type="text" placeholder="الاسم">
+<input class="inputBox" id="password" type="password" placeholder="كلمة المرور">
+
+<div class="btns">
+<button class="btn redBtn" id="registerBtn">دخول</button>
+<button class="btn darkBtn" id="backBtn">رجوع</button>
+</div>
+</div>
+
+<!-- 💀 LOADER -->
+
+<div id="loader">
+<div class="loaderCircle">
+<span>💀</span>
+</div>
+</div>
+
+<!-- ♦ MAIN SITE -->
+
+<section id="mainSite">
+
+<div id="mainStars"></div>
+
+<div class="topBorder"></div>
+
+<div class="glitchBar">
+<div class="glitchText" id="glitchText">الظلال لكا بالمرصاد</div>
+</div>
+
+<div class="navbar">
+<button>ارشيف</button>
+<button>اعدادات</button>
+<button>نضام السلايم</button>
+<button>ملفي الشخصي</button>
+</div>
+
+<div class="devCapsule">
+<img src="1777112464942.jpg">
+<span>Kage No Teio</span>
+</div>
+
+<img class="mainLogo" src="20260429_130547.png">
+
+<div class="hexGrid">
+
+<button class="hexBtn">
+<img src="1قصص1إعدام1العصابات1.png">
+</button>
+
+<button class="hexBtn">
+<img src="فضائح1كلاب1العصابات1.png">
+</button>
+
+<button class="hexBtn">
+<img src="1العاب1.png">
+</button>
+
+<button class="hexBtn" id="animeOpen">
+<img src="1عالم1الأنمي1.png">
+</button>
+
+<button class="hexBtn" id="shadowsOpen">
+<img src="1ظلال1الطائفة1وحلفائها1.png">
+</button>
+
+</div>
+
+</section>
+
+<!-- 🎌 ANIME MENU -->
+
+<div class="fullMenu" id="animeMenu">
+
+<div class="menuHeader">
+<h1>أهلا بك في عالم الأنمي</h1>
+<button onclick="closeAnime()">رجوع</button>
+</div>
+
+<div class="animeGrid">
+
+<div class="animeCard" onclick="location.href='shadow_garden.html'">
+<h2>حديقة الظلال</h2>
+</div>
+
+<div class="animeCard" onclick="location.href='one_piece.html'">
+<h2>ونبيس</h2>
+</div>
+
+<div class="animeCard" onclick="location.href='hunterxhunter.html'">
+<h2>هنتر x هنتر</h2>
 </div>
 
 </div>
 
-<!-- الفورم -->
-<div class="shadow-form" id="form">
-<input id="name" placeholder="الاسم">
-<input id="pass" type="password" placeholder="كلمة السر">
-
-<select id="answer">
-<option value="">اختر</option>
-<option value="نعم">نعم</option>
-<option value="لا">لا</option>
-<option value="ناه">ناه</option>
-</select>
-
-<button onclick="check()">دخول</button>
 </div>
 
-<!-- الحظر -->
-<div class="ban-form" id="ban">
-<h3>تم الطرد</h3>
-<button onclick="reset()">رجوع</button>
+<!-- 🌑 SHADOWS MENU -->
+
+<div class="fullMenu" id="shadowMenu">
+
+<div class="menuHeader">
+<h1>ظلال الطائفة</h1>
+<button onclick="closeShadows()">رجوع</button>
 </div>
 
-<!-- الموقع الرئيسي -->
-<div class="main-site" id="main">
-مرحباً بك في مملكة طائفة الظلام
+<div class="memberList">
+
+<div class="memberCard" onclick="openMember()">
+<img src="1777112464942.jpg">
+<div>
+<h2>Shadow King</h2>
+<p>زعيم الظلال</p>
+</div>
+<div class="statusDot green"></div>
+</div>
+
+<div class="memberCard" onclick="openMember()">
+<img src="1777112464942.jpg">
+<div>
+<h2>Dark Reaper</h2>
+<p>ظلال معدومين</p>
+</div>
+<div class="statusDot red"></div>
+</div>
+
+<div class="memberCard" onclick="openMember()">
+<img src="1777112464942.jpg">
+<div>
+<h2>Lost Ghost</h2>
+<p>ظلال ضائعين</p>
+</div>
+<div class="statusDot orange"></div>
+</div>
+
+</div>
+
+</div>
+
+<!-- 📜 MEMBER INFO -->
+
+<div id="memberInfo">
+<button class="closeInfo" onclick="closeMember()">✕</button>
+<img src="1777112464942.jpg">
+<h2>Shadow King</h2>
+<p>
+هذا العضو يعد من أقوى أعضاء طائفة الظلام.
+<br><br>
+<span style="color:red;text-shadow:0 0 15px purple;">
+سيد الفوضى والظلال المحرمة.
+</span>
+</p>
 </div>
 
 <script>
-let attempts = 0;
 
-const correctPass = "1234";
-const correctAnswer = "نعم";
+const gateBtn=document.getElementById('gateBtn');
+const loginBox=document.getElementById('loginBox');
+const backBtn=document.getElementById('backBtn');
+const registerBtn=document.getElementById('registerBtn');
+const gatePage=document.getElementById('gatePage');
+const mainSite=document.getElementById('mainSite');
+const loader=document.getElementById('loader');
+const password=document.getElementById('password');
 
-const portal = document.getElementById("portal");
-const door = document.getElementById("door");
-const form = document.getElementById("form");
-const ban = document.getElementById("ban");
-const main = document.getElementById("main");
-const counter = document.getElementById("counter");
+const gateClick=document.getElementById('gateClick');
+const menuOpen=document.getElementById('menuOpen');
+const gateOpen=document.getElementById('gateOpen');
+const mainMusic=document.getElementById('mainMusic');
+const memberSound=document.getElementById('memberSound');
 
-/* فتح الفورم */
-door.onclick = ()=>{
-form.classList.add("active");
-};
+const animeOpen=document.getElementById('animeOpen');
+const animeMenu=document.getElementById('animeMenu');
 
-/* التحقق */
-function check(){
-let pass = document.getElementById("pass").value;
-let answer = document.getElementById("answer").value;
+const shadowsOpen=document.getElementById('shadowsOpen');
+const shadowMenu=document.getElementById('shadowMenu');
 
-if(pass === correctPass && answer === correctAnswer){
-portal.classList.add("hidden");
-main.classList.add("active");
+const glitchText=document.getElementById('glitchText');
+
+const glitchMessages=[
+'الظلال لكا بالمرصاد',
+'تاريخ طائفة الظلام 2019',
+'مرحبا بك في المملكة المظلمة'
+];
+
+let index=0;
+
+setInterval(()=>{
+index++;
+if(index>=glitchMessages.length) index=0;
+glitchText.innerText=glitchMessages[index];
+},5000);
+
+// 🚪 GATE CLICK
+
+gateBtn.onclick=()=>{
+gateClick.play();
+menuOpen.play();
+loginBox.classList.add('show');
+}
+
+backBtn.onclick=()=>{
+loginBox.classList.remove('show');
+}
+
+registerBtn.onclick=()=>{
+
+if(password.value==='الظلال666'){
+
+gateOpen.play();
+gateBtn.classList.add('open');
+loginBox.classList.remove('show');
+
+setTimeout(()=>{
+
+gatePage.style.display='none';
+mainSite.style.display='block';
+mainMusic.play();
+document.body.style.overflow='auto';
+
+},5000);
+
 }else{
-attempts++;
-counter.textContent = attempts;
-form.classList.remove("active");
-
-if(attempts >= 2){
-ban.classList.add("active");
-door.style.pointerEvents = "none";
-}
-}
+alert('كلمة المرور غير صحيحة');
 }
 
-/* إعادة */
-function reset(){
-ban.classList.remove("active");
-attempts = 0;
-counter.textContent = 0;
-door.style.pointerEvents = "auto";
 }
+
+// 💀 LOADER
+
+document.querySelectorAll('.hexBtn').forEach(btn=>{
+
+btn.addEventListener('click',()=>{
+
+loader.style.display='flex';
+
+setTimeout(()=>{
+loader.style.display='none';
+},2000);
+
+});
+
+});
+
+// 🎌 ANIME
+
+animeOpen.onclick=()=>{
+animeMenu.style.display='flex';
+}
+
+function closeAnime(){
+animeMenu.style.display='none';
+}
+
+// 🌑 SHADOWS
+
+shadowsOpen.onclick=()=>{
+shadowMenu.style.display='flex';
+}
+
+function closeShadows(){
+shadowMenu.style.display='none';
+}
+
+// 📜 MEMBER
+
+function openMember(){
+memberSound.play();
+document.getElementById('memberInfo').style.display='block';
+}
+
+function closeMember(){
+document.getElementById('memberInfo').style.display='none';
+}
+
 </script>
 
 </body>
