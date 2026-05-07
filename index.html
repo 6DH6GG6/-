@@ -1,202 +1,496 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Kage No Teio</title>
-  <style>
-    /* Global Styles */
-    body {
-      margin: 0;
-      padding: 0;
-      background-color: #000;
-      font-family: Arial, sans-serif;
-      overflow: hidden;
-    }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>طائفة الظلام</title>
 
-    /* موقع الرئيسي Styles */
-    #main-site {
-      position: relative;
-      width: 100%;
-      height: 100vh;
-      background-color: #000;
-    }
+<style>
 
-    #main-site .intro {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100vh;
-      background-color: #000;
-      animation: intro 5s forwards;
-    }
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:tahoma;
+-webkit-tap-highlight-color:transparent;
+}
 
-    @keyframes intro {
-      0% {
-        opacity: 1;
-      }
-      100% {
-        opacity: 0;
-        display: none;
-      }
-    }
+body{
+background:#000;
+overflow-x:hidden;
+min-height:100vh;
+color:white;
+}
 
-    #main-site .color-frame {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 80%;
-      height: 50px;
-      border: 2px solid;
-      border-image: linear-gradient(to right, #f0f, #f00) 1;
-      overflow: hidden;
-    }
+/* شاشة الاستيقاظ */
 
-    #main-site .text {
-      position: absolute;
-      top: 50%;
-      left: 100%;
-      transform: translateY(-50%);
-      font-size: 24px;
-      color: #fff;
-      text-shadow: 0 0 10px #f0f;
-      animation: text 10s linear infinite;
-    }
+.wakeup{
+position:fixed;
+inset:0;
+background:black;
+z-index:9999;
+animation:wakeup 4s ease forwards;
+pointer-events:none;
+}
 
-    @keyframes text {
-      0% {
-        left: 100%;
-      }
-      100% {
-        left: -100%;
-      }
-    }
+@keyframes wakeup{
+0%{
+opacity:1;
+}
+100%{
+opacity:0;
+visibility:hidden;
+}
+}
 
-    #main-site .button-bar {
-      position: absolute;
-      bottom: 20px;
-      left: 50%;
-      transform: translateX(-50%);
-      background-color: #333;
-      padding: 10px;
-      border-radius: 10px;
-      display: flex;
-      overflow-x: auto;
-    }
+/* خلفية */
 
-    #main-site .button-bar .button {
-      margin: 0 10px;
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      color: #fff;
-    }
+.bg{
+position:fixed;
+inset:0;
+background:
+radial-gradient(circle at center,
+rgba(255,0,0,0.18),
+transparent 60%),
+url('background.jpg');
+background-size:cover;
+background-position:center;
+opacity:0.35;
+z-index:-1;
+animation:bgMove 8s linear infinite;
+}
 
-    #main-site .dev-info {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      display: flex;
-      align-items: center;
-    }
+@keyframes bgMove{
+0%{
+transform:scale(1);
+}
+50%{
+transform:scale(1.05);
+}
+100%{
+transform:scale(1);
+}
+}
 
-    #main-site .dev-info img {
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      border: 2px solid #f00;
-    }
+/* الشريط العلوي */
 
-    #main-site .dev-info .name {
-      margin-right: 10px;
-      color: #fff;
-    }
+.top-news{
+width:100%;
+height:55px;
+overflow:hidden;
+display:flex;
+align-items:center;
+border-bottom:2px solid #ff0000;
+background:linear-gradient(90deg,#3b003b,#ff0000,#3b003b);
+background-size:300% 300%;
+animation:gradientMove 6s infinite linear;
+position:relative;
+}
 
-    #main-site .logo {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 200px;
-      height: 200px;
-    }
+@keyframes gradientMove{
+0%{
+background-position:0% 50%;
+}
+100%{
+background-position:100% 50%;
+}
+}
 
-    #main-site .hexagon-buttons {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: center;
-    }
+.news-text{
+position:absolute;
+white-space:nowrap;
+font-size:20px;
+font-weight:bold;
+color:white;
+text-shadow:
+0 0 5px red,
+0 0 10px red,
+0 0 20px red;
+animation:moveText 10s linear infinite,
+glitch 0.3s infinite;
+}
 
-    #main-site .hexagon-buttons .button {
-      width: 100px;
-      height: 100px;
-      margin: 20px;
-      background-color: transparent;
-      border: 2px solid #f00;
-      cursor: pointer;
-    }
+@keyframes moveText{
+0%{
+right:-100%;
+}
+100%{
+right:100%;
+}
+}
 
-    #main-site .footer-bar {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      width: 100%;
-      background-color: #333;
-      padding: 10px;
-      display: flex;
-      justify-content: space-around;
-    }
+@keyframes glitch{
+0%{
+transform:translate(0);
+}
+20%{
+transform:translate(-1px,1px);
+}
+40%{
+transform:translate(1px,-1px);
+}
+60%{
+transform:translate(-2px,0);
+}
+80%{
+transform:translate(2px,1px);
+}
+100%{
+transform:translate(0);
+}
+}
 
-    #main-site .footer-bar .button {
-      padding: 10px 20px;
-      border-radius: 10px;
-      cursor: pointer;
-      color: #fff;
-    }
-  </style>
+/* شريط الأزرار */
+
+.menu-bar{
+display:flex;
+overflow-x:auto;
+gap:12px;
+padding:14px;
+background:rgba(0,0,0,0.8);
+border-bottom:2px solid #220000;
+scrollbar-width:none;
+}
+
+.menu-bar::-webkit-scrollbar{
+display:none;
+}
+
+.menu-btn{
+flex:none;
+padding:12px 24px;
+border:1px solid red;
+background:rgba(255,0,0,0.08);
+color:white;
+border-radius:10px;
+font-size:16px;
+box-shadow:0 0 15px rgba(255,0,0,0.5);
+transition:0.3s;
+}
+
+.menu-btn:hover{
+background:red;
+transform:scale(1.05);
+}
+
+/* المطور */
+
+.dev-box{
+width:90%;
+max-width:420px;
+margin:20px auto;
+display:flex;
+align-items:center;
+gap:14px;
+padding:10px;
+border:2px solid red;
+border-radius:40px;
+background:rgba(0,0,0,0.5);
+box-shadow:0 0 20px rgba(255,0,0,0.6);
+}
+
+.dev-icon{
+width:70px;
+height:70px;
+border-radius:50%;
+border:3px solid red;
+padding:5px;
+object-fit:cover;
+background:black;
+}
+
+.dev-name{
+font-size:20px;
+font-weight:bold;
+color:white;
+text-shadow:0 0 10px red;
+}
+
+/* الشعار */
+
+.logo{
+display:flex;
+justify-content:center;
+margin-top:10px;
+margin-bottom:40px;
+}
+
+.logo img{
+width:85%;
+max-width:420px;
+filter:
+drop-shadow(0 0 10px red)
+drop-shadow(0 0 20px red);
+}
+
+/* النجمة السداسية */
+
+.hexagram{
+position:relative;
+width:100%;
+max-width:700px;
+height:600px;
+margin:auto;
+}
+
+/* الأزرار الضخمة */
+
+.demon-btn{
+position:absolute;
+width:140px;
+height:140px;
+background:transparent;
+border:none;
+display:flex;
+flex-direction:column;
+align-items:center;
+justify-content:center;
+}
+
+.demon-btn img{
+width:140px;
+height:140px;
+object-fit:contain;
+pointer-events:none;
+filter:
+drop-shadow(0 0 10px red)
+drop-shadow(0 0 25px red);
+transition:0.4s;
+}
+
+.demon-btn:hover img{
+transform:scale(1.1);
+}
+
+.btn-name{
+margin-top:8px;
+padding:6px 18px;
+border:2px solid red;
+border-radius:14px;
+background:rgba(255,0,0,0.1);
+color:white;
+font-size:15px;
+box-shadow:0 0 12px red;
+}
+
+/* ترتيب النجمة */
+
+.btn1{
+top:0;
+left:50%;
+transform:translateX(-50%);
+}
+
+.btn2{
+top:160px;
+right:10%;
+}
+
+.btn3{
+top:160px;
+left:10%;
+}
+
+.btn4{
+bottom:120px;
+left:50%;
+transform:translateX(-50%);
+}
+
+.btn5{
+bottom:0;
+right:10%;
+}
+
+.btn6{
+bottom:0;
+left:10%;
+}
+
+/* الشريط السفلي */
+
+.bottom-bar{
+margin-top:60px;
+width:100%;
+display:flex;
+justify-content:space-around;
+align-items:center;
+padding:14px;
+background:rgba(0,0,0,0.9);
+border-top:2px solid red;
+position:sticky;
+bottom:0;
+}
+
+.bottom-btn{
+width:60px;
+height:60px;
+border-radius:20px;
+background:rgba(255,0,0,0.08);
+border:2px solid red;
+display:flex;
+align-items:center;
+justify-content:center;
+font-size:24px;
+box-shadow:0 0 15px rgba(255,0,0,0.5);
+}
+
+/* الهواتف */
+
+@media(max-width:700px){
+
+.hexagram{
+height:520px;
+}
+
+.demon-btn{
+width:110px;
+height:110px;
+}
+
+.demon-btn img{
+width:110px;
+height:110px;
+}
+
+.btn-name{
+font-size:13px;
+padding:5px 14px;
+}
+
+}
+
+</style>
 </head>
+
 <body>
-  <!-- موقع الرئيسي -->
-  <div id="main-site">
-    <div class="intro"></div>
-    <div class="color-frame">
-      <div class="text">طائفة الظلام 2019</div>
-      <div class="text" style="animation-delay: 10s;">الظلال تتربص في ظلام</div>
-      <div class="text" style="animation-delay: 20s;">عالم الغموض ولأسرار</div>
-    </div>
-    <div class="dev-info">
-      <img src="1777112464942.jpg" alt="Kage No Teio">
-      <span class="name">Kage No Teio</span>
-    </div>
-    <img src="20260429_130547.png" alt="Logo" class="logo">
-    <div class="hexagon-buttons">
-      <div class="button">زر 1</div>
-      <div class="button">زر 2</div>
-      <div class="button">زر 3</div>
-      <div class="button">زر 4</div>
-      <div class="button">زر 5</div>
-      <div class="button">زر 6</div>
-    </div>
-    <div class="button-bar">
-      <div class="button">زر 1</div>
-      <div class="button">زر 2</div>
-      <div class="button">زر 3</div>
-      <div class="button">زر 4</div>
-      <div class="button">زر 5</div>
-    </div>
-    <div class="footer-bar">
-      <div class="button">زر 1</div>
-      <div class="button">زر 2</div>
-      <div class="button">زر 3</div>
-      <div class="button">زر 4</div>
-      <div class="button">زر 5</div>
-    </div>
-  </div>
+
+<div class="wakeup"></div>
+
+<div class="bg"></div>
+
+<!-- الشريط المتحرك -->
+
+<div class="top-news">
+
+<div class="news-text" id="newsText">
+طائفة الظلام 2019
+</div>
+
+</div>
+
+<!-- شريط الأزرار -->
+
+<div class="menu-bar">
+
+<div class="menu-btn">الرئيسية</div>
+<div class="menu-btn">الممالك</div>
+<div class="menu-btn">الظلال</div>
+<div class="menu-btn">الأسرار</div>
+<div class="menu-btn">المعرض</div>
+<div class="menu-btn">المدونة</div>
+<div class="menu-btn">الرتب</div>
+<div class="menu-btn">الأعضاء</div>
+
+</div>
+
+<!-- المطور -->
+
+<div class="dev-box">
+
+<img src="developer.jpg" class="dev-icon">
+
+<div class="dev-name">
+Shadow Legend
+</div>
+
+</div>
+
+<!-- الشعار -->
+
+<div class="logo">
+
+<img src="logo.png">
+
+</div>
+
+<!-- الأزرار -->
+
+<div class="hexagram">
+
+<button class="demon-btn btn1">
+<img src="btn1.png">
+<div class="btn-name">البوابة</div>
+</button>
+
+<button class="demon-btn btn2">
+<img src="btn2.png">
+<div class="btn-name">الممالك</div>
+</button>
+
+<button class="demon-btn btn3">
+<img src="btn3.png">
+<div class="btn-name">الظلال</div>
+</button>
+
+<button class="demon-btn btn4">
+<img src="btn4.png">
+<div class="btn-name">الأسرار</div>
+</button>
+
+<button class="demon-btn btn5">
+<img src="btn5.png">
+<div class="btn-name">اللعنة</div>
+</button>
+
+<button class="demon-btn btn6">
+<img src="btn6.png">
+<div class="btn-name">النخبة</div>
+</button>
+
+</div>
+
+<!-- الشريط السفلي -->
+
+<div class="bottom-bar">
+
+<div class="bottom-btn">🏰</div>
+<div class="bottom-btn">📜</div>
+<div class="bottom-btn">🎮</div>
+<div class="bottom-btn">💰</div>
+<div class="bottom-btn">🤖</div>
+
+</div>
+
+<script>
+
+/* النصوص */
+
+const texts = [
+
+"طائفة الظلام 2019",
+"الظلال تتربص في الظلام",
+"عالم الغموض والأسرار"
+
+];
+
+let index = 0;
+
+const news = document.getElementById("newsText");
+
+setInterval(()=>{
+
+index++;
+
+if(index >= texts.length){
+index = 0;
+}
+
+news.innerText = texts[index];
+
+},10000);
+
+</script>
+
 </body>
 </html>
