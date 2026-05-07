@@ -11,6 +11,7 @@
       padding: 0;
       background-color: #000;
       font-family: Arial, sans-serif;
+      overflow: hidden;
     }
 
     /* موقع الرئيسي Styles */
@@ -18,12 +19,102 @@
       position: relative;
       width: 100%;
       height: 100vh;
-      background-image: url('background.jpg');
-      background-size: cover;
-      background-position: center;
+      background-color: #000;
     }
 
-    #main-site .character {
+    #main-site .intro {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100vh;
+      background-color: #000;
+      animation: intro 5s forwards;
+    }
+
+    @keyframes intro {
+      0% {
+        opacity: 1;
+      }
+      100% {
+        opacity: 0;
+        display: none;
+      }
+    }
+
+    #main-site .color-frame {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 80%;
+      height: 50px;
+      border: 2px solid;
+      border-image: linear-gradient(to right, #f0f, #f00) 1;
+      overflow: hidden;
+    }
+
+    #main-site .text {
+      position: absolute;
+      top: 50%;
+      left: 100%;
+      transform: translateY(-50%);
+      font-size: 24px;
+      color: #fff;
+      text-shadow: 0 0 10px #f0f;
+      animation: text 10s linear infinite;
+    }
+
+    @keyframes text {
+      0% {
+        left: 100%;
+      }
+      100% {
+        left: -100%;
+      }
+    }
+
+    #main-site .button-bar {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background-color: #333;
+      padding: 10px;
+      border-radius: 10px;
+      display: flex;
+      overflow-x: auto;
+    }
+
+    #main-site .button-bar .button {
+      margin: 0 10px;
+      padding: 10px 20px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #fff;
+    }
+
+    #main-site .dev-info {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      display: flex;
+      align-items: center;
+    }
+
+    #main-site .dev-info img {
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      border: 2px solid #f00;
+    }
+
+    #main-site .dev-info .name {
+      margin-right: 10px;
+      color: #fff;
+    }
+
+    #main-site .logo {
       position: absolute;
       top: 50%;
       left: 50%;
@@ -32,25 +123,80 @@
       height: 200px;
     }
 
-    #main-site .button {
+    #main-site .hexagon-buttons {
       position: absolute;
-      bottom: 20px;
+      top: 50%;
       left: 50%;
-      transform: translateX(-50%);
-      background-color: #f00;
+      transform: translate(-50%, -50%);
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+
+    #main-site .hexagon-buttons .button {
+      width: 100px;
+      height: 100px;
+      margin: 20px;
+      background-color: transparent;
+      border: 2px solid #f00;
+      cursor: pointer;
+    }
+
+    #main-site .footer-bar {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      width: 100%;
+      background-color: #333;
+      padding: 10px;
+      display: flex;
+      justify-content: space-around;
+    }
+
+    #main-site .footer-bar .button {
       padding: 10px 20px;
       border-radius: 10px;
       cursor: pointer;
+      color: #fff;
     }
   </style>
 </head>
 <body>
   <!-- موقع الرئيسي -->
   <div id="main-site">
-    <div class="character">
-      <3DObject src="character.glb" alt="Character"></3DObject>
+    <div class="intro"></div>
+    <div class="color-frame">
+      <div class="text">طائفة الظلام 2019</div>
+      <div class="text" style="animation-delay: 10s;">الظلال تتربص في ظلام</div>
+      <div class="text" style="animation-delay: 20s;">عالم الغموض ولأسرار</div>
     </div>
-    <div class="button">متابعة</div>
+    <div class="dev-info">
+      <img src="1777112464942.jpg" alt="Kage No Teio">
+      <span class="name">Kage No Teio</span>
+    </div>
+    <img src="20260429_130547.png" alt="Logo" class="logo">
+    <div class="hexagon-buttons">
+      <div class="button">زر 1</div>
+      <div class="button">زر 2</div>
+      <div class="button">زر 3</div>
+      <div class="button">زر 4</div>
+      <div class="button">زر 5</div>
+      <div class="button">زر 6</div>
+    </div>
+    <div class="button-bar">
+      <div class="button">زر 1</div>
+      <div class="button">زر 2</div>
+      <div class="button">زر 3</div>
+      <div class="button">زر 4</div>
+      <div class="button">زر 5</div>
+    </div>
+    <div class="footer-bar">
+      <div class="button">زر 1</div>
+      <div class="button">زر 2</div>
+      <div class="button">زر 3</div>
+      <div class="button">زر 4</div>
+      <div class="button">زر 5</div>
+    </div>
   </div>
 </body>
 </html>
