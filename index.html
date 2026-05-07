@@ -1,362 +1,475 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Kage No Teio</title>
-    <style>
-        * { margin:0; padding:0; box-sizing:border-box; font-family:Tahoma; -webkit-tap-highlight-color:transparent }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Kage No Teio</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif;-webkit-tap-highlight-color:transparent}
+html,body{height:100%;overflow:hidden;position:fixed;width:100%;touch-action:none}
+body{background:#000;color:white;}
+#space-canvas{position:fixed;inset:0;z-index:0;}
 
-        .menu-page { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:10010; display:none }
-        .menu-page.active { display:block }
-        .menu-header { background:#ff0000; padding:10px; text-align:center }
-        .menu-content { padding:20px }
-        .category-tabs { display:flex; gap:10px; margin-bottom:20px }
-        .tab { background:#1a0000; padding:10px 20px; border-radius:10px; cursor:pointer }
-        .tab.active { background:#ff0000 }
-        .anime-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:10px }
-        .anime-card { background:#1a0000; padding:10px; border-radius:10px; text-align:center }
+@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes scrollTextLeft{from{left:-100%}to{left:100%}}
 
-        html,body { height:100%; overflow:hidden; position:fixed; width:100%; touch-action:none }
-        body { min-height:100vh; background:#000 url('background.jpg') center/cover no-repeat fixed; color:white }
+.top-frame{
+  position:fixed;top:0;left:0;right:0;height:38px;
+  background:linear-gradient(270deg,#8b0000,#ff1a1a,#4a004a,#8b0000);
+  background-size:600% 600%;animation:gradientShift 8s ease infinite;
+  z-index:10007;display:flex;align-items:center;overflow:hidden;
+  border-bottom:1px solid rgba(255,0,0,0.5);
+}
+.top-frame-text{position:absolute;width:100%;height:100%;display:flex;align-items:center;overflow:hidden;pointer-events:none}
+.top-frame-text span{
+  position:absolute;color:#fff;font-weight:bold;font-size:13px;
+  white-space:nowrap;text-shadow:0 0 5px #000;
+  animation:scrollTextLeft 18s linear infinite;
+}
 
-        @keyframes fadeUp { to { opacity:1; transform:translateY(0) } }
-        ::-webkit-scrollbar { width:8px }
-        ::-webkit-scrollbar-track { background:#1a0000 }
-        ::-webkit-scrollbar-thumb { background:#ff0000; border-radius:4px }
-        @keyframes moveStars { from { background-position:0 0 } to { background-position:1000px 0 } }
-        @keyframes scrollTextLeft { from { left:-100% } to { left:100% } }
-        @keyframes waveMove {
-            0% { transform:translate(-50%,-50%) scale(1); opacity:0.9 }
-            100% { transform:translate(-50%,-50%) scale(25); opacity:0 }
-        }
-        @keyframes gradientShift {
-            0%,100% { background-position:0% 50% }
-            50% { background-position:100% 50% }
-        }
-        @keyframes portalSpin { from { transform:rotate(0deg) } to { transform:rotate(360deg) } }
-        @keyframes portalPulse {
-            0%,100% { box-shadow:0 0 20px #ff0000,0 0 40px #ff0000,0 0 60px #8b0000 }
-            50% { box-shadow:0 0 40px #ff0000,0 0 80px #ff0000,0 0 120px #8b0000 }
-        }
-        @keyframes hexGlow {
-            0%,100% { filter:drop-shadow(0 0 20px #ff0000) }
-            50% { filter:drop-shadow(0 0 35px #ff0000) drop-shadow(0 0 60px #8b0000) }
-        }
-        @keyframes pentagramPulse {
-            0%,100% { opacity:0.18; filter:drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000) }
-            50% { opacity:0.30; filter:drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000) }
-        }
-        @keyframes skullGlow {
-            0%,100% { opacity:0.22; filter:drop-shadow(0 0 12px #ff0000) }
-            50% { opacity:0.38; filter:drop-shadow(0 0 28px #ff3333) drop-shadow(0 0 50px #8b0000) }
-        }
-        @keyframes outerRingRotate {
-            0% { transform:translate(-50%,-50%) rotate(0deg) }
-            100% { transform:translate(-50%,-50%) rotate(-360deg) }
-        }
+.top-nav{
+  position:fixed;top:38px;left:0;right:0;height:48px;
+  background:rgba(0,0,0,0.75);
+  border-bottom:1px solid rgba(255,0,0,0.35);
+  backdrop-filter:blur(10px);z-index:10006;
+  display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px;
+}
+.nav-btn{
+  background:rgba(255,0,0,0.06);
+  border:1px solid rgba(255,0,0,0.35);
+  border-radius:6px;color:#ff5555;font-size:13px;font-weight:bold;
+  padding:6px 16px;cursor:pointer;white-space:nowrap;
+  text-shadow:0 0 8px #ff0000;min-height:32px;
+  transition:all 0.25s;
+}
+.nav-btn:hover,.nav-btn.active{
+  background:rgba(255,0,0,0.22);
+  box-shadow:0 0 12px rgba(255,0,0,0.5);
+  color:#fff;
+}
 
-        .top-frame {
-            position:fixed; top:0; left:0; right:0; height:40px;
-            background:linear-gradient(270deg,#8b0000,#ff1a1a,#6a0dad,#8b0000);
-            background-size:600% 600%; animation:gradientShift 8s ease infinite;
-            z-index:10007; display:flex; align-items:center; overflow:hidden;
-            border-bottom:1px solid rgba(255,0,0,0.5)
-        }
-        .top-frame-text { position:absolute; width:100%; height:100%; display:flex; align-items:center; overflow:hidden; pointer-events:none }
-        .top-frame-text span { position:absolute; color:#fff; font-weight:bold; font-size:14px; white-space:nowrap; text-shadow:0 0 5px #000; animation:scrollTextLeft 15s linear infinite }
+@keyframes haloGlow{
+  0%  {box-shadow:0 0 8px 3px rgba(255,0,0,0.3),0 0 18px 6px rgba(80,0,0,0.2);}
+  25% {box-shadow:0 0 18px 7px rgba(255,0,0,0.65),0 0 35px 14px rgba(160,0,0,0.35),0 0 5px 1px rgba(255,180,180,0.7);}
+  30% {box-shadow:0 0 6px 2px rgba(255,0,0,0.2),0 0 12px 4px rgba(80,0,0,0.15);}
+  55% {box-shadow:0 0 22px 9px rgba(255,0,0,0.7),0 0 45px 18px rgba(180,0,0,0.4),0 0 4px 1px rgba(255,200,200,0.8);}
+  60% {box-shadow:0 0 8px 3px rgba(255,0,0,0.3),0 0 18px 6px rgba(80,0,0,0.2);}
+  80% {box-shadow:0 0 14px 5px rgba(255,0,0,0.5),0 0 28px 10px rgba(120,0,0,0.3);}
+  100%{box-shadow:0 0 8px 3px rgba(255,0,0,0.3),0 0 18px 6px rgba(80,0,0,0.2);}
+}
+@keyframes nameGlow{
+  0%,100%{text-shadow:0 0 6px #ff0000,0 0 12px #8b0000;}
+  40%{text-shadow:0 0 14px #ff3333,0 0 28px #ff0000,0 0 4px #fff;}
+  42%{text-shadow:0 0 6px #ff0000,0 0 10px #8b0000;}
+  70%{text-shadow:0 0 18px #ff4444,0 0 35px #ff0000,0 0 6px #ffaaaa;}
+  72%{text-shadow:0 0 6px #ff0000,0 0 12px #8b0000;}
+}
 
-        .top-nav {
-            position:fixed; top:40px; left:0; right:0; height:50px;
-            background:rgba(0,0,0,0.6); border-bottom:1px solid rgba(255,0,0,0.3);
-            backdrop-filter:blur(8px); z-index:10006;
-            display:flex; align-items:center; gap:8px; padding:0 10px;
-            overflow-x:auto; overflow-y:hidden; -webkit-overflow-scrolling:touch; touch-action:pan-x
-        }
-        .top-nav::-webkit-scrollbar { display:none }
-        .nav-btn {
-            background:rgba(255,0,0,0.08); border:1px solid rgba(255,0,0,0.3);
-            border-radius:6px; color:#ff4444; font-size:13px; font-weight:bold;
-            padding:6px 12px; cursor:pointer; white-space:nowrap;
-            text-shadow:0 0 8px #ff0000; min-height:32px; flex-shrink:0
-        }
-        .nav-btn:active { background:rgba(255,0,0,0.3) }
+.profile-header{position:fixed;top:96px;right:15px;display:flex;align-items:center;z-index:10005;}
+.profile-name{
+  background:rgba(0,0,0,0.8);color:#ff3333;font-size:14px;font-weight:bold;
+  padding:5px 14px 5px 5px;border-radius:50px;border:2px solid #ff0000;
+  display:flex;align-items:center;gap:8px;
+  animation:haloGlow 3.5s ease-in-out infinite;
+}
+.profile-name span{animation:nameGlow 3.5s ease-in-out infinite;}
+.profile-img{
+  width:30px;height:30px;border-radius:50%;border:2px solid #ff0000;
+  background:radial-gradient(circle,#3a0000,#000);
+  display:flex;align-items:center;justify-content:center;
+  font-size:16px;overflow:hidden;
+}
+.profile-img img{width:100%;height:100%;object-fit:cover;border-radius:50%;}
 
-        .profile-header { position:fixed; top:100px; right:15px; display:flex; align-items:center; z-index:10005 }
-        .profile-name {
-            background:rgba(0,0,0,0.7); color:#ff0000; font-size:15px; font-weight:bold;
-            text-shadow:0 0 10px #ff0000; padding:6px 14px 6px 6px; border-radius:50px;
-            border:2px solid #ff0000; box-shadow:0 0 20px rgba(255,0,0,0.5);
-            display:flex; align-items:center; gap:8px
-        }
-        .profile-img { width:32px; height:32px; border-radius:50%; border:2px solid #ff0000; object-fit:cover }
+.page{position:fixed;inset:0;top:86px;z-index:5;opacity:0;pointer-events:none;transition:opacity 0.3s;overflow-y:auto;}
+.page.active{opacity:1;pointer-events:auto;}
 
-        .wave-layer { position:fixed; inset:0; pointer-events:none; z-index:9998; overflow:hidden }
-        .wave {
-            position:absolute; width:12px; height:12px; border-radius:50%;
-            background:radial-gradient(circle,rgba(255,0,0,0.35) 0%,rgba(255,0,0,0.15) 40%,transparent 70%);
-            transform:translate(-50%,-50%); animation:waveMove 1.4s ease-out forwards; filter:blur(2px)
-        }
+#page-main{display:flex;flex-direction:column;align-items:center;padding-top:50px;padding-bottom:20px;}
+.logo{
+  width:clamp(150px,38vw,320px);margin-bottom:16px;
+  filter:drop-shadow(0 0 20px #ff0000) drop-shadow(0 0 40px #8b0000);
+}
 
-        .portal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.98); z-index:20000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.3s }
-        .portal-overlay.active { opacity:1; pointer-events:auto }
-        .portal-circle { width:200px; height:200px; border-radius:50%; border:4px solid #ff0000; background:radial-gradient(circle,rgba(255,0,0,0.2),transparent); animation:portalSpin 2s linear infinite,portalPulse 1.5s ease-in-out infinite; position:relative }
-        .portal-circle::before { content:""; position:absolute; inset:10px; border-radius:50%; border:3px solid #8b0000; animation:portalSpin 1.5s linear infinite reverse }
-        .portal-circle::after { content:"☠"; position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:60px; color:#ff0000; text-shadow:0 0 30px #ff0000 }
+@keyframes hexStarPulse{
+  0%,100%{opacity:0.2;filter:drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000);}
+  50%{opacity:0.38;filter:drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000);}
+}
+@keyframes outerRingRotate{
+  0%{transform:translate(-50%,-50%) rotate(0deg);}
+  100%{transform:translate(-50%,-50%) rotate(-360deg);}
+}
 
-        .exit-popup { position:fixed; inset:0; background:url('exit-background.jpg') center/cover no-repeat; background-color:#000; display:flex; justify-content:center; align-items:center; opacity:0; pointer-events:none; transition:0.15s; z-index:20001 }
-        .exit-popup.active { opacity:1; pointer-events:auto }
-        .exit-box { background:rgba(0,0,0,0.85); padding:40px; border-radius:20px; text-align:center; box-shadow:0 0 40px #ff0000; border:3px solid #ff0000; width:90%; max-width:400px }
-        .exit-box h2 { color:#ff0000; font-size:26px; margin-bottom:15px; text-shadow:0 0 15px #ff0000 }
-        .exit-buttons { margin-top:20px; display:flex; gap:15px; justify-content:center }
-        .exit-buttons button { padding:12px 30px; border:2px solid #ff0000; background:#1a0000; color:#ff0000; border-radius:10px; cursor:pointer; min-height:44px; font-weight:bold; font-size:16px }
-        .exit-buttons button:active { background:#ff0000; color:black }
+.fighter-grid{
+  width:clamp(340px,88vw,820px);height:clamp(340px,85vw,660px);position:relative;
+}
+.hexagram-bg{
+  position:absolute;top:50%;left:50%;width:90%;height:90%;
+  transform:translate(-50%,-50%);pointer-events:none;z-index:1;
+}
+.hex-outer-ring{
+  position:absolute;top:50%;left:50%;width:98%;height:98%;border-radius:50%;
+  border:1.5px dashed rgba(255,0,0,0.22);
+  animation:outerRingRotate 32s linear infinite;transform:translate(-50%,-50%);
+}
+.hex-svg{
+  position:absolute;top:50%;left:50%;width:100%;height:100%;
+  transform:translate(-50%,-50%);animation:hexStarPulse 4s ease-in-out infinite;
+}
 
-        .site-wrapper { position:fixed; inset:0; display:flex; flex-direction:column; align-items:center; z-index:3; padding-top:170px; padding-bottom:120px }
-        .logo { width:clamp(160px,40vw,380px); margin-bottom:20px; filter:drop-shadow(0 0 25px #ff0000); z-index:2 }
-        .container { z-index:2; width:100%; display:flex; justify-content:center; padding:10px; flex:1; align-items:center }
-        .fighter-grid { width:clamp(380px,90vw,900px); position:relative; height:clamp(380px,80vw,700px) }
+/* ═══════════════════════════
+   الأزرار — شفافة + نار حواف
+═══════════════════════════ */
+.hexagram-menu{position:relative;width:100%;height:100%;z-index:4;}
 
-        /* ── نجمة الشيطان ── */
-        .pentagram-bg { position:absolute; top:50%; left:50%; width:92%; height:92%; transform:translate(-50%,-50%); pointer-events:none; z-index:1 }
-        .penta-outer-ring { position:absolute; top:50%; left:50%; width:96%; height:96%; border-radius:50%; border:1.5px dashed rgba(255,0,0,0.25); animation:outerRingRotate 30s linear infinite; transform:translate(-50%,-50%) }
-        .penta-svg { position:absolute; top:50%; left:50%; width:100%; height:100%; transform:translate(-50%,-50%); animation:pentagramPulse 4s ease-in-out infinite }
-        .penta-skull { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); font-size:clamp(38px,9vw,72px); line-height:1; animation:skullGlow 3s ease-in-out infinite; user-select:none; z-index:2 }
+.btn{
+  position:absolute;
+  width:26%;aspect-ratio:1/1;min-height:85px;
+  background:transparent;
+  border:none;outline:none;
+  cursor:pointer;touch-action:manipulation;
+  border-radius:14px;
+  transition:transform 0.15s;
+  overflow:visible;
+  padding:0;
+}
+.btn:active{transform:scale(0.93)!important;}
+.btn:nth-child(1):active,.btn:nth-child(4):active{transform:translateX(-50%) scale(0.93)!important;}
 
-        .hexagram-menu { position:relative; width:100%; height:100%; z-index:4 }
+/* كانفاس النار */
+.btn canvas.fire-canvas{
+  position:absolute;
+  z-index:3;pointer-events:none;
+  border-radius:18px;
+}
 
-        /* ══════════════════════════════════════════════════════════════
-           🔴  الأزرار الستة الشفافة — غيّر اسم الملف فقط
-               btn:nth-child(1) → أعلى الوسط
-               btn:nth-child(2) → أعلى اليمين
-               btn:nth-child(3) → أسفل اليمين
-               btn:nth-child(4) → أسفل الوسط
-               btn:nth-child(5) → أسفل اليسار
-               btn:nth-child(6) → أعلى اليسار
-           ══════════════════════════════════════════════════════════════ */
-        .btn {
-            position: absolute;
-            width: 26%;
-            aspect-ratio: 1/1;
-            min-height: 90px;
+.btn:nth-child(1){top:0;left:50%;transform:translateX(-50%);}
+.btn:nth-child(2){top:18%;right:4%;}
+.btn:nth-child(3){bottom:18%;right:4%;}
+.btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%);}
+.btn:nth-child(5){bottom:18%;left:4%;}
+.btn:nth-child(6){top:18%;left:4%;}
 
-            /* ── الصورة ── */
-            background-size: cover;
-            background-position: center;
-            background-repeat: no-repeat;
+/* القائمة المنبثقة */
+.popup-menu{
+  position:fixed;inset:0;background:rgba(0,0,0,0.97);
+  z-index:20000;opacity:0;pointer-events:none;transition:opacity 0.25s;
+  display:flex;flex-direction:column;
+}
+.popup-menu.active{opacity:1;pointer-events:auto;}
+.popup-header{
+  border-bottom:2px solid #ff0000;
+  box-shadow:0 0 20px rgba(255,0,0,0.5);
+  padding:14px 20px;
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;
+}
+.popup-title{color:#ff3333;font-size:20px;font-weight:bold;text-shadow:0 0 14px #ff0000;}
+.popup-close{
+  background:rgba(255,0,0,0.12);border:1px solid rgba(255,0,0,0.5);
+  border-radius:8px;color:#ff4444;padding:7px 18px;cursor:pointer;
+  font-size:13px;font-weight:bold;transition:all 0.2s;
+}
+.popup-close:active{background:#ff0000;color:#000;}
+.popup-body{flex:1;overflow-y:auto;padding:24px 16px;}
+.popup-body::-webkit-scrollbar{width:6px;}
+.popup-body::-webkit-scrollbar-track{background:#0a0000;}
+.popup-body::-webkit-scrollbar-thumb{background:#ff0000;border-radius:3px;}
 
-            /* ── شفافية كاملة: لا لون، لا حدود، لا خلفية ── */
-            background-color: transparent;
-            border: none;
-            outline: none;
+.empty-section{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:60vh;gap:16px;opacity:0.4;
+}
+.empty-section .big-icon{font-size:64px;}
+.empty-section p{font-size:16px;color:#ff4444;text-align:center;line-height:1.8;}
 
-            cursor: pointer;
-            touch-action: manipulation;
-            animation: hexGlow 3s ease-in-out infinite;
-            border-radius: 12px;
-        }
+.section-page{display:flex;align-items:center;justify-content:center;height:100%;}
 
-        /* طبقة حماية فوق الصورة */
-        .btn::after { content:""; position:absolute; inset:0; z-index:1 }
+@keyframes waveMove{
+  0%{transform:translate(-50%,-50%) scale(1);opacity:0.8;}
+  100%{transform:translate(-50%,-50%) scale(22);opacity:0;}
+}
+.wave-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden;}
+.wave{
+  position:absolute;width:14px;height:14px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,0,0,0.4) 0%,rgba(255,0,0,0.15) 40%,transparent 70%);
+  transform:translate(-50%,-50%);animation:waveMove 1.3s ease-out forwards;filter:blur(2px);
+}
 
-        /* الموقع + مسار الصورة لكل زر */
-        .btn:nth-child(1) {
-            top: 0; left: 50%; transform: translateX(-50%);
-            animation-delay: 0.2s;
-            background-image: url('1العاب1.png'); /* ← 🖼️ زر 1 */
-        }
-        .btn:nth-child(2) {
-            top: 18%; right: 5%;
-            animation-delay: 0.4s;
-            background-image: url('1روابط1مقراتنا1.png'); /* ← 🖼️ زر 2 */
-        }
-        .btn:nth-child(3) {
-            bottom: 18%; right: 5%;
-            animation-delay: 0.6s;
-            background-image: url('1ظلال1الطائفة1وحلفائها1.png'); /* ← 🖼️ زر 3 */
-        }
-        .btn:nth-child(4) {
-            bottom: 0; left: 50%; transform: translateX(-50%);
-            animation-delay: 0.8s;
-            background-image: url('1عالم1الأنمي1.png'); /* ← 🖼️ زر 4 */
-        }
-        .btn:nth-child(5) {
-            bottom: 18%; left: 5%;
-            animation-delay: 1s;
-            background-image: url('1قصص1إعدام1العصابات1.png'); /* ← 🖼️ زر 5 */
-        }
-        .btn:nth-child(6) {
-            top: 18%; left: 5%;
-            animation-delay: 1.2s;
-            background-image: url('فضائح1كلاب1العصابات1.png'); /* ← 🖼️ زر 6 */
-        }
-        /* ══════════════════════════════════════════════════════════════ */
-
-        #character3D { position:absolute; top:50%; left:50%; transform:translate(-50%,-50%); width:38%; height:38%; z-index:5; border-radius:10px; display:flex; align-items:center; justify-content:center }
-
-        .bottom-buttons { position:fixed; bottom:15px; left:50%; transform:translateX(-50%); display:flex; gap:12px; z-index:10005 }
-        .bottom-btn { width:clamp(70px,20vw,110px); height:clamp(60px,18vw,90px); background-size:contain; background-position:center; background-repeat:no-repeat; background-color:transparent; cursor:pointer; opacity:0; animation:fadeUp 0.8s ease forwards; touch-action:manipulation; filter:drop-shadow(0 0 15px #ff0000); border:none }
-        .bottom-btn:nth-child(1){animation-delay:1.4s} .bottom-btn:nth-child(2){animation-delay:1.5s} .bottom-btn:nth-child(3){animation-delay:1.6s} .bottom-btn:nth-child(4){animation-delay:1.7s} .bottom-btn:nth-child(5){animation-delay:1.8s}
-
-        @media (max-width:768px) { .fighter-grid{width:96vw;height:clamp(360px,90vw,600px)} .btn{width:28%;min-height:80px} #character3D{width:40%;height:40%} }
-        @media (max-width:480px) { .profile-name{font-size:13px;padding:5px 12px 5px 6px} .profile-img{width:28px;height:28px} .bottom-buttons{gap:8px;bottom:10px} .btn{width:30%;min-height:70px} .bottom-btn{width:clamp(65px,19vw,95px);height:clamp(55px,17vw,80px)} }
-    </style>
+@media(max-width:768px){
+  .fighter-grid{width:95vw;height:clamp(320px,92vw,580px);}
+  .btn{width:28%;min-height:76px;}
+}
+@media(max-width:480px){
+  .btn{width:30%;min-height:68px;}
+  .profile-name{font-size:12px;}
+  .nav-btn{font-size:12px;padding:5px 11px;}
+}
+</style>
 </head>
 <body>
-    <audio id="clickSound" src="clickSound.mp3" preload="auto"></audio>
-    <div id="waveLayer" class="wave-layer"></div>
 
-    <div id="portalOverlay" class="portal-overlay"><div class="portal-circle"></div></div>
+<canvas id="space-canvas"></canvas>
+<div id="waveLayer" class="wave-layer"></div>
 
-    <div id="exitPopup" class="exit-popup">
-        <div class="exit-box">
-            <h2>هل تريد الخروج؟</h2>
-            <div class="exit-buttons">
-                <button onclick="confirmExit()">نعم</button>
-                <button onclick="closeExit()">لا</button>
-            </div>
-        </div>
+<div class="top-frame">
+  <div class="top-frame-text">
+    <span>&#x2694;&#xFE0F; مرحبا بك في Kage No Teio &#x2014; إمبراطور الظل &#x2014; 暗帝 &#x2014; &#x2694;&#xFE0F; مرحبا بك في Kage No Teio &#x2014; إمبراطور الظل &#x2014; 暗帝</span>
+  </div>
+</div>
+
+<div class="top-nav">
+  <button class="nav-btn active" onclick="showPage('main',this)">قائمة الرئيسية</button>
+  <button class="nav-btn" onclick="showPage('slime',this)">سلايم</button>
+  <button class="nav-btn" onclick="showPage('archive',this)">الارشيف</button>
+  <button class="nav-btn" onclick="showPage('profile',this)">ملف الشخصي</button>
+</div>
+
+<div class="profile-header">
+  <div class="profile-name">
+    <div class="profile-img">
+      <img src="20260420_113331.jpg" onerror="this.parentElement.textContent='&#x1F464;'">
     </div>
+    <span>Kage No Teio</span>
+  </div>
+</div>
 
-    <div id="menuPage" class="menu-page">
-        <div class="menu-header"><h2>قسم الأنمي</h2><button onclick="closeMenu()">رجوع</button></div>
-        <div class="menu-content">
-            <div class="category-tabs">
-                <div class="tab active" onclick="filterAnime('naruto',event)">ناروتو</div>
-                <div class="tab" onclick="filterAnime('onepiece',event)">ون بيس</div>
-                <div class="tab" onclick="filterAnime('attack',event)">اتاك</div>
-                <div class="tab" onclick="filterAnime('hunter',event)">هنتر</div>
-                <div class="tab" onclick="filterAnime('dragonball',event)">دراغون بول</div>
-            </div>
-            <div class="anime-grid" id="animeGrid">
-                <div class="anime-card" data-cat="naruto">ناروتو أوزوماكي</div>
-                <div class="anime-card" data-cat="onepiece">مونكي دي لوفي</div>
-                <div class="anime-card" data-cat="attack">إيرين ييغر</div>
-                <div class="anime-card" data-cat="hunter">غون فريكس</div>
-                <div class="anime-card" data-cat="dragonball">غوكو</div>
-            </div>
-        </div>
+<!-- الصفحة الرئيسية -->
+<div id="page-main" class="page active">
+  <img src="20260429_130547.png" class="logo" onerror="this.style.display='none'">
+  <div class="fighter-grid">
+    <div class="hexagram-bg">
+      <div class="hex-outer-ring"></div>
+      <svg class="hex-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <filter id="redGlow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <polygon points="200,30 356,290 44,290"
+          fill="rgba(100,0,0,0.1)" stroke="rgba(255,0,0,0.5)" stroke-width="1.8"
+          stroke-linejoin="round" filter="url(#redGlow)"/>
+        <polygon points="200,370 44,110 356,110"
+          fill="rgba(100,0,0,0.1)" stroke="rgba(255,0,0,0.5)" stroke-width="1.8"
+          stroke-linejoin="round" filter="url(#redGlow)"/>
+        <circle cx="200" cy="200" r="55" fill="none" stroke="rgba(255,0,0,0.15)" stroke-width="1"/>
+      </svg>
     </div>
-
-    <div class="top-frame"><div class="top-frame-text"><span>مرحبا بك في Kage No Teio</span></div></div>
-
-    <div class="top-nav">
-        <button class="nav-btn" onclick="openMenu()">أنمي</button>
-        <button class="nav-btn">فضائح عصابات</button>
-        <button class="nav-btn">قوانين الدعس</button>
-        <button class="nav-btn">ترسيم أعضاء</button>
-        <button class="nav-btn">أسماء الظلال</button>
+    <!-- الأزرار الستة: شفافة جاهزة لصور PNG -->
+    <div class="hexagram-menu">
+      <button class="btn" onclick="openPopup('العاب','&#x1F3AE;')"><canvas class="fire-canvas"></canvas></button>
+      <button class="btn" onclick="openPopup('روابط مقراتنا','&#x1F517;')"><canvas class="fire-canvas"></canvas></button>
+      <button class="btn" onclick="openPopup('ظلال الطائفة وحلفائها','&#x2694;&#xFE0F;')"><canvas class="fire-canvas"></canvas></button>
+      <button class="btn" onclick="openPopup('عالم الأنمي','&#x1F338;')"><canvas class="fire-canvas"></canvas></button>
+      <button class="btn" onclick="openPopup('قصص إعدام العصابات','&#x1F480;')"><canvas class="fire-canvas"></canvas></button>
+      <button class="btn" onclick="openPopup('فضائح كلاب العصابات','&#x1F525;')"><canvas class="fire-canvas"></canvas></button>
     </div>
+  </div>
+</div>
 
-    <div class="profile-header">
-        <div class="profile-name">
-            <img src="20260420_113331.jpg" class="profile-img">
-            <span>Kage No Teio</span>
-        </div>
+<div id="page-slime" class="page section-page">
+  <div class="empty-section"><div class="big-icon">&#x1FAE7;</div><p>قسم سلايم<br>قريباً...</p></div>
+</div>
+<div id="page-archive" class="page section-page">
+  <div class="empty-section"><div class="big-icon">&#x1F4DA;</div><p>قسم الارشيف<br>قريباً...</p></div>
+</div>
+<div id="page-profile" class="page section-page">
+  <div class="empty-section"><div class="big-icon">&#x1F464;</div><p>ملف الشخصي<br>قريباً...</p></div>
+</div>
+
+<div id="popupMenu" class="popup-menu">
+  <div class="popup-header">
+    <span id="popupTitle" class="popup-title">العنوان</span>
+    <button class="popup-close" onclick="closePopup()">&#x2715; رجوع</button>
+  </div>
+  <div class="popup-body">
+    <div class="empty-section">
+      <div class="big-icon" id="popupIcon">&#x2694;&#xFE0F;</div>
+      <p id="popupDesc">هذا القسم فارغ حالياً<br>سيتم إضافة المحتوى قريباً</p>
     </div>
-
-    <div class="site-wrapper">
-        <img src="20260429_130547.png" class="logo">
-        <div class="container">
-            <div class="fighter-grid">
-
-                <!-- نجمة الشيطان -->
-                <div class="pentagram-bg">
-                    <div class="penta-outer-ring"></div>
-                    <svg class="penta-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
-                        <defs>
-                            <filter id="redGlow">
-                                <feGaussianBlur stdDeviation="4" result="blur"/>
-                                <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-                            </filter>
-                        </defs>
-                        <circle cx="200" cy="200" r="188" fill="none" stroke="rgba(180,0,0,0.35)" stroke-width="1.2" filter="url(#redGlow)"/>
-                        <circle cx="200" cy="200" r="155" fill="none" stroke="rgba(255,0,0,0.15)" stroke-width="0.8"/>
-                        <polygon points="200,12 237.7,120.6 354.3,120.6 260.3,188.2 295.5,297.4 200,229.2 104.5,297.4 139.7,188.2 45.7,120.6 162.3,120.6"
-                            fill="rgba(120,0,0,0.12)" stroke="rgba(255,0,0,0.45)" stroke-width="1.5" stroke-linejoin="round" filter="url(#redGlow)"/>
-                        <polygon points="200,80 228.5,168.5 322,168.5 247.5,221 275.5,310 200,257 124.5,310 152.5,221 78,168.5 171.5,168.5"
-                            fill="none" stroke="rgba(180,0,0,0.18)" stroke-width="0.8"/>
-                    </svg>
-                    <div class="penta-skull">💀</div>
-                </div>
-
-                <!--
-                ┌─────────────────────────────────────────────┐
-                │  🔴  مسارات صور الأزرار الستة  🔴           │
-                │  عدّل CSS فقط — ابحث عن السطر:             │
-                │  background-image: url('btnX.png');          │
-                │                                              │
-                │  زر 1 → btn1.png  (أعلى الوسط)             │
-                │  زر 2 → btn2.png  (أعلى اليمين)            │
-                │  زر 3 → btn3.png  (أسفل اليمين)            │
-                │  زر 4 → btn4.png  (أسفل الوسط)             │
-                │  زر 5 → btn5.png  (أسفل اليسار)            │
-                │  زر 6 → btn6.png  (أعلى اليسار)            │
-                └─────────────────────────────────────────────┘
-                -->
-                <div class="hexagram-menu">
-                    <button class="btn"></button>
-                    <button class="btn"></button>
-                    <button class="btn"></button>
-                    <button class="btn"></button>
-                    <button class="btn"></button>
-                    <button class="btn"></button>
-                </div>
-
-                <div id="character3D"></div>
-            </div>
-        </div>
-    </div>
-
-    <div class="bottom-buttons">
-        <button class="bottom-btn"></button>
-        <button class="bottom-btn"></button>
-        <button class="bottom-btn"></button>
-        <button class="bottom-btn"></button>
-        <button class="bottom-btn"></button>
-    </div>
+  </div>
+</div>
 
 <script>
-    function playClick() {
-        const a = document.getElementById('clickSound');
-        if (a) { a.currentTime = 0; a.play().catch(()=>{}) }
+/* ═══ نجوم الفضاء ═══ */
+const SC = document.getElementById('space-canvas');
+const sx = SC.getContext('2d');
+let SW=0,SH=0,stars=[];
+function rsz(){SW=SC.width=innerWidth;SH=SC.height=innerHeight;}
+rsz(); addEventListener('resize',rsz);
+function mkS(){
+  return{x:Math.random()*SW,y:Math.random()*SH,
+    r:Math.random()*1.6+0.3,spd:Math.random()*0.1+0.025,
+    a:Math.random()*0.7+0.2,ts:Math.random()*0.014+0.003,td:Math.random()>.5?1:-1,
+    col:Math.random()>.85?`rgba(255,${Math.random()*70|0},${Math.random()*70|0},`:'rgba(255,255,255,'};
+}
+for(let i=0;i<300;i++) stars.push(mkS());
+for(let i=0;i<16;i++) stars.push({x:Math.random()*SW,y:Math.random()*SH,
+  r:Math.random()*2.2+1,spd:Math.random()*0.05+0.015,
+  a:Math.random()*0.5+0.3,ts:.018,td:1,col:'rgba(255,55,55,'});
+
+function drawSp(){
+  sx.clearRect(0,0,SW,SH);
+  const bg=sx.createRadialGradient(SW/2,SH/2,0,SW/2,SH/2,Math.max(SW,SH)*.8);
+  bg.addColorStop(0,'#060010');bg.addColorStop(.5,'#020008');bg.addColorStop(1,'#000');
+  sx.fillStyle=bg;sx.fillRect(0,0,SW,SH);
+  const nb=sx.createLinearGradient(0,SH*.3,SW,SH*.7);
+  nb.addColorStop(0,'transparent');nb.addColorStop(.4,'rgba(80,0,0,0.04)');
+  nb.addColorStop(.6,'rgba(40,0,80,0.04)');nb.addColorStop(1,'transparent');
+  sx.fillStyle=nb;sx.fillRect(0,0,SW,SH);
+  for(const s of stars){
+    s.a+=s.ts*s.td; if(s.a>.95||s.a<.08)s.td*=-1;
+    s.y+=s.spd; if(s.y>SH+4){s.y=-4;s.x=Math.random()*SW;}
+    sx.beginPath();sx.arc(s.x,s.y,s.r,0,Math.PI*2);
+    sx.fillStyle=s.col+s.a+')';sx.fill();
+  }
+  requestAnimationFrame(drawSp);
+}
+drawSp();
+
+/* ═══ نار الحواف (Doom Fire border) ═══ */
+function initBorderFire(cvs){
+  const btn=cvs.parentElement;
+  function setup(){
+    const bw=btn.offsetWidth, bh=btn.offsetHeight;
+    if(!bw||!bh){setTimeout(setup,60);return;}
+    const PAD=16;
+    const CW=bw+PAD*2, CH=bh+PAD*2;
+    cvs.width=CW; cvs.height=CH;
+    cvs.style.left=-PAD+'px'; cvs.style.top=-PAD+'px';
+    cvs.style.width=CW+'px'; cvs.style.height=CH+'px';
+    const ctx=cvs.getContext('2d');
+    const CELL=3;
+    const COLS=Math.ceil(CW/CELL), ROWS=Math.ceil(CH/CELL)+5;
+    const fire=new Uint8Array(COLS*ROWS);
+
+    /* باليت */
+    const pal=[];
+    for(let i=0;i<256;i++){
+      const r=Math.min(255,i*2.8|0);
+      const g=Math.min(255,Math.max(0,(i-100)*2.2|0));
+      const b=0;
+      const a=i<18?0:Math.min(255,(i-18)*3.4|0);
+      pal.push([r,g,b,a]);
     }
-    function openPortal(cb) {
-        const p = document.getElementById("portalOverlay");
-        p.classList.add("active");
-        setTimeout(()=>{ p.classList.remove("active"); if(cb) cb() }, 800)
+
+    /* حواف الإشعال بالخلايا */
+    const eL=Math.ceil(PAD/CELL)+1;
+    const eR=COLS-eL-1;
+    const eT=Math.ceil(PAD/CELL)+1;
+    const eB=ROWS-2;
+
+    function seed(){
+      /* أسفل */
+      for(let x=0;x<COLS;x++)
+        fire[eB*COLS+x]=Math.random()>.22?(170+Math.random()*80)|0:(Math.random()*40)|0;
+      /* يسار */
+      for(let y=eT;y<eB;y++)
+        fire[y*COLS+eL-1]=Math.random()>.28?(145+Math.random()*95)|0:(Math.random()*35)|0;
+      /* يمين */
+      for(let y=eT;y<eB;y++)
+        fire[y*COLS+eR+1]=Math.random()>.28?(145+Math.random()*95)|0:(Math.random()*35)|0;
+      /* أعلى */
+      for(let x=0;x<COLS;x++)
+        fire[eT*COLS+x]=Math.random()>.32?(125+Math.random()*100)|0:(Math.random()*28)|0;
     }
-    function openMenu()  { playClick(); document.getElementById("menuPage").classList.add("active") }
-    function closeMenu() { playClick(); document.getElementById("menuPage").classList.remove("active") }
-    window.confirmExit = function() { playClick(); window.close(); window.location.href="about:blank" }
-    window.closeExit   = function() { playClick(); document.getElementById("exitPopup").classList.remove("active") }
 
-    history.pushState({page:"home"},"");
-
-    document.addEventListener('DOMContentLoaded', ()=>{
-        document.querySelectorAll('.btn').forEach(b=>b.style.opacity='1');
-        document.querySelectorAll('.anime-card').forEach(c=>c.addEventListener('click', playClick));
-        filterAnime('naruto');
-    });
-
-    const waveLayer = document.getElementById("waveLayer");
-    let canWave = true;
-    document.addEventListener("pointerdown", e=>{
-        if (!canWave) return; canWave = false;
-        const w = document.createElement("div"); w.className="wave";
-        w.style.left = e.clientX+"px"; w.style.top = e.clientY+"px";
-        waveLayer.appendChild(w);
-        setTimeout(()=>{ w.remove(); canWave=true }, 1200)
-    });
-
-    document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el=>el.addEventListener('click', playClick));
-    document.addEventListener('touchmove', e=>{ if(!e.target.closest('.top-nav')) e.preventDefault() }, {passive:false});
-
-    function filterAnime(cat, ev) {
-        if (ev) { document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active')); ev.target.classList.add('active') }
-        else { document.querySelectorAll('.tab').forEach(t=>t.classList.toggle('active', t.innerText===cat)) }
-        document.querySelectorAll('.anime-card').forEach(c=>{ c.style.display = c.dataset.cat===cat ? 'block' : 'none' });
+    function spread(){
+      for(let y=ROWS-2;y>=0;y--)
+        for(let x=0;x<COLS;x++){
+          const s=fire[(y+1)*COLS+x];
+          const d=(Math.random()*3)|0;
+          const dx=((Math.random()*3)|0)-1;
+          const nx=Math.min(COLS-1,Math.max(0,x+dx));
+          fire[y*COLS+nx]=Math.max(0,s-d);
+        }
     }
+
+    const img=ctx.createImageData(CW,CH);
+    const pix=img.data;
+
+    function draw(){
+      for(let y=0;y<ROWS;y++)
+        for(let x=0;x<COLS;x++){
+          const v=fire[y*COLS+x];
+          const[r,g,b,a]=pal[v];
+          for(let dy=0;dy<CELL;dy++)
+            for(let dx=0;dx<CELL;dx++){
+              const px=x*CELL+dx, py=y*CELL+dy;
+              if(px>=CW||py>=CH) continue;
+              const i=(py*CW+px)*4;
+              pix[i]=r;pix[i+1]=g;pix[i+2]=b;pix[i+3]=a;
+            }
+        }
+      ctx.putImageData(img,0,0);
+      /* مسح الجزء الداخلي — الزر شفاف في الوسط */
+      ctx.clearRect(PAD+1,PAD+1,CW-PAD*2-2,CH-PAD*2-2);
+    }
+
+    (function loop(){seed();spread();draw();requestAnimationFrame(loop);})();
+  }
+  setup();
+}
+
+addEventListener('load',()=>{
+  document.querySelectorAll('.btn canvas.fire-canvas').forEach(c=>initBorderFire(c));
+});
+
+/* ═══ التنقل ═══ */
+const pages={
+  main:document.getElementById('page-main'),
+  slime:document.getElementById('page-slime'),
+  archive:document.getElementById('page-archive'),
+  profile:document.getElementById('page-profile'),
+};
+let cur='main';
+function showPage(n,b){
+  playClick();pages[cur].classList.remove('active');cur=n;
+  pages[n].classList.add('active');
+  document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
+  if(b) b.classList.add('active');
+}
+
+/* ═══ القائمة المنبثقة ═══ */
+function openPopup(t,ic){
+  playClick();
+  document.getElementById('popupTitle').textContent=t;
+  document.getElementById('popupIcon').textContent=ic;
+  document.getElementById('popupDesc').textContent='قسم '+t+'\nسيتم إضافة المحتوى قريباً';
+  document.getElementById('popupMenu').classList.add('active');
+}
+function closePopup(){
+  playClick();document.getElementById('popupMenu').classList.remove('active');
+}
+
+/* ═══ صوت نقر ═══ */
+let ACtx;
+function playClick(){
+  try{
+    if(!ACtx) ACtx=new(AudioContext||webkitAudioContext)();
+    const o=ACtx.createOscillator(),g=ACtx.createGain();
+    o.connect(g);g.connect(ACtx.destination);
+    o.frequency.value=420;o.type='sine';
+    g.gain.setValueAtTime(.12,ACtx.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,ACtx.currentTime+.15);
+    o.start();o.stop(ACtx.currentTime+.15);
+  }catch(e){}
+}
+
+/* ═══ موجة النقر ═══ */
+const WL=document.getElementById('waveLayer');
+let cw=true;
+document.addEventListener('pointerdown',e=>{
+  if(!cw)return;cw=false;
+  const w=document.createElement('div');w.className='wave';
+  w.style.left=e.clientX+'px';w.style.top=e.clientY+'px';
+  WL.appendChild(w);setTimeout(()=>{w.remove();cw=true;},1200);
+});
+
+document.addEventListener('touchmove',e=>{
+  if(!e.target.closest('.popup-body')&&!e.target.closest('.page'))e.preventDefault();
+},{passive:false});
+
+document.querySelectorAll('button,.nav-btn').forEach(el=>el.addEventListener('click',playClick));
 </script>
 </body>
 </html>
