@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Kage No Teio</title>
     <style>
-        /*🔱🔱🔥فتح ستايل CSS🔥🔱🔱*/
         * {
             margin: 0;
             padding: 0;
@@ -91,101 +90,63 @@
             }
         }
 
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: #1a0000;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: #ff0000;
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: #8b0000;
-        }
+        ::-webkit-scrollbar { width: 8px }
+        ::-webkit-scrollbar-track { background: #1a0000 }
+        ::-webkit-scrollbar-thumb { background: #ff0000; border-radius: 4px }
+        ::-webkit-scrollbar-thumb:hover { background: #8b0000 }
 
         @keyframes moveStars {
-            from {
-                background-position: 0 0
-            }
-
-            to {
-                background-position: 1000px
-            }
+            from { background-position: 0 0 }
+            to { background-position: 1000px 0 }
         }
 
         @keyframes scrollTextLeft {
-            from {
-                left: -100%
-            }
-
-            to {
-                left: 100%
-            }
+            from { left: -100% }
+            to { left: 100% }
         }
 
         @keyframes waveMove {
-            0% {
-                transform: translate(-50%, -50%) scale(1);
-                opacity: 0.9
-            }
-
-            100% {
-                transform: translate(-50%, -50%) scale(25);
-                opacity: 0
-            }
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 0.9 }
+            100% { transform: translate(-50%, -50%) scale(25); opacity: 0 }
         }
 
         @keyframes gradientShift {
-            0% {
-                background-position: 0% 50%
-            }
-
-            50% {
-                background-position: 100% 50%
-            }
-
-            100% {
-                background-position: 0% 50%
-            }
+            0% { background-position: 0% 50% }
+            50% { background-position: 100% 50% }
+            100% { background-position: 0% 50% }
         }
 
         @keyframes portalSpin {
-            from {
-                transform: rotate(0deg)
-            }
-
-            to {
-                transform: rotate(360deg)
-            }
+            from { transform: rotate(0deg) }
+            to { transform: rotate(360deg) }
         }
 
         @keyframes portalPulse {
-
-            0%,
-            100% {
-                box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #8b0000
-            }
-
-            50% {
-                box-shadow: 0 0 40px #ff0000, 0 0 80px #ff0000, 0 0 120px #8b0000
-            }
+            0%, 100% { box-shadow: 0 0 20px #ff0000, 0 0 40px #ff0000, 0 0 60px #8b0000 }
+            50% { box-shadow: 0 0 40px #ff0000, 0 0 80px #ff0000, 0 0 120px #8b0000 }
         }
 
         @keyframes hexGlow {
+            0%, 100% { filter: drop-shadow(0 0 20px #ff0000) }
+            50% { filter: drop-shadow(0 0 35px #ff0000) drop-shadow(0 0 60px #8b0000) }
+        }
 
-            0%,
-            100% {
-                filter: drop-shadow(0 0 20px #ff0000)
-            }
-
-            50% {
-                filter: drop-shadow(0 0 35px #ff0000) drop-shadow(0 0 60px #8b0000)
-            }
+        /* ===== PENTAGRAM ANIMATIONS ===== */
+        @keyframes pentagramRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg) }
+            100% { transform: translate(-50%, -50%) rotate(360deg) }
+        }
+        @keyframes pentagramPulse {
+            0%, 100% { opacity: 0.18; filter: drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000) }
+            50% { opacity: 0.30; filter: drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000) }
+        }
+        @keyframes skullGlow {
+            0%, 100% { opacity: 0.22; filter: drop-shadow(0 0 12px #ff0000) }
+            50% { opacity: 0.38; filter: drop-shadow(0 0 28px #ff3333) drop-shadow(0 0 50px #8b0000) }
+        }
+        @keyframes outerRingRotate {
+            0% { transform: translate(-50%, -50%) rotate(0deg) }
+            100% { transform: translate(-50%, -50%) rotate(-360deg) }
         }
 
         .top-frame {
@@ -245,9 +206,7 @@
             touch-action: pan-x
         }
 
-        .top-nav::-webkit-scrollbar {
-            display: none
-        }
+        .top-nav::-webkit-scrollbar { display: none }
 
         .nav-btn {
             background: rgba(255, 0, 0, 0.08);
@@ -267,9 +226,7 @@
             flex-shrink: 0
         }
 
-        .nav-btn:active {
-            background: rgba(255, 0, 0, 0.3)
-        }
+        .nav-btn:active { background: rgba(255, 0, 0, 0.3) }
 
         .profile-header {
             position: fixed;
@@ -302,14 +259,6 @@
             border: 2px solid #ff0000;
             object-fit: cover;
             box-shadow: 0 0 15px rgba(255, 0, 0, 0.6)
-        }
-
-        #mainSite {
-            display: block;
-            position: fixed;
-            inset: 0;
-            width: 100%;
-            height: 100%
         }
 
         .wave-layer {
@@ -492,10 +441,60 @@
             height: clamp(380px, 80vw, 700px)
         }
 
+        /* ===== PENTAGRAM CONTAINER ===== */
+        .pentagram-bg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 92%;
+            height: 92%;
+            transform: translate(-50%, -50%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        /* Slow rotating outer dashed ring */
+        .penta-outer-ring {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 96%;
+            height: 96%;
+            border-radius: 50%;
+            border: 1.5px dashed rgba(255, 0, 0, 0.25);
+            animation: outerRingRotate 30s linear infinite;
+            transform: translate(-50%, -50%);
+        }
+
+        /* SVG pentagram star */
+        .penta-svg {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 100%;
+            height: 100%;
+            transform: translate(-50%, -50%);
+            animation: pentagramPulse 4s ease-in-out infinite;
+        }
+
+        /* Skull in center */
+        .penta-skull {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: clamp(38px, 9vw, 72px);
+            line-height: 1;
+            animation: skullGlow 3s ease-in-out infinite;
+            user-select: none;
+            z-index: 2;
+        }
+
         .hexagram-menu {
             position: relative;
             width: 100%;
-            height: 100%
+            height: 100%;
+            z-index: 4
         }
 
         .btn {
@@ -508,7 +507,6 @@
             background-color: transparent;
             cursor: pointer;
             opacity: 0;
-            animation: fadeUp 0.8s ease forwards;
             min-height: 90px;
             touch-action: manipulation;
             animation: hexGlow 3s ease-in-out infinite;
@@ -574,7 +572,7 @@
             justify-content: center
         }
 
-        .bottom-buttons{
+        .bottom-buttons {
             position: fixed;
             bottom: 15px;
             left: 50%;
@@ -584,7 +582,7 @@
             z-index: 10005
         }
 
-        .bottom-btn{
+        .bottom-btn {
             width: clamp(70px, 20vw, 110px);
             height: clamp(60px, 18vw, 90px);
             background-size: contain;
@@ -599,89 +597,37 @@
             border: none
         }
 
-        .bottom-btn:nth-child(1) {
-            animation-delay: 1.4s
-        }
-
-        .bottom-btn:nth-child(2) {
-            animation-delay: 1.5s
-        }
-
-        .bottom-btn:nth-child(3) {
-            animation-delay: 1.6s
-        }
-
-        .bottom-btn:nth-child(4) {
-            animation-delay: 1.7s
-        }
-
-        .bottom-btn:nth-child(5) {
-            animation-delay: 1.8s
-        }
+        .bottom-btn:nth-child(1) { animation-delay: 1.4s }
+        .bottom-btn:nth-child(2) { animation-delay: 1.5s }
+        .bottom-btn:nth-child(3) { animation-delay: 1.6s }
+        .bottom-btn:nth-child(4) { animation-delay: 1.7s }
+        .bottom-btn:nth-child(5) { animation-delay: 1.8s }
 
         @media (max-width: 768px) {
-            .top-nav {
-                padding: 0 10px;
-                justify-content: flex-start
-            }
-
-            .nav-btn {
-                font-size: 11px;
-                padding: 5px 8px
-            }
-
-            .fighter-grid {
-                width: 96vw;
-                height: clamp(360px, 90vw, 600px)
-            }
-
-            .btn {
-                width: 28%;
-                min-height: 80px
-            }
-
-            #character3D {
-                width: 40%;
-                height: 40%
-            }
+            .top-nav { padding: 0 10px; justify-content: flex-start }
+            .nav-btn { font-size: 11px; padding: 5px 8px }
+            .fighter-grid { width: 96vw; height: clamp(360px, 90vw, 600px) }
+            .btn { width: 28%; min-height: 80px }
+            #character3D { width: 40%; height: 40% }
         }
 
         @media (max-width: 480px) {
-            .profile-name {
-                font-size: 13px;
-                padding: 5px 12px 5px 6px
-            }
-
-            .profile-img {
-                width: 28px;
-                height: 28px
-            }
-
-            .bottom-buttons {
-                gap: 8px;
-                bottom: 10px
-            }
-
-            .btn {
-                width: 30%;
-                min-height: 70px
-            }
-
-        .bottom-btn { 
-            width: clamp(65px, 19vw, 95px); 
-            height: clamp(55px, 17vw, 80px) 
+            .profile-name { font-size: 13px; padding: 5px 12px 5px 6px }
+            .profile-img { width: 28px; height: 28px }
+            .bottom-buttons { gap: 8px; bottom: 10px }
+            .btn { width: 30%; min-height: 70px }
+            .bottom-btn { width: clamp(65px, 19vw, 95px); height: clamp(55px, 17vw, 80px) }
         }
-        }
-
-/*🔱🔱🔥إغلاق ستايل CSS🔥🔱🔱*/
-</style>
+    </style>
 </head>
 <body>
     <audio id="clickSound" src="clickSound.mp3" preload="auto"></audio>
     <div id="waveLayer" class="wave-layer"></div>
+
     <div id="portalOverlay" class="portal-overlay">
         <div class="portal-circle"></div>
     </div>
+
     <div id="exitPopup" class="exit-popup">
         <div class="exit-box">
             <h2>هل تريد الخروج؟</h2>
@@ -691,6 +637,7 @@
             </div>
         </div>
     </div>
+
     <div id="menuPage" class="menu-page">
         <div class="menu-header">
             <h2>قسم الأنمي</h2>
@@ -713,11 +660,13 @@
             </div>
         </div>
     </div>
+
     <div class="top-frame">
         <div class="top-frame-text">
             <span>مرحبا بك في Kage No Teio</span>
         </div>
     </div>
+
     <div class="top-nav">
         <button class="nav-btn" onclick="openMenu()">أنمي</button>
         <button class="nav-btn">فضائح عصابات</button>
@@ -725,16 +674,101 @@
         <button class="nav-btn">ترسيم أعضاء</button>
         <button class="nav-btn">أسماء الظلال</button>
     </div>
+
     <div class="profile-header">
         <div class="profile-name">
             <img src="20260420_113331.jpg" class="profile-img">
             <span>اسم المستخدم</span>
         </div>
     </div>
+
     <div class="site-wrapper">
         <img src="20260429_130547.png" class="logo">
         <div class="container">
             <div class="fighter-grid">
+
+                <!-- ===== PENTAGRAM BACKGROUND ===== -->
+                <div class="pentagram-bg">
+                    <!-- Outer rotating dashed ring -->
+                    <div class="penta-outer-ring"></div>
+
+                    <!-- SVG Pentagram Star -->
+                    <svg class="penta-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <filter id="redGlow">
+                                <feGaussianBlur stdDeviation="4" result="blur"/>
+                                <feMerge>
+                                    <feMergeNode in="blur"/>
+                                    <feMergeNode in="SourceGraphic"/>
+                                </feMerge>
+                            </filter>
+                        </defs>
+
+                        <!-- Outer circle -->
+                        <circle cx="200" cy="200" r="188"
+                            fill="none"
+                            stroke="rgba(180,0,0,0.35)"
+                            stroke-width="1.2"
+                            filter="url(#redGlow)"
+                        />
+
+                        <!-- Inner circle -->
+                        <circle cx="200" cy="200" r="155"
+                            fill="none"
+                            stroke="rgba(255,0,0,0.15)"
+                            stroke-width="0.8"
+                        />
+
+                        <!--
+                            Pentagram points at angles: 270°, 342°, 54°, 126°, 198°
+                            (top point first, going clockwise)
+                            r=188 from center (200,200)
+                        -->
+                        <polygon
+                            points="
+                                200,12
+                                237.7,120.6
+                                354.3,120.6
+                                260.3,188.2
+                                295.5,297.4
+                                200,229.2
+                                104.5,297.4
+                                139.7,188.2
+                                45.7,120.6
+                                162.3,120.6
+                            "
+                            fill="rgba(120,0,0,0.12)"
+                            stroke="rgba(255,0,0,0.45)"
+                            stroke-width="1.5"
+                            stroke-linejoin="round"
+                            filter="url(#redGlow)"
+                        />
+
+                        <!-- Inner pentagon outline (connecting tips of pentagram inward) -->
+                        <polygon
+                            points="
+                                200,80
+                                228.5,168.5
+                                322,168.5
+                                247.5,221
+                                275.5,310
+                                200,257
+                                124.5,310
+                                152.5,221
+                                78,168.5
+                                171.5,168.5
+                            "
+                            fill="none"
+                            stroke="rgba(180,0,0,0.18)"
+                            stroke-width="0.8"
+                        />
+                    </svg>
+
+                    <!-- Skull emoji in center -->
+                    <div class="penta-skull">💀</div>
+                </div>
+                <!-- ===== END PENTAGRAM ===== -->
+
                 <div class="hexagram-menu">
                     <button class="btn"></button>
                     <button class="btn"></button>
@@ -747,6 +781,7 @@
             </div>
         </div>
     </div>
+
     <div class="bottom-buttons">
         <button class="bottom-btn"></button>
         <button class="bottom-btn"></button>
@@ -754,37 +789,25 @@
         <button class="bottom-btn"></button>
         <button class="bottom-btn"></button>
     </div>
+
 <script>
-let menuData = {
-"أنمي": "قسم الأنمي",
-"فضائح عصابات": "أرشيف الفضائح",
-"قوانين الدعس": "قوانين الطائفة",
-"ترسيم أعضاء": "نظام الترسيم",
-"أسماء الظلال": "قائمة الظلال",
-"تحميل ملفات": "قسم التحميل",
-"B1": "زر سفلي 1",
-"B2": "زر سفلي 2",
-"B3": "زر سفلي 3",
-"B4": "زر سفلي 4",
-"B5": "زر سفلي 5",
-"الأرشيف": "قسم الأرشيف",
-"الإعدادات": "إعدادات الحساب",
-"قسم النقاط": "نظام النقاط",
-"قسم شراء وبيع": "متجر المملكة",
-"السجل": "سجل النشاطات",
-"المهام": "المهام اليومية",
-"المتجر": "متجر الأدوات",
-"الرتب": "رتب المملكة",
-"الحلفاء": "قائمة الحلفاء",
-"الدعم": "تواصل مع الإدارة"
-};
+    let menuData = {
+        "أنمي": "قسم الأنمي",
+        "فضائح عصابات": "أرشيف الفضائح",
+        "قوانين الدعس": "قوانين الطائفة",
+        "ترسيم أعضاء": "نظام الترسيم",
+        "أسماء الظلال": "قائمة الظلال",
+        "تحميل ملفات": "قسم التحميل",
+        "B1": "زر سفلي 1",
+        "B2": "زر سفلي 2",
+        "B3": "زر سفلي 3",
+        "B4": "زر سفلي 4",
+        "B5": "زر سفلي 5"
+    };
 
     function playClick() {
         const audio = document.getElementById('clickSound');
-        if (audio) {
-            audio.currentTime = 0;
-            audio.play().catch(() => {})
-        }
+        if (audio) { audio.currentTime = 0; audio.play().catch(() => {}) }
     }
 
     function openPortal(callback) {
@@ -796,6 +819,16 @@ let menuData = {
         }, 800)
     }
 
+    function openMenu() {
+        playClick();
+        document.getElementById("menuPage").classList.add("active");
+    }
+
+    function closeMenu() {
+        playClick();
+        document.getElementById("menuPage").classList.remove("active");
+    }
+
     window.openFancyMenu = function(title) {
         playClick();
         openPortal()
@@ -803,22 +836,20 @@ let menuData = {
 
     history.pushState({ page: "home" }, "");
 
-document.addEventListener('DOMContentLoaded', () => {
-    setTimeout(() => {
-        document.querySelectorAll('.btn').forEach(btn => {
-            btn.style.opacity = '1'
-        })
-    }, 100)
+    document.addEventListener('DOMContentLoaded', () => {
+        setTimeout(() => {
+            document.querySelectorAll('.btn').forEach(btn => {
+                btn.style.opacity = '1'
+            })
+        }, 100)
 
-    const cards = document.querySelectorAll('.anime-card');
-    cards.forEach(card => {
-        card.addEventListener('click', () => {
-            playClick();
+        const cards = document.querySelectorAll('.anime-card');
+        cards.forEach(card => {
+            card.addEventListener('click', () => { playClick() });
         });
-    });
 
-    filterAnime('naruto');
-})
+        filterAnime('naruto');
+    });
 
     window.confirmExit = function() {
         playClick();
@@ -844,10 +875,7 @@ document.addEventListener('DOMContentLoaded', () => {
         wave.style.left = e.clientX + "px";
         wave.style.top = e.clientY + "px";
         waveLayer.appendChild(wave);
-        setTimeout(() => {
-            wave.remove();
-            canWave = true
-        }, 1200)
+        setTimeout(() => { wave.remove(); canWave = true }, 1200)
     }
 
     document.querySelectorAll('button,.btn,.bottom-btn,.nav-btn').forEach(el => {
@@ -855,33 +883,26 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.addEventListener('touchmove', function(e) {
-        if (!e.target.closest('.top-nav')) {
-            e.preventDefault()
-        }
+        if (!e.target.closest('.top-nav')) { e.preventDefault() }
     }, { passive: false });
 
-function filterAnime(category, event) {
-    if (event) {
-        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-        event.target.classList.add('active');
-    } else {
-        document.querySelectorAll('.tab').forEach(t => {
-            if (t.innerText === category) {
-                t.classList.add('active');
-            } else {
-                t.classList.remove('active');
-            }
+    function filterAnime(category, event) {
+        if (event) {
+            document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+            event.target.classList.add('active');
+        } else {
+            document.querySelectorAll('.tab').forEach(t => {
+                if (t.innerText === category) {
+                    t.classList.add('active');
+                } else {
+                    t.classList.remove('active');
+                }
+            });
+        }
+        document.querySelectorAll('.anime-card').forEach(card => {
+            card.style.display = (card.dataset.cat === category) ? 'block' : 'none';
         });
     }
-    document.querySelectorAll('.anime-card').forEach(card => {
-        if(card.dataset.cat === category) {
-            card.style.display = 'block';
-        } else {
-            card.style.display = 'none';
-        }
-    });
-}
-
 </script>
 </body>
 </html>
