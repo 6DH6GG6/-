@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>طائفة الظلام</title>
+<title>Kage No Teio</title>
 
 <style>
 
@@ -11,351 +11,279 @@
 margin:0;
 padding:0;
 box-sizing:border-box;
-font-family:tahoma;
--webkit-tap-highlight-color:transparent;
+font-family:Tahoma,sans-serif;
 }
 
 body{
-background:#000;
-overflow-x:hidden;
-min-height:100vh;
-color:white;
-}
-
-/* شاشة الاستيقاظ */
-
-.wakeup{
-position:fixed;
-inset:0;
-background:black;
-z-index:9999;
-animation:wakeup 4s ease forwards;
-pointer-events:none;
-}
-
-@keyframes wakeup{
-0%{
-opacity:1;
-}
-100%{
-opacity:0;
-visibility:hidden;
-}
-}
-
-/* خلفية */
-
-.bg{
-position:fixed;
-inset:0;
+width:100%;
+height:100vh;
+overflow:hidden;
 background:
 radial-gradient(circle at center,
-rgba(255,0,0,0.18),
-transparent 60%),
-url('background.jpg');
-background-size:cover;
-background-position:center;
-opacity:0.35;
-z-index:-1;
-animation:bgMove 8s linear infinite;
-}
-
-@keyframes bgMove{
-0%{
-transform:scale(1);
-}
-50%{
-transform:scale(1.05);
-}
-100%{
-transform:scale(1);
-}
-}
-
-/* الشريط العلوي */
-
-.top-news{
-width:100%;
-height:55px;
-overflow:hidden;
-display:flex;
-align-items:center;
-border-bottom:2px solid #ff0000;
-background:linear-gradient(90deg,#3b003b,#ff0000,#3b003b);
-background-size:300% 300%;
-animation:gradientMove 6s infinite linear;
+rgba(255,0,0,0.35) 0%,
+rgba(80,0,0,0.15) 25%,
+rgba(0,0,0,1) 70%);
+color:white;
 position:relative;
 }
 
-@keyframes gradientMove{
-0%{
-background-position:0% 50%;
-}
-100%{
-background-position:100% 50%;
-}
-}
-
-.news-text{
+/* ★ النجوم ★ */
+body::before{
+content:"";
 position:absolute;
-white-space:nowrap;
-font-size:20px;
-font-weight:bold;
-color:white;
-text-shadow:
-0 0 5px red,
-0 0 10px red,
-0 0 20px red;
-animation:moveText 10s linear infinite,
-glitch 0.3s infinite;
+inset:0;
+background-image:
+radial-gradient(white 1px, transparent 1px),
+radial-gradient(red 1px, transparent 1px);
+background-size:60px 60px,120px 120px;
+background-position:0 0,30px 30px;
+opacity:.25;
+animation:stars 20s linear infinite;
+pointer-events:none;
 }
 
-@keyframes moveText{
-0%{
-right:-100%;
+@keyframes stars{
+from{
+transform:translateY(0);
 }
-100%{
-right:100%;
-}
-}
-
-@keyframes glitch{
-0%{
-transform:translate(0);
-}
-20%{
-transform:translate(-1px,1px);
-}
-40%{
-transform:translate(1px,-1px);
-}
-60%{
-transform:translate(-2px,0);
-}
-80%{
-transform:translate(2px,1px);
-}
-100%{
-transform:translate(0);
+to{
+transform:translateY(-80px);
 }
 }
 
-/* شريط الأزرار */
-
-.menu-bar{
+/* ★ الشريط العلوي ★ */
+.top-alert{
+width:100%;
+height:48px;
+background:linear-gradient(to right,#700,#d00,#700);
 display:flex;
+align-items:center;
+justify-content:center;
+font-size:15px;
+font-weight:bold;
+box-shadow:0 0 20px red;
+position:relative;
+z-index:10;
+}
+
+/* ★ شريط الأزرار ★ */
+.top-menu{
+width:100%;
 overflow-x:auto;
-gap:12px;
-padding:14px;
-background:rgba(0,0,0,0.8);
-border-bottom:2px solid #220000;
+white-space:nowrap;
+background:#050505;
+border-bottom:2px solid #300;
+padding:10px 5px;
+display:flex;
+gap:10px;
 scrollbar-width:none;
 }
 
-.menu-bar::-webkit-scrollbar{
+.top-menu::-webkit-scrollbar{
 display:none;
 }
 
 .menu-btn{
 flex:none;
-padding:12px 24px;
-border:1px solid red;
-background:rgba(255,0,0,0.08);
-color:white;
-border-radius:10px;
-font-size:16px;
-box-shadow:0 0 15px rgba(255,0,0,0.5);
-transition:0.3s;
+padding:12px 20px;
+border-radius:12px;
+background:#120000;
+border:1px solid #500;
+color:#ff5a5a;
+font-weight:bold;
+box-shadow:
+0 0 10px rgba(255,0,0,.3),
+inset 0 0 10px rgba(255,0,0,.2);
+transition:.3s;
 }
 
 .menu-btn:hover{
-background:red;
+background:#300;
 transform:scale(1.05);
 }
 
-/* المطور */
-
-.dev-box{
-width:90%;
-max-width:420px;
-margin:20px auto;
-display:flex;
-align-items:center;
-gap:14px;
-padding:10px;
-border:2px solid red;
-border-radius:40px;
-background:rgba(0,0,0,0.5);
-box-shadow:0 0 20px rgba(255,0,0,0.6);
-}
-
-.dev-icon{
-width:70px;
-height:70px;
-border-radius:50%;
-border:3px solid red;
-padding:5px;
-object-fit:cover;
-background:black;
-}
-
-.dev-name{
-font-size:20px;
-font-weight:bold;
-color:white;
-text-shadow:0 0 10px red;
-}
-
-/* الشعار */
-
-.logo{
-display:flex;
-justify-content:center;
-margin-top:10px;
-margin-bottom:40px;
-}
-
-.logo img{
-width:85%;
-max-width:420px;
-filter:
-drop-shadow(0 0 10px red)
-drop-shadow(0 0 20px red);
-}
-
-/* النجمة السداسية */
-
-.hexagram{
-position:relative;
-width:100%;
-max-width:700px;
-height:600px;
-margin:auto;
-}
-
-/* الأزرار الضخمة */
-
-.demon-btn{
-position:absolute;
-width:140px;
-height:140px;
-background:transparent;
-border:none;
+/* ★ محتوى الصفحة ★ */
+.main{
+height:calc(100vh - 120px);
 display:flex;
 flex-direction:column;
+justify-content:space-between;
+align-items:center;
+padding:10px;
+position:relative;
+}
+
+/* ★ بطاقة الحساب ★ */
+.profile-box{
+position:absolute;
+top:10px;
+right:10px;
+display:flex;
+align-items:center;
+gap:10px;
+padding:8px 15px;
+border-radius:40px;
+background:rgba(20,0,0,.9);
+border:2px solid red;
+box-shadow:0 0 20px red;
+z-index:5;
+}
+
+.profile-box img{
+width:55px;
+height:55px;
+border-radius:50%;
+border:2px solid #ff4444;
+object-fit:cover;
+}
+
+.profile-name{
+font-weight:bold;
+color:#ff4444;
+font-size:18px;
+}
+
+/* ★ الشعار ★ */
+.logo{
+margin-top:60px;
+text-align:center;
+}
+
+.logo h1{
+font-size:42px;
+color:#fff;
+text-shadow:
+0 0 10px red,
+0 0 20px red,
+0 0 40px red;
+letter-spacing:3px;
+}
+
+.logo span{
+display:block;
+margin-top:5px;
+font-size:18px;
+color:#ff4444;
+}
+
+/* ★ شبكة البوابات ★ */
+.portal-grid{
+width:100%;
+max-width:900px;
+display:grid;
+grid-template-columns:repeat(3,1fr);
+gap:35px;
+justify-items:center;
+padding:20px;
+}
+
+/* ★ البوابات ★ */
+.portal{
+width:150px;
+height:150px;
+border-radius:50%;
+position:relative;
+background:
+radial-gradient(circle,
+rgba(255,80,0,.8),
+rgba(80,0,0,.95));
+border:4px solid #ff3300;
+box-shadow:
+0 0 20px red,
+0 0 50px rgba(255,0,0,.7),
+inset 0 0 30px orange;
+display:flex;
 align-items:center;
 justify-content:center;
+overflow:hidden;
+transition:.4s;
 }
 
-.demon-btn img{
-width:140px;
-height:140px;
-object-fit:contain;
-pointer-events:none;
-filter:
-drop-shadow(0 0 10px red)
-drop-shadow(0 0 25px red);
-transition:0.4s;
+.portal:hover{
+transform:scale(1.08) rotate(2deg);
+box-shadow:
+0 0 30px red,
+0 0 70px orange;
 }
 
-.demon-btn:hover img{
-transform:scale(1.1);
+.portal img{
+width:85%;
+height:85%;
+object-fit:cover;
+border-radius:50%;
+border:3px solid rgba(255,255,255,.15);
 }
 
-.btn-name{
-margin-top:8px;
-padding:6px 18px;
-border:2px solid red;
-border-radius:14px;
-background:rgba(255,0,0,0.1);
-color:white;
-font-size:15px;
-box-shadow:0 0 12px red;
-}
-
-/* ترتيب النجمة */
-
-.btn1{
-top:0;
+/* ★ اسم البوابة ★ */
+.portal-title{
+position:absolute;
+bottom:-28px;
 left:50%;
 transform:translateX(-50%);
+background:linear-gradient(to right,#700,#d00,#700);
+padding:6px 15px;
+border-radius:20px;
+font-size:13px;
+white-space:nowrap;
+box-shadow:0 0 10px red;
 }
 
-.btn2{
-top:160px;
-right:10%;
-}
-
-.btn3{
-top:160px;
-left:10%;
-}
-
-.btn4{
-bottom:120px;
-left:50%;
-transform:translateX(-50%);
-}
-
-.btn5{
-bottom:0;
-right:10%;
-}
-
-.btn6{
-bottom:0;
-left:10%;
-}
-
-/* الشريط السفلي */
-
+/* ★ الشريط السفلي ★ */
 .bottom-bar{
-margin-top:60px;
 width:100%;
 display:flex;
 justify-content:space-around;
 align-items:center;
-padding:14px;
-background:rgba(0,0,0,0.9);
-border-top:2px solid red;
-position:sticky;
-bottom:0;
+padding:10px 0;
 }
 
-.bottom-btn{
-width:60px;
-height:60px;
+.bottom-icon{
+width:65px;
+height:65px;
 border-radius:20px;
-background:rgba(255,0,0,0.08);
-border:2px solid red;
+background:
+linear-gradient(to bottom,#300,#100);
 display:flex;
 align-items:center;
 justify-content:center;
-font-size:24px;
-box-shadow:0 0 15px rgba(255,0,0,0.5);
+font-size:28px;
+box-shadow:
+0 0 15px rgba(255,0,0,.5);
+border:2px solid #500;
+transition:.3s;
 }
 
-/* الهواتف */
+.bottom-icon:hover{
+transform:translateY(-5px) scale(1.05);
+box-shadow:0 0 20px red;
+}
 
+/* ★ الهاتف ★ */
 @media(max-width:700px){
 
-.hexagram{
-height:520px;
+.logo h1{
+font-size:28px;
 }
 
-.demon-btn{
-width:110px;
-height:110px;
+.portal-grid{
+grid-template-columns:repeat(2,1fr);
+gap:50px 10px;
 }
 
-.demon-btn img{
-width:110px;
-height:110px;
+.portal{
+width:120px;
+height:120px;
 }
 
-.btn-name{
-font-size:13px;
-padding:5px 14px;
+.profile-box{
+transform:scale(.85);
+transform-origin:top right;
+}
+
+.bottom-icon{
+width:55px;
+height:55px;
+font-size:22px;
 }
 
 }
@@ -365,132 +293,95 @@ padding:5px 14px;
 
 <body>
 
-<div class="wakeup"></div>
-
-<div class="bg"></div>
-
-<!-- الشريط المتحرك -->
-
-<div class="top-news">
-
-<div class="news-text" id="newsText">
-طائفة الظلام 2019
+<!-- ★ الشريط الأحمر ★ -->
+<div class="top-alert">
+☠ الظلال تترس في الظلام ☠ طائفة الظلام 2019
 </div>
 
-</div>
+<!-- ★ شريط التنقل ★ -->
+<div class="top-menu">
 
-<!-- شريط الأزرار -->
-
-<div class="menu-bar">
-
-<div class="menu-btn">الرئيسية</div>
-<div class="menu-btn">الممالك</div>
-<div class="menu-btn">الظلال</div>
-<div class="menu-btn">الأسرار</div>
-<div class="menu-btn">المعرض</div>
-<div class="menu-btn">المدونة</div>
+<div class="menu-btn">الأرشيف</div>
+<div class="menu-btn">الإعدادات</div>
+<div class="menu-btn">قسم النقاط</div>
+<div class="menu-btn">قسم شراء وبيع</div>
+<div class="menu-btn">السجل</div>
+<div class="menu-btn">المهام</div>
+<div class="menu-btn">المتجر</div>
 <div class="menu-btn">الرتب</div>
-<div class="menu-btn">الأعضاء</div>
+<div class="menu-btn">الزعماء</div>
 
 </div>
 
-<!-- المطور -->
+<!-- ★ الصفحة ★ -->
+<div class="main">
 
-<div class="dev-box">
+<!-- ★ الحساب ★ -->
+<div class="profile-box">
 
-<img src="developer.jpg" class="dev-icon">
-
-<div class="dev-name">
-Shadow Legend
+<div class="profile-name">
+Kage No Teio
 </div>
 
+<img src="https://i.imgur.com/8Km9tLL.jpeg">
+
 </div>
 
-<!-- الشعار -->
-
+<!-- ★ الشعار ★ -->
 <div class="logo">
 
-<img src="logo.png">
+<h1>KAGE NO TEIO</h1>
+<span>SHADOW ORGANIZATION</span>
 
 </div>
 
-<!-- الأزرار -->
+<!-- ★ البوابات ★ -->
+<div class="portal-grid">
 
-<div class="hexagram">
+<div class="portal">
+<img src="https://i.imgur.com/8Km9tLL.jpeg">
+<div class="portal-title">زعيم الظلال</div>
+</div>
 
-<button class="demon-btn btn1">
-<img src="btn1.png">
-<div class="btn-name">البوابة</div>
-</button>
+<div class="portal">
+<img src="https://i.imgur.com/tXqF8Jw.jpeg">
+<div class="portal-title">دار النار</div>
+</div>
 
-<button class="demon-btn btn2">
-<img src="btn2.png">
-<div class="btn-name">الممالك</div>
-</button>
+<div class="portal">
+<img src="https://i.imgur.com/6VBx3io.jpeg">
+<div class="portal-title">قسم المهام</div>
+</div>
 
-<button class="demon-btn btn3">
-<img src="btn3.png">
-<div class="btn-name">الظلال</div>
-</button>
+<div class="portal">
+<img src="https://i.imgur.com/mYmmbrp.jpeg">
+<div class="portal-title">مركز الأرواح</div>
+</div>
 
-<button class="demon-btn btn4">
-<img src="btn4.png">
-<div class="btn-name">الأسرار</div>
-</button>
+<div class="portal">
+<img src="https://i.imgur.com/oYiTqum.jpeg">
+<div class="portal-title">بوابة الجحيم</div>
+</div>
 
-<button class="demon-btn btn5">
-<img src="btn5.png">
-<div class="btn-name">اللعنة</div>
-</button>
-
-<button class="demon-btn btn6">
-<img src="btn6.png">
-<div class="btn-name">النخبة</div>
-</button>
+<div class="portal">
+<img src="https://i.imgur.com/GZy7GQp.jpeg">
+<div class="portal-title">الطائفة</div>
+</div>
 
 </div>
 
-<!-- الشريط السفلي -->
-
+<!-- ★ الشريط السفلي ★ -->
 <div class="bottom-bar">
 
-<div class="bottom-btn">🏰</div>
-<div class="bottom-btn">📜</div>
-<div class="bottom-btn">🎮</div>
-<div class="bottom-btn">💰</div>
-<div class="bottom-btn">🤖</div>
+<div class="bottom-icon">🏆</div>
+<div class="bottom-icon">📰</div>
+<div class="bottom-icon">🎮</div>
+<div class="bottom-icon">💰</div>
+<div class="bottom-icon">🤖</div>
 
 </div>
 
-<script>
-
-/* النصوص */
-
-const texts = [
-
-"طائفة الظلام 2019",
-"الظلال تتربص في الظلام",
-"عالم الغموض والأسرار"
-
-];
-
-let index = 0;
-
-const news = document.getElementById("newsText");
-
-setInterval(()=>{
-
-index++;
-
-if(index >= texts.length){
-index = 0;
-}
-
-news.innerText = texts[index];
-
-},10000);
-
-</script>
+</div>
 
 </body>
 </html>
