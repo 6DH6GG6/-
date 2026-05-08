@@ -5,275 +5,395 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>Kage No Teio</title>
 <style>
+:root{
+  --red:#ff0000;--red2:#8b0000;--purple:#9900ff;--purple2:#cc66ff;
+  --green:#00ff88;--green2:#00cc66;
+  --bg:#000;--card:rgba(0,0,0,.88)
+}
 *{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif;-webkit-tap-highlight-color:transparent}
 html,body{height:100%;overflow:hidden;position:fixed;width:100%;touch-action:none}
 body{background:#000;color:#fff}
-#space-canvas{position:fixed;inset:0;z-index:0}
+#bg-canvas{position:fixed;inset:0;z-index:0}
 
-@keyframes gradientShift{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
-@keyframes scrollTextLeft{from{left:-100%}to{left:100%}}
-.top-frame{
-  position:fixed;top:0;left:0;right:0;height:38px;
-  background:linear-gradient(270deg,#4a0080,#cc00ff,#8b0000,#ff1a1a,#4a0080);
-  background-size:600% 600%;animation:gradientShift 9s ease infinite;
-  z-index:10007;display:flex;align-items:center;overflow:hidden;
-  border-bottom:1px solid rgba(180,0,255,0.45)
-}
-.top-frame-text{position:absolute;width:100%;height:100%;display:flex;align-items:center;overflow:hidden;pointer-events:none}
-.top-frame-text span{position:absolute;color:#fff;font-weight:bold;font-size:13px;white-space:nowrap;text-shadow:0 0 6px #000;animation:scrollTextLeft 18s linear infinite}
-
+/* ══ شريط التنقل ══ */
 .top-nav{
-  position:fixed;top:38px;left:0;right:0;height:48px;
-  background:rgba(0,0,0,0.78);border-bottom:1px solid rgba(160,0,255,0.3);
-  backdrop-filter:blur(10px);z-index:10006;
-  display:flex;align-items:center;justify-content:center;gap:6px;padding:0 10px
+  position:fixed;top:0;left:0;right:0;height:48px;
+  background:rgba(0,0,0,.82);border-bottom:1px solid rgba(160,0,255,.3);
+  backdrop-filter:blur(12px);z-index:10006;
+  display:flex;align-items:center;justify-content:center;gap:4px;padding:0 8px;
+  overflow-x:auto;overflow-y:hidden;
 }
+.top-nav::-webkit-scrollbar{display:none}
 .nav-btn{
-  background:rgba(130,0,255,0.07);border:1px solid rgba(160,0,255,0.35);
-  border-radius:6px;color:#cc66ff;font-size:13px;font-weight:bold;
-  padding:6px 16px;cursor:pointer;white-space:nowrap;
-  text-shadow:0 0 8px #9900ff;min-height:32px;transition:all .25s
+  background:rgba(130,0,255,.07);border:1px solid rgba(160,0,255,.35);
+  border-radius:6px;color:var(--purple2);font-size:12px;font-weight:bold;
+  padding:5px 12px;cursor:pointer;white-space:nowrap;
+  text-shadow:0 0 8px var(--purple);min-height:30px;transition:all .25s;flex-shrink:0
 }
-.nav-btn:hover,.nav-btn.active{background:rgba(160,0,255,0.22);box-shadow:0 0 14px rgba(160,0,255,0.55);color:#fff}
+.nav-btn:hover,.nav-btn.active{
+  background:rgba(160,0,255,.22);box-shadow:0 0 14px rgba(160,0,255,.55);color:#fff
+}
 
-.profile-header{position:fixed;top:96px;right:15px;display:flex;align-items:center;z-index:10005}
+/* ══ أيقونة الملف الشخصي (بدون إطار أعلى) ══ */
+.profile-header{position:fixed;top:56px;right:12px;display:flex;align-items:center;z-index:10005}
 .profile-wrap{position:relative;display:inline-flex;align-items:center}
 #halo-canvas{position:absolute;pointer-events:none;z-index:0}
 .profile-name{
   position:relative;z-index:1;
-  background:rgba(0,0,0,0.82);color:#cc66ff;font-size:14px;font-weight:bold;
-  padding:5px 14px 5px 5px;border-radius:50px;border:2px solid #9900ff;
-  display:flex;align-items:center;gap:8px
+  background:rgba(0,0,0,.85);color:var(--purple2);font-size:13px;font-weight:bold;
+  padding:4px 12px 4px 4px;border-radius:50px;border:2px solid var(--purple);
+  display:flex;align-items:center;gap:7px
 }
 .profile-img{
-  width:30px;height:30px;border-radius:50%;border:2px solid #9900ff;
+  width:28px;height:28px;border-radius:50%;border:2px solid var(--purple);
   background:radial-gradient(circle,#1a0030,#000);
-  display:flex;align-items:center;justify-content:center;font-size:16px;overflow:hidden
+  display:flex;align-items:center;justify-content:center;font-size:14px;overflow:hidden
 }
 .profile-img img{width:100%;height:100%;object-fit:cover;border-radius:50%}
 
-.page{position:fixed;inset:0;top:86px;z-index:5;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto}
+/* ══ صفحات ══ */
+.page{position:fixed;inset:0;top:48px;z-index:5;opacity:0;pointer-events:none;transition:opacity .3s;overflow-y:auto;overflow-x:hidden}
 .page.active{opacity:1;pointer-events:auto}
-#page-main{display:flex;flex-direction:column;align-items:center;padding-top:50px;padding-bottom:20px}
-.logo{width:clamp(150px,38vw,320px);margin-bottom:16px;filter:drop-shadow(0 0 20px #ff0000) drop-shadow(0 0 40px #8b0000)}
+.page::-webkit-scrollbar{width:4px}
+.page::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px}
 
-@keyframes hexStarPulse{
-  0%,100%{opacity:.2;filter:drop-shadow(0 0 18px #ff0000) drop-shadow(0 0 40px #8b0000)}
-  50%{opacity:.38;filter:drop-shadow(0 0 35px #ff1111) drop-shadow(0 0 70px #ff0000)}
-}
-@keyframes outerRingRotate{
-  0%{transform:translate(-50%,-50%) rotate(0deg)}
-  100%{transform:translate(-50%,-50%) rotate(-360deg)}
-}
-.fighter-grid{width:clamp(340px,88vw,820px);height:clamp(340px,85vw,660px);position:relative}
+/* ══ صفحة رئيسية ══ */
+#page-main{display:flex;flex-direction:column;align-items:center;padding-top:60px;padding-bottom:30px}
+.logo{width:clamp(120px,32vw,260px);margin-bottom:8px;
+  filter:drop-shadow(0 0 18px var(--red)) drop-shadow(0 0 36px var(--red2))}
+
+.fighter-grid{width:clamp(300px,86vw,760px);height:clamp(300px,82vw,600px);position:relative}
 .hexagram-bg{position:absolute;top:50%;left:50%;width:90%;height:90%;transform:translate(-50%,-50%);pointer-events:none;z-index:1}
-.hex-outer-ring{position:absolute;top:50%;left:50%;width:98%;height:98%;border-radius:50%;border:1.5px dashed rgba(255,0,0,.22);animation:outerRingRotate 32s linear infinite;transform:translate(-50%,-50%)}
+
+@keyframes outerRingRotate{0%{transform:translate(-50%,-50%) rotate(0)}100%{transform:translate(-50%,-50%) rotate(-360deg)}}
+@keyframes hexStarPulse{
+  0%,100%{opacity:.18;filter:drop-shadow(0 0 16px var(--red)) drop-shadow(0 0 38px var(--red2))}
+  50%{opacity:.36;filter:drop-shadow(0 0 32px #ff1111) drop-shadow(0 0 65px var(--red))}
+}
+.hex-outer-ring{position:absolute;top:50%;left:50%;width:98%;height:98%;border-radius:50%;border:1.5px dashed rgba(255,0,0,.2);animation:outerRingRotate 32s linear infinite;transform:translate(-50%,-50%)}
 .hex-svg{position:absolute;top:50%;left:50%;width:100%;height:100%;transform:translate(-50%,-50%);animation:hexStarPulse 4s ease-in-out infinite}
+
 .hexagram-menu{position:relative;width:100%;height:100%;z-index:4}
 .btn{
-  position:absolute;width:26%;aspect-ratio:1/1;min-height:85px;
+  position:absolute;width:26%;aspect-ratio:1/1;min-height:80px;
   background:transparent;border:none;outline:none;
   cursor:pointer;touch-action:manipulation;border-radius:14px;
-  transition:transform .15s;overflow:visible;padding:0
+  transition:transform .15s;overflow:visible;padding:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px
 }
-.btn:active{transform:scale(.93)!important}
-.btn:nth-child(1):active,.btn:nth-child(4):active{transform:translateX(-50%) scale(.93)!important}
+.btn:active{transform:scale(.91)!important}
+.btn:nth-child(1):active,.btn:nth-child(4):active{transform:translateX(-50%) scale(.91)!important}
 .btn:nth-child(1){top:0;left:50%;transform:translateX(-50%)}
-.btn:nth-child(2){top:18%;right:4%}
-.btn:nth-child(3){bottom:18%;right:4%}
+.btn:nth-child(2){top:18%;right:3%}
+.btn:nth-child(3){bottom:18%;right:3%}
 .btn:nth-child(4){bottom:0;left:50%;transform:translateX(-50%)}
-.btn:nth-child(5){bottom:18%;left:4%}
-.btn:nth-child(6){top:18%;left:4%}
+.btn:nth-child(5){bottom:18%;left:3%}
+.btn:nth-child(6){top:18%;left:3%}
+.btn-icon{font-size:clamp(18px,4.5vw,28px);filter:drop-shadow(0 0 6px rgba(255,0,0,.7))}
+.btn-label{
+  font-size:clamp(7px,1.8vw,10px);color:rgba(255,150,150,.85);
+  text-shadow:0 0 6px var(--red);text-align:center;line-height:1.2;
+  max-width:90%;word-break:break-word
+}
 
+/* ══ القائمة المنبثقة ══ */
 .popup-menu{position:fixed;inset:0;background:rgba(0,0,0,.97);z-index:20000;opacity:0;pointer-events:none;transition:opacity .25s;display:flex;flex-direction:column}
 .popup-menu.active{opacity:1;pointer-events:auto}
-.popup-header{border-bottom:2px solid #9900ff;box-shadow:0 0 22px rgba(153,0,255,.5);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.popup-title{color:#cc66ff;font-size:20px;font-weight:bold;text-shadow:0 0 14px #9900ff}
-.popup-close{background:rgba(153,0,255,.12);border:1px solid rgba(153,0,255,.5);border-radius:8px;color:#cc66ff;padding:7px 18px;cursor:pointer;font-size:13px;font-weight:bold;transition:all .2s}
-.popup-close:active{background:#9900ff;color:#000}
-.popup-body{flex:1;overflow-y:auto;padding:24px 16px}
-.popup-body::-webkit-scrollbar{width:6px}
-.popup-body::-webkit-scrollbar-track{background:#08000f}
-.popup-body::-webkit-scrollbar-thumb{background:#9900ff;border-radius:3px}
-.empty-section{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:16px;opacity:.4}
-.empty-section .big-icon{font-size:64px}
-.empty-section p{font-size:16px;color:#cc66ff;text-align:center;line-height:1.8}
-.section-page{display:flex;align-items:center;justify-content:center;height:100%}
+.popup-header{border-bottom:2px solid var(--purple);box-shadow:0 0 20px rgba(153,0,255,.45);padding:12px 18px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.popup-title{color:var(--purple2);font-size:18px;font-weight:bold;text-shadow:0 0 12px var(--purple)}
+.popup-close{background:rgba(153,0,255,.12);border:1px solid rgba(153,0,255,.5);border-radius:8px;color:var(--purple2);padding:6px 16px;cursor:pointer;font-size:13px;font-weight:bold;transition:all .2s}
+.popup-close:active{background:var(--purple);color:#000}
+.popup-body{flex:1;overflow-y:auto;padding:20px 14px}
+.popup-body::-webkit-scrollbar{width:5px}
+.popup-body::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px}
 
-/* ══════════════════════════════
-   🫧  SLIME SECTION STYLES
-══════════════════════════════ */
+/* ══ صفحة المحادثات ══ */
+#page-chat{padding:0}
+.chat-wrapper{min-height:100%;padding:14px 12px 30px;display:flex;flex-direction:column;align-items:center;gap:14px}
+.chat-header-title{
+  font-size:18px;font-weight:bold;color:#fff;
+  text-shadow:0 0 12px rgba(160,0,255,.8);letter-spacing:1px;margin-top:4px
+}
+.chat-tabs{display:flex;gap:8px;width:100%;max-width:440px}
+.chat-tab{
+  flex:1;padding:9px 0;text-align:center;font-size:13px;font-weight:bold;
+  border-radius:10px;cursor:pointer;transition:all .22s;
+  border:1px solid rgba(160,0,255,.3);color:var(--purple2);background:rgba(100,0,200,.06)
+}
+.chat-tab.active{background:rgba(160,0,255,.22);border-color:var(--purple);color:#fff;box-shadow:0 0 12px rgba(160,0,255,.35)}
+.chat-panels{width:100%;max-width:440px}
+.chat-panel{display:none}
+.chat-panel.active{display:flex;flex-direction:column;gap:10px}
+/* شرح الجانب */
+.chat-info-box{
+  background:rgba(100,0,200,.07);border:1px solid rgba(160,0,255,.2);
+  border-radius:12px;padding:13px 14px;font-size:12px;color:rgba(200,150,255,.75);line-height:1.6
+}
+.chat-info-box strong{color:var(--purple2);display:block;margin-bottom:5px;font-size:13px}
+/* صندوق الدردشة */
+.chat-box{
+  background:rgba(0,0,0,.6);border:1px solid rgba(160,0,255,.2);border-radius:12px;
+  height:240px;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:7px
+}
+.chat-box::-webkit-scrollbar{width:4px}
+.chat-box::-webkit-scrollbar-thumb{background:var(--purple);border-radius:2px}
+.chat-msg{display:flex;gap:8px;align-items:flex-end}
+.chat-msg.mine{flex-direction:row-reverse}
+.chat-avatar{width:28px;height:28px;border-radius:50%;background:rgba(130,0,255,.25);border:1.5px solid rgba(130,0,255,.4);display:flex;align-items:center;justify-content:center;font-size:12px;flex-shrink:0;overflow:hidden}
+.chat-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.chat-bubble{
+  max-width:70%;background:rgba(80,0,160,.25);border:1px solid rgba(130,0,255,.25);
+  border-radius:12px 12px 12px 2px;padding:7px 11px;font-size:12px;color:rgba(220,200,255,.9);line-height:1.45
+}
+.chat-msg.mine .chat-bubble{background:rgba(0,80,40,.3);border-color:rgba(0,200,80,.25);border-radius:12px 12px 2px 12px;color:rgba(180,255,220,.9)}
+.chat-name{font-size:9px;color:rgba(160,0,255,.6);margin-bottom:2px}
+.chat-input-row{display:flex;gap:7px}
+.chat-input{
+  flex:1;background:rgba(80,0,160,.1);border:1.5px solid rgba(130,0,255,.25);
+  border-radius:10px;color:#fff;font-size:13px;padding:9px 12px;outline:none;
+  transition:border-color .2s
+}
+.chat-input:focus{border-color:var(--purple)}
+.chat-send-btn{
+  background:linear-gradient(135deg,var(--purple),#6600aa);border:none;
+  border-radius:10px;color:#fff;font-size:18px;padding:0 14px;cursor:pointer;transition:all .2s
+}
+.chat-send-btn:active{transform:scale(.92)}
+.chat-locked{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:120px;gap:8px;opacity:.55
+}
+.chat-locked-icon{font-size:36px}
+.chat-locked p{font-size:12px;color:var(--purple2);text-align:center;line-height:1.5}
+
+/* ══ صفحة سلايم ══ */
+#page-slime{padding:0}
+.slime-wrapper{min-height:100%;padding:14px 12px 40px;display:flex;flex-direction:column;align-items:center;gap:0}
+
 @keyframes floatSlime{0%,100%{transform:translateY(0) rotate(-2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
 @keyframes slimeGlow{
-  0%,100%{box-shadow:0 0 18px #00ff88,0 0 36px #00cc66,inset 0 0 12px rgba(0,255,136,.12)}
-  50%{box-shadow:0 0 32px #00ff88,0 0 64px #00cc66,inset 0 0 22px rgba(0,255,136,.22)}
+  0%,100%{box-shadow:0 0 18px var(--green),0 0 36px var(--green2),inset 0 0 12px rgba(0,255,136,.12)}
+  50%{box-shadow:0 0 32px var(--green),0 0 64px var(--green2),inset 0 0 22px rgba(0,255,136,.22)}
 }
-@keyframes slimeDrip{
-  0%,100%{transform:scaleY(1) translateY(0);opacity:.85}
-  70%{transform:scaleY(1.7) translateY(9px);opacity:.6}
-}
+@keyframes slimeDrip{0%,100%{transform:scaleY(1) translateY(0);opacity:.85}70%{transform:scaleY(1.7) translateY(9px);opacity:.6}}
 @keyframes pulseRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(2.4);opacity:0}}
 @keyframes statusIn{from{transform:translateY(-12px) scale(.93);opacity:0}to{transform:none;opacity:1}}
-@keyframes idGlitch{
-  0%,94%{transform:none;text-shadow:0 0 8px #00ff88}
-  95%{transform:translateX(-3px);text-shadow:-3px 0 #ff0055,3px 0 #00ffee}
-  97%{transform:translateX(3px);text-shadow:3px 0 #ff0055,-3px 0 #00ffee}
-  100%{transform:none;text-shadow:0 0 8px #00ff88}
-}
-@keyframes scanLine{from{top:-8%}to{top:108%}}
 
-#page-slime{background:transparent;padding:0}
-.slime-wrapper{
-  min-height:100%;padding:18px 14px 40px;
-  display:flex;flex-direction:column;align-items:center;gap:0
-}
-
-/* ماسكوت */
 .slime-mascot{display:flex;flex-direction:column;align-items:center;margin-bottom:4px}
 .slime-blob{
-  width:88px;height:72px;
-  background:radial-gradient(ellipse at 38% 32%,#b0ffe0,#00cc66 52%,#004d2a);
+  width:80px;height:66px;
+  background:radial-gradient(ellipse at 38% 32%,#b0ffe0,var(--green2) 52%,#004d2a);
   border-radius:50% 50% 56% 56% / 56% 56% 44% 44%;
   animation:floatSlime 3s ease-in-out infinite,slimeGlow 2.5s ease-in-out infinite;
   position:relative;
 }
 .slime-blob::before{content:'';position:absolute;top:16%;left:18%;width:28%;height:20%;border-radius:50%;background:rgba(255,255,255,.42);transform:rotate(-18deg)}
-.slime-blob::after{content:'👾';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:25px}
-.slime-drip{width:16px;height:24px;background:linear-gradient(to bottom,#00cc66,#00ff88);border-radius:0 0 60% 60%;animation:slimeDrip 2.2s ease-in-out infinite;margin-top:-3px}
-.slime-title-text{
-  font-size:21px;font-weight:bold;letter-spacing:2.5px;
-  background:linear-gradient(90deg,#00ff88,#00ffcc,#00ff88);
-  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
-  margin-top:9px
-}
-.slime-subtitle{font-size:11.5px;color:rgba(0,255,136,.45);letter-spacing:1.5px;margin-top:2px}
+.slime-blob::after{content:'👾';position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:22px}
+.slime-drip{width:15px;height:22px;background:linear-gradient(to bottom,var(--green2),var(--green));border-radius:0 0 60% 60%;animation:slimeDrip 2.2s ease-in-out infinite;margin-top:-3px}
+.slime-title-text{font-size:19px;font-weight:bold;letter-spacing:2px;background:linear-gradient(90deg,var(--green),#00ffcc,var(--green));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-top:7px}
+.slime-subtitle{font-size:11px;color:rgba(0,255,136,.42);letter-spacing:1.5px;margin-top:1px}
 
-/* بطاقة شرح */
 .slime-info-card{
-  width:100%;max-width:430px;
+  width:100%;max-width:420px;
   background:linear-gradient(135deg,rgba(0,28,17,.96),rgba(0,18,11,.98));
-  border:1px solid rgba(0,255,136,.18);border-radius:15px;
-  padding:16px 15px;margin-top:14px;position:relative;overflow:hidden
+  border:1px solid rgba(0,255,136,.18);border-radius:14px;
+  padding:14px 13px;margin-top:12px;position:relative;overflow:hidden
 }
-.slime-info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00ff88,#00ffcc,transparent)}
-/* خط مسح متحرك */
-.slime-info-card::after{
-  content:'';position:absolute;left:0;right:0;height:2px;
-  background:linear-gradient(90deg,transparent,rgba(0,255,136,.18),transparent);
-  animation:scanLine 4s linear infinite;pointer-events:none
-}
-.info-title{font-size:13.5px;font-weight:bold;color:#00ff88;display:flex;align-items:center;gap:7px;margin-bottom:11px}
-.info-title span{font-size:17px}
-.info-list{list-style:none;display:flex;flex-direction:column;gap:8px}
-.info-list li{display:flex;align-items:flex-start;gap:9px;font-size:12px;color:rgba(195,255,225,.8);line-height:1.6}
-.info-list li .dot{width:6px;height:6px;border-radius:50%;background:#00ff88;flex-shrink:0;margin-top:5px;box-shadow:0 0 5px #00ff88}
+.slime-info-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),#00ffcc,transparent)}
+.info-title{font-size:13px;font-weight:bold;color:var(--green);display:flex;align-items:center;gap:7px;margin-bottom:10px}
+.info-title span{font-size:16px}
+.info-list{list-style:none;display:flex;flex-direction:column;gap:7px}
+.info-list li{display:flex;align-items:flex-start;gap:8px;font-size:11.5px;color:rgba(195,255,225,.8);line-height:1.55}
+.info-list li .dot{width:6px;height:6px;border-radius:50%;background:var(--green);flex-shrink:0;margin-top:5px;box-shadow:0 0 5px var(--green)}
 
-/* بطاقة التفعيل */
+/* قسم التفعيل */
 .slime-activate-card{
-  width:100%;max-width:430px;
+  width:100%;max-width:420px;
   background:linear-gradient(135deg,rgba(0,22,13,.97),rgba(0,13,8,.99));
-  border:1px solid rgba(0,255,136,.22);border-radius:15px;
-  padding:18px 15px;margin-top:12px;position:relative;overflow:hidden
+  border:1px solid rgba(0,255,136,.22);border-radius:14px;
+  padding:16px 13px;margin-top:10px;position:relative;overflow:hidden
 }
 .slime-activate-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,#00aa55,transparent)}
-.activate-label{font-size:12.5px;color:rgba(0,255,136,.65);margin-bottom:10px;display:flex;align-items:center;gap:6px}
-.activate-label span{font-size:15px}
-.id-input-row{display:flex;gap:9px;align-items:stretch}
-.id-input{
-  flex:1;background:rgba(0,255,136,.04);
-  border:1.5px solid rgba(0,255,136,.25);border-radius:10px;
-  color:#00ff88;font-size:14.5px;font-family:'Courier New',monospace;
-  padding:10px 13px;outline:none;letter-spacing:1px;
-  transition:border-color .2s,box-shadow .2s;
-  direction:ltr;text-align:left
-}
-.id-input::placeholder{color:rgba(0,255,136,.22);font-size:12px;letter-spacing:0}
-.id-input:focus{border-color:#00ff88;box-shadow:0 0 13px rgba(0,255,136,.22),inset 0 0 7px rgba(0,255,136,.05)}
-.ok-btn{
-  background:linear-gradient(135deg,#00cc66,#009944);
-  border:none;border-radius:10px;color:#000;
-  font-size:15px;font-weight:bold;letter-spacing:.5px;
-  padding:0 20px;cursor:pointer;transition:all .2s;
-  box-shadow:0 0 12px rgba(0,255,136,.28)
-}
-.ok-btn:active{transform:scale(.93);box-shadow:none}
-.ok-btn:hover{background:linear-gradient(135deg,#00ff88,#00cc66);box-shadow:0 0 20px rgba(0,255,136,.5)}
+.activate-label{font-size:12px;color:rgba(0,255,136,.62);margin-bottom:9px;display:flex;align-items:center;gap:6px}
+.id-input-row{display:flex;gap:8px;align-items:stretch}
+.id-input{flex:1;background:rgba(0,255,136,.04);border:1.5px solid rgba(0,255,136,.25);border-radius:10px;color:var(--green);font-size:14px;font-family:'Courier New',monospace;padding:9px 12px;outline:none;letter-spacing:1px;transition:border-color .2s,box-shadow .2s;direction:ltr;text-align:left}
+.id-input::placeholder{color:rgba(0,255,136,.2);font-size:11px;letter-spacing:0}
+.id-input:focus{border-color:var(--green);box-shadow:0 0 12px rgba(0,255,136,.2)}
+.ok-btn{background:linear-gradient(135deg,var(--green2),#009944);border:none;border-radius:10px;color:#000;font-size:14px;font-weight:bold;padding:0 18px;cursor:pointer;transition:all .2s;box-shadow:0 0 10px rgba(0,255,136,.25)}
+.ok-btn:active{transform:scale(.93)}
+.ok-btn:hover{background:linear-gradient(135deg,var(--green),var(--green2))}
 
 /* حالة النتيجة */
-.slime-status{
-  width:100%;max-width:430px;margin-top:10px;
-  border-radius:12px;padding:13px 15px;
-  font-size:12.5px;font-weight:bold;
-  display:none;animation:statusIn .28s ease forwards;
-  align-items:flex-start;gap:10px
-}
+.slime-status{width:100%;max-width:420px;margin-top:9px;border-radius:11px;padding:12px 14px;font-size:12px;font-weight:bold;display:none;animation:statusIn .28s ease forwards;align-items:flex-start;gap:9px}
 .slime-status.show{display:flex}
-.slime-status.success{background:rgba(0,255,136,.09);border:1.5px solid rgba(0,255,136,.38);color:#00ff88}
-.slime-status.error{background:rgba(255,50,50,.09);border:1.5px solid rgba(255,50,50,.38);color:#ff5555}
-.slime-status.warn{background:rgba(255,180,0,.08);border:1.5px solid rgba(255,180,0,.38);color:#ffcc44}
-.status-icon{font-size:19px;flex-shrink:0;margin-top:1px}
-.status-msg{line-height:1.55}
+.slime-status.success{background:rgba(0,255,136,.09);border:1.5px solid rgba(0,255,136,.35);color:var(--green)}
+.slime-status.error{background:rgba(255,50,50,.09);border:1.5px solid rgba(255,50,50,.35);color:#ff5555}
+.slime-status.warn{background:rgba(255,180,0,.08);border:1.5px solid rgba(255,180,0,.35);color:#ffcc44}
+.status-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.status-msg{line-height:1.5}
 
-/* بطاقة الحالة الحالية */
-.current-status-card{
-  width:100%;max-width:430px;margin-top:12px;
-  background:rgba(0,18,10,.88);
-  border:1px solid rgba(0,255,136,.15);border-radius:14px;
-  padding:13px 15px;display:none
-}
+/* بطاقة الحالة */
+.current-status-card{width:100%;max-width:420px;margin-top:10px;background:rgba(0,18,10,.88);border:1px solid rgba(0,255,136,.14);border-radius:13px;padding:12px 13px;display:none}
 .current-status-card.show{display:block}
-.cs-label{font-size:10.5px;color:rgba(0,255,136,.4);margin-bottom:8px;letter-spacing:1px}
-.cs-row{display:flex;align-items:center;justify-content:space-between;gap:10px}
-.cs-badge{
-  display:inline-flex;align-items:center;gap:7px;
-  background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);
-  border-radius:20px;padding:5px 13px;
-  font-size:12.5px;font-weight:bold;color:#00ff88
-}
-.cs-badge .pulse{width:7px;height:7px;border-radius:50%;background:#00ff88;position:relative;flex-shrink:0}
-.cs-badge .pulse::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px solid #00ff88;animation:pulseRing 1.4s ease-out infinite}
-.cs-id{font-size:10.5px;color:rgba(0,255,136,.45);font-family:'Courier New',monospace;letter-spacing:.5px;animation:idGlitch 5s infinite}
+.cs-label{font-size:10px;color:rgba(0,255,136,.38);margin-bottom:7px;letter-spacing:1px}
+.cs-row{display:flex;align-items:center;justify-content:space-between;gap:9px}
+.cs-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.28);border-radius:20px;padding:5px 12px;font-size:12px;font-weight:bold;color:var(--green)}
+.cs-badge .pulse{width:7px;height:7px;border-radius:50%;background:var(--green);position:relative;flex-shrink:0}
+.cs-badge .pulse::after{content:'';position:absolute;inset:-3px;border-radius:50%;border:1.5px solid var(--green);animation:pulseRing 1.4s ease-out infinite}
+.cs-id{font-size:10px;color:rgba(0,255,136,.42);font-family:'Courier New',monospace;letter-spacing:.5px}
 
-/* موجة نقر */
+/* ══ قسم إعداد الملف بعد التفعيل ══ */
+.slime-profile-setup{width:100%;max-width:420px;margin-top:12px;display:none}
+.slime-profile-setup.show{display:block}
+.setup-card{
+  background:linear-gradient(135deg,rgba(0,25,15,.97),rgba(0,15,9,.99));
+  border:1px solid rgba(0,255,136,.22);border-radius:14px;
+  padding:16px 13px;position:relative;overflow:hidden
+}
+.setup-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.setup-title{font-size:13.5px;font-weight:bold;color:var(--green);display:flex;align-items:center;gap:7px;margin-bottom:14px}
+.setup-avatar-row{display:flex;align-items:center;gap:12px;margin-bottom:12px}
+.setup-avatar-preview{
+  width:60px;height:60px;border-radius:50%;border:2px solid var(--green);
+  background:rgba(0,255,136,.07);display:flex;align-items:center;justify-content:center;
+  font-size:26px;overflow:hidden;flex-shrink:0;cursor:pointer;position:relative
+}
+.setup-avatar-preview img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.setup-avatar-btn{
+  flex:1;background:rgba(0,255,136,.07);border:1px dashed rgba(0,255,136,.3);
+  border-radius:9px;color:rgba(0,255,136,.6);font-size:11.5px;padding:9px 12px;
+  cursor:pointer;text-align:center;transition:all .2s
+}
+.setup-avatar-btn:hover{background:rgba(0,255,136,.12);border-color:var(--green)}
+#avatarFileInput{display:none}
+.setup-field{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
+.setup-field label{font-size:11px;color:rgba(0,255,136,.55);letter-spacing:.5px}
+.setup-field input,.setup-field select{
+  background:rgba(0,255,136,.04);border:1.5px solid rgba(0,255,136,.2);
+  border-radius:9px;color:#fff;font-size:13px;padding:8px 11px;outline:none;
+  transition:border-color .2s;width:100%
+}
+.setup-field input:focus,.setup-field select:focus{border-color:var(--green)}
+.setup-field select option{background:#001a0c;color:#fff}
+.setup-save-btn{
+  width:100%;background:linear-gradient(135deg,var(--green2),#009944);
+  border:none;border-radius:10px;color:#000;font-size:14px;font-weight:bold;
+  padding:11px 0;cursor:pointer;transition:all .2s;
+  box-shadow:0 0 12px rgba(0,255,136,.25);margin-top:4px
+}
+.setup-save-btn:active{transform:scale(.97)}
+
+/* ══ صفحة الملف الشخصي ══ */
+#page-profile{padding:0}
+.profile-wrapper{min-height:100%;padding:14px 12px 40px;display:flex;flex-direction:column;align-items:center;gap:12px}
+.profile-page-title{font-size:18px;font-weight:bold;color:#fff;text-shadow:0 0 12px rgba(160,0,255,.7);letter-spacing:1px;margin-top:4px}
+.profile-tabs{display:flex;gap:8px;width:100%;max-width:440px}
+.profile-tab{flex:1;padding:9px 0;text-align:center;font-size:13px;font-weight:bold;border-radius:10px;cursor:pointer;transition:all .22s;border:1px solid rgba(160,0,255,.3);color:var(--purple2);background:rgba(100,0,200,.06)}
+.profile-tab.active{background:rgba(160,0,255,.22);border-color:var(--purple);color:#fff;box-shadow:0 0 12px rgba(160,0,255,.35)}
+.profile-panels{width:100%;max-width:440px}
+.profile-panel{display:none;flex-direction:column;gap:10px}
+.profile-panel.active{display:flex}
+
+/* جانب ملفي */
+.my-profile-card{
+  background:rgba(0,0,0,.75);border:1px solid rgba(160,0,255,.22);border-radius:16px;
+  padding:18px 14px;display:flex;flex-direction:column;align-items:center;gap:10px;
+  position:relative;overflow:hidden
+}
+.my-profile-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--purple),var(--purple2),transparent)}
+.my-profile-avatar{
+  width:72px;height:72px;border-radius:50%;border:3px solid var(--purple);
+  background:rgba(100,0,200,.15);display:flex;align-items:center;justify-content:center;
+  font-size:32px;overflow:hidden;position:relative
+}
+.my-profile-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.my-profile-name{font-size:17px;font-weight:bold;color:#fff;text-shadow:0 0 10px rgba(160,0,255,.6)}
+.my-profile-id{font-size:10px;color:rgba(160,0,255,.45);font-family:'Courier New',monospace;letter-spacing:.5px}
+.my-profile-flag{font-size:24px;margin-top:2px}
+.profile-info-row{display:flex;gap:16px;margin-top:4px}
+.profile-stat{display:flex;flex-direction:column;align-items:center;gap:2px}
+.profile-stat .stat-val{font-size:18px;font-weight:bold;color:var(--purple2)}
+.profile-stat .stat-lbl{font-size:10px;color:rgba(160,0,255,.45)}
+.slime-badge-row{display:flex;align-items:center;gap:7px;background:rgba(0,255,136,.07);border:1px solid rgba(0,255,136,.22);border-radius:20px;padding:5px 14px}
+.slime-badge-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 5px var(--green)}
+.slime-badge-text{font-size:11px;font-weight:bold;color:var(--green)}
+.no-profile-msg{display:flex;flex-direction:column;align-items:center;gap:8px;padding:20px 0;opacity:.45}
+.no-profile-msg .big-icon{font-size:44px}
+.no-profile-msg p{font-size:12px;color:var(--purple2);text-align:center;line-height:1.6}
+
+/* جانب المستخدمون */
+.users-grid{display:flex;flex-direction:column;gap:9px}
+.user-card{
+  background:rgba(0,0,0,.65);border:1px solid rgba(160,0,255,.18);border-radius:13px;
+  padding:11px 13px;display:flex;align-items:center;gap:11px;
+  transition:border-color .2s
+}
+.user-card:hover{border-color:rgba(160,0,255,.38)}
+.user-card-avatar{
+  width:46px;height:46px;border-radius:50%;border:2px solid var(--purple);
+  background:rgba(100,0,200,.15);display:flex;align-items:center;justify-content:center;
+  font-size:20px;overflow:hidden;flex-shrink:0;position:relative
+}
+.user-card-avatar img{width:100%;height:100%;object-fit:cover;border-radius:50%}
+.user-card-avatar .frame-ring{position:absolute;inset:-3px;border-radius:50%;border:2px solid var(--purple2);animation:pulseRing 2s ease-out infinite}
+.user-card-info{flex:1;min-width:0}
+.user-card-name{font-size:13px;font-weight:bold;color:#fff;display:flex;align-items:center;gap:6px}
+.user-card-flag{font-size:14px}
+.user-card-id{font-size:9.5px;color:rgba(160,0,255,.4);font-family:'Courier New',monospace;margin-top:1px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.user-card-points{display:flex;flex-direction:column;align-items:flex-end;gap:2px;flex-shrink:0}
+.points-val{font-size:16px;font-weight:bold;color:var(--purple2);text-shadow:0 0 8px rgba(160,0,255,.5)}
+.points-lbl{font-size:9px;color:rgba(160,0,255,.4)}
+.slime-verified{display:inline-flex;align-items:center;gap:3px;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);border-radius:10px;padding:2px 7px;font-size:9.5px;color:var(--green)}
+
+/* شرح الجانب */
+.panel-info-box{background:rgba(80,0,160,.07);border:1px solid rgba(160,0,255,.16);border-radius:11px;padding:12px 13px;font-size:11.5px;color:rgba(200,150,255,.7);line-height:1.6}
+.panel-info-box strong{color:var(--purple2);display:block;margin-bottom:4px;font-size:12.5px}
+.empty-users{display:flex;flex-direction:column;align-items:center;gap:8px;padding:24px 0;opacity:.4}
+.empty-users .big-icon{font-size:44px}
+.empty-users p{font-size:12px;color:var(--purple2);text-align:center;line-height:1.6}
+
+/* ══ موجة نقر ══ */
 @keyframes waveMove{0%{transform:translate(-50%,-50%) scale(1);opacity:.8}100%{transform:translate(-50%,-50%) scale(22);opacity:0}}
 .wave-layer{position:fixed;inset:0;pointer-events:none;z-index:9998;overflow:hidden}
-.wave{position:absolute;width:14px;height:14px;border-radius:50%;background:radial-gradient(circle,rgba(180,0,255,.45) 0%,rgba(180,0,255,.15) 40%,transparent 70%);transform:translate(-50%,-50%);animation:waveMove 1.3s ease-out forwards;filter:blur(2px)}
+.wave{position:absolute;width:12px;height:12px;border-radius:50%;background:radial-gradient(circle,rgba(180,0,255,.4) 0%,rgba(180,0,255,.12) 40%,transparent 70%);transform:translate(-50%,-50%);animation:waveMove 1.3s ease-out forwards;filter:blur(1.5px)}
 
-@media(max-width:768px){.fighter-grid{width:95vw;height:clamp(320px,92vw,580px)}.btn{width:28%;min-height:76px}}
-@media(max-width:480px){.btn{width:30%;min-height:68px}.profile-name{font-size:12px}.nav-btn{font-size:12px;padding:5px 11px}}
+/* ══ الارشيف ══ */
+.section-page{display:flex;align-items:center;justify-content:center;height:100%}
+.empty-section{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:14px;opacity:.38}
+.empty-section .big-icon{font-size:56px}
+.empty-section p{font-size:15px;color:var(--purple2);text-align:center;line-height:1.8}
+
+@media(max-width:768px){.fighter-grid{width:92vw;height:clamp(290px,90vw,540px)}.btn{width:28%;min-height:72px}}
+@media(max-width:480px){.btn{width:30%;min-height:64px}.profile-name{font-size:11px}.nav-btn{font-size:11px;padding:4px 9px}}
 </style>
 </head>
 <body>
 
-<canvas id="space-canvas"></canvas>
+<canvas id="bg-canvas"></canvas>
 <div id="waveLayer" class="wave-layer"></div>
 
-<div class="top-frame">
-  <div class="top-frame-text">
-    <span>&#x2694;&#xFE0F; مرحبا بك في Kage No Teio &#x2014; إمبراطور الظل &#x2014; 暗帝 &#x2014; &#x2694;&#xFE0F; مرحبا بك في Kage No Teio &#x2014; إمبراطور الظل &#x2014; 暗帝</span>
-  </div>
-</div>
-
 <div class="top-nav">
-  <button class="nav-btn active" onclick="showPage('main',this)">قائمة الرئيسية</button>
-  <button class="nav-btn" onclick="showPage('slime',this)">سلايم</button>
-  <button class="nav-btn" onclick="showPage('archive',this)">الارشيف</button>
-  <button class="nav-btn" onclick="showPage('profile',this)">ملف الشخصي</button>
+  <button class="nav-btn active" onclick="showPage('main',this)">&#x1F3E0; الرئيسية</button>
+  <button class="nav-btn" onclick="showPage('slime',this)">&#x1FAE7; سلايم</button>
+  <button class="nav-btn" onclick="showPage('chat',this)">&#x1F4AC; محادثات</button>
+  <button class="nav-btn" onclick="showPage('archive',this)">&#x1F4DA; الارشيف</button>
+  <button class="nav-btn" onclick="showPage('profile',this)">&#x1F464; ملف الشخصي</button>
 </div>
 
+<!-- أيقونة الملف الشخصي بدون إطار أعلى -->
 <div class="profile-header">
   <div class="profile-wrap" id="profileWrap">
     <canvas id="halo-canvas"></canvas>
     <div class="profile-name">
-      <div class="profile-img">
-        <img src="20260420_113331.jpg" onerror="this.parentElement.textContent='&#x1F464;'">
+      <div class="profile-img" id="navProfileImg">
+        <img src="20260420_113331.jpg" onerror="this.parentElement.innerHTML='&#x1F464;'">
       </div>
       <span id="profile-name-text">Kage No Teio</span>
     </div>
   </div>
 </div>
 
-<!-- الصفحة الرئيسية -->
+<!-- ═══════════════════ صفحة رئيسية ═══════════════════ -->
 <div id="page-main" class="page active">
   <img src="20260429_130547.png" class="logo" onerror="this.style.display='none'">
   <div class="fighter-grid">
@@ -281,10 +401,7 @@ body{background:#000;color:#fff}
       <div class="hex-outer-ring"></div>
       <svg class="hex-svg" viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
         <defs>
-          <filter id="redGlow">
-            <feGaussianBlur stdDeviation="4" result="blur"/>
-            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-          </filter>
+          <filter id="redGlow"><feGaussianBlur stdDeviation="4" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
         </defs>
         <polygon points="200,30 356,290 44,290" fill="rgba(100,0,0,.1)" stroke="rgba(255,0,0,.5)" stroke-width="1.8" stroke-linejoin="round" filter="url(#redGlow)"/>
         <polygon points="200,370 44,110 356,110" fill="rgba(100,0,0,.1)" stroke="rgba(255,0,0,.5)" stroke-width="1.8" stroke-linejoin="round" filter="url(#redGlow)"/>
@@ -292,20 +409,19 @@ body{background:#000;color:#fff}
       </svg>
     </div>
     <div class="hexagram-menu">
-      <button class="btn" onclick="openPopup('العاب','&#x1F3AE;')"></button>
-      <button class="btn" onclick="openPopup('روابط مقراتنا','&#x1F517;')"></button>
-      <button class="btn" onclick="openPopup('ظلال الطائفة وحلفائها','&#x2694;&#xFE0F;')"></button>
-      <button class="btn" onclick="openPopup('عالم الأنمي','&#x1F338;')"></button>
-      <button class="btn" onclick="openPopup('قصص إعدام العصابات','&#x1F480;')"></button>
-      <button class="btn" onclick="openPopup('فضائح كلاب العصابات','&#x1F525;')"></button>
+      <button class="btn" onclick="openPopup('العاب','&#x1F3AE;')"><div class="btn-icon">&#x1F3AE;</div><div class="btn-label">العاب</div></button>
+      <button class="btn" onclick="openPopup('روابط مقراتنا','&#x1F517;')"><div class="btn-icon">&#x1F517;</div><div class="btn-label">روابط مقراتنا</div></button>
+      <button class="btn" onclick="openPopup('ظلال الطائفة وحلفائها','&#x2694;&#xFE0F;')"><div class="btn-icon">&#x2694;&#xFE0F;</div><div class="btn-label">ظلال الطائفة</div></button>
+      <button class="btn" onclick="openPopup('عالم الأنمي','&#x1F338;')"><div class="btn-icon">&#x1F338;</div><div class="btn-label">عالم الأنمي</div></button>
+      <button class="btn" onclick="openPopup('قصص إعدام العصابات','&#x1F480;')"><div class="btn-icon">&#x1F480;</div><div class="btn-label">قصص إعدام</div></button>
+      <button class="btn" onclick="openPopup('فضائح كلاب العصابات','&#x1F525;')"><div class="btn-icon">&#x1F525;</div><div class="btn-label">فضائح العصابات</div></button>
     </div>
   </div>
 </div>
 
-<!-- صفحة سلايم -->
+<!-- ═══════════════════ صفحة سلايم ═══════════════════ -->
 <div id="page-slime" class="page">
   <div class="slime-wrapper">
-
     <div class="slime-mascot">
       <div class="slime-blob"></div>
       <div class="slime-drip"></div>
@@ -317,14 +433,15 @@ body{background:#000;color:#fff}
       <div class="info-title"><span>&#x1FAE7;</span> ما هي ميزة سلايم؟</div>
       <ul class="info-list">
         <li><div class="dot"></div>ميزة حصرية تُمنح فقط لأشخاص مختارين من قِبَل الإمبراطور.</li>
-        <li><div class="dot"></div>بدون تفعيل سلايم، لا يمكنك الانضمام للمحادثات أو الألعاب الأونلاين الخاصة بالطائفة.</li>
+        <li><div class="dot"></div>بدون تفعيل سلايم لا يمكنك الانضمام للمحادثات أو الألعاب الخاصة.</li>
         <li><div class="dot"></div>كل رمز سلايم يُستخدم مرة واحدة فقط ويُلغى فور تفعيله.</li>
-        <li><div class="dot"></div>بعد التفعيل، يُضاف رقم عضويتك تلقائياً لملفك الشخصي كعضو موثّق.</li>
-        <li><div class="dot"></div>إذا لم يكن لديك رمز، تواصل مع الإمبراطور مباشرةً للحصول على موافقة.</li>
+        <li><div class="dot"></div>بعد التفعيل أضف صورتك واسمك وعلم دولتك لملفك الشخصي.</li>
+        <li><div class="dot"></div>إذا لم يكن لديك رمز، تواصل مع الإمبراطور للحصول على موافقة.</li>
       </ul>
     </div>
 
-    <div class="slime-activate-card">
+    <!-- محرك الإدخال — يختفي بعد التفعيل -->
+    <div class="slime-activate-card" id="slimeActivateCard">
       <div class="activate-label"><span>&#x1F511;</span> أدخل رمز سلايم الخاص بك</div>
       <div class="id-input-row">
         <input class="id-input" id="slimeIdInput" type="text" placeholder="SLIME-XXXX-XXXX" maxlength="32" autocomplete="off" spellcheck="false">
@@ -340,24 +457,162 @@ body{background:#000;color:#fff}
     <div class="current-status-card" id="currentStatusCard">
       <div class="cs-label">&#x25CF; الحالة الحالية</div>
       <div class="cs-row">
-        <div class="cs-badge">
-          <div class="pulse"></div>
-          <span id="csName">سلايم مفعّل</span>
-        </div>
+        <div class="cs-badge"><div class="pulse"></div><span id="csName">سلايم مفعّل</span></div>
         <div class="cs-id" id="csId">ID: —</div>
+      </div>
+    </div>
+
+    <!-- إعداد الملف الشخصي — يظهر بعد التفعيل -->
+    <div class="slime-profile-setup" id="slimeProfileSetup">
+      <div class="setup-card">
+        <div class="setup-title"><span>&#x1F9E9;</span> أكمل ملفك الشخصي</div>
+        <div class="setup-avatar-row">
+          <div class="setup-avatar-preview" id="setupAvatarPreview" onclick="document.getElementById('avatarFileInput').click()">&#x1F464;</div>
+          <div class="setup-avatar-btn" onclick="document.getElementById('avatarFileInput').click()">
+            &#x1F4F7; اضغط لرفع صورتك<br>
+            <span style="font-size:10px;opacity:.55">JPG / PNG / WEBP</span>
+          </div>
+          <input type="file" id="avatarFileInput" accept="image/*" onchange="handleAvatarUpload(event)">
+        </div>
+        <div class="setup-field">
+          <label>&#x1F464; الاسم الذي سيظهر</label>
+          <input type="text" id="setupName" placeholder="أدخل اسمك..." maxlength="24">
+        </div>
+        <div class="setup-field">
+          <label>&#x1F30D; علم دولتك</label>
+          <select id="setupFlag">
+            <option value="">— اختر دولتك —</option>
+            <option value="&#x1F1F8;&#x1F1E6;">🇸🇦 السعودية</option>
+            <option value="&#x1F1EE;&#x1F1F6;">🇮🇶 العراق</option>
+            <option value="&#x1F1F8;&#x1F1FE;">🇸🇾 سوريا</option>
+            <option value="&#x1F1F2;&#x1F1E6;">🇲🇦 المغرب</option>
+            <option value="&#x1F1E9;&#x1F1FF;">🇩🇿 الجزائر</option>
+            <option value="&#x1F1F9;&#x1F1F3;">🇹🇳 تونس</option>
+            <option value="&#x1F1F1;&#x1F1FE;">🇱🇾 ليبيا</option>
+            <option value="&#x1F1EA;&#x1F1EC;">🇪🇬 مصر</option>
+            <option value="&#x1F1EF;&#x1F1F4;">🇯🇴 الأردن</option>
+            <option value="&#x1F1F1;&#x1F1E7;">🇱🇧 لبنان</option>
+            <option value="&#x1F1F0;&#x1F1FC;">🇰🇼 الكويت</option>
+            <option value="&#x1F1E6;&#x1F1EA;">🇦🇪 الإمارات</option>
+            <option value="&#x1F1F6;&#x1F1E6;">🇶🇦 قطر</option>
+            <option value="&#x1F1E7;&#x1F1ED;">🇧🇭 البحرين</option>
+            <option value="&#x1F1F4;&#x1F1F2;">🇴🇲 عُمان</option>
+            <option value="&#x1F1FE;&#x1F1EA;">🇾🇪 اليمن</option>
+            <option value="&#x1F1F8;&#x1F1F4;">🇸🇴 الصومال</option>
+            <option value="&#x1F1F5;&#x1F1F8;">🇵🇸 فلسطين</option>
+            <option value="&#x1F1EF;&#x1F1F5;">🇯🇵 اليابان</option>
+            <option value="&#x1F1F9;&#x1F1F7;">🇹🇷 تركيا</option>
+            <option value="&#x1F1FA;&#x1F1F8;">🇺🇸 أمريكا</option>
+            <option value="&#x1F310;">🌐 أخرى</option>
+          </select>
+        </div>
+        <button class="setup-save-btn" onclick="saveSlimeProfile()">&#x2705; حفظ الملف الشخصي</button>
       </div>
     </div>
 
   </div>
 </div>
 
+<!-- ═══════════════════ صفحة المحادثات ═══════════════════ -->
+<div id="page-chat" class="page">
+  <div class="chat-wrapper">
+    <div class="chat-header-title">&#x1F4AC; المحادثات</div>
+    <div class="chat-tabs" style="max-width:440px;width:100%">
+      <div class="chat-tab active" onclick="switchChatTab('group',this)">&#x1F465; دردشة جماعية</div>
+      <div class="chat-tab" onclick="switchChatTab('private',this)">&#x1F510; دردشة خاصة</div>
+    </div>
+    <div class="chat-panels" style="width:100%;max-width:440px">
+
+      <!-- جماعية -->
+      <div class="chat-panel active" id="chat-group">
+        <div class="chat-info-box">
+          <strong>&#x1F465; الدردشة الجماعية</strong>
+          مساحة مشتركة لجميع أعضاء الطائفة الذين يمتلكون ميزة سلايم. يمكنك التحدث مع الجميع في آن واحد، تبادل الأخبار، والتنسيق مع الحلفاء.
+        </div>
+        <div class="chat-box" id="groupChatBox"></div>
+        <div id="groupChatInput" style="display:none">
+          <div class="chat-input-row">
+            <input class="chat-input" id="groupMsgInput" placeholder="اكتب رسالتك..." maxlength="200" onkeydown="if(event.key==='Enter')sendGroupMsg()">
+            <button class="chat-send-btn" onclick="sendGroupMsg()">&#x27A4;</button>
+          </div>
+        </div>
+        <div class="chat-locked" id="groupChatLocked">
+          <div class="chat-locked-icon">&#x1FAE7;</div>
+          <p>تحتاج ميزة سلايم للوصول<br>للدردشة الجماعية</p>
+        </div>
+      </div>
+
+      <!-- خاصة -->
+      <div class="chat-panel" id="chat-private">
+        <div class="chat-info-box">
+          <strong>&#x1F510; الدردشة الخاصة</strong>
+          تواصل مباشر وسري بين عضوين فقط. متاحة حصرياً لحاملي ميزة سلايم. اختر العضو من قائمة الأعضاء المتاحة وابدأ محادثتك الخاصة.
+        </div>
+        <div id="privateChatArea">
+          <div class="chat-locked" id="privateChatLocked">
+            <div class="chat-locked-icon">&#x1FAE7;</div>
+            <p>تحتاج ميزة سلايم للوصول<br>للدردشة الخاصة</p>
+          </div>
+          <div id="privateSlimeContent" style="display:none;flex-direction:column;gap:9px">
+            <div style="font-size:11.5px;color:rgba(0,255,136,.55);margin-bottom:2px">&#x1F7E2; اختر عضو للدردشة معه:</div>
+            <div id="privateUserList" style="display:flex;flex-direction:column;gap:7px"></div>
+            <div id="privateConv" style="display:none;flex-direction:column;gap:7px">
+              <div style="display:flex;align-items:center;gap:8px;margin-bottom:4px">
+                <button onclick="backToUserList()" style="background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);border-radius:8px;color:var(--green);font-size:12px;padding:4px 10px;cursor:pointer">&#x2190; رجوع</button>
+                <span id="privateConvTitle" style="font-size:13px;font-weight:bold;color:#fff"></span>
+              </div>
+              <div class="chat-box" id="privateChatBox"></div>
+              <div class="chat-input-row">
+                <input class="chat-input" id="privateMsgInput" placeholder="رسالة خاصة..." maxlength="200" onkeydown="if(event.key==='Enter')sendPrivateMsg()">
+                <button class="chat-send-btn" onclick="sendPrivateMsg()">&#x27A4;</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ═══════════════════ صفحة الارشيف ═══════════════════ -->
 <div id="page-archive" class="page section-page">
   <div class="empty-section"><div class="big-icon">&#x1F4DA;</div><p>قسم الارشيف<br>قريباً...</p></div>
 </div>
-<div id="page-profile" class="page section-page">
-  <div class="empty-section"><div class="big-icon">&#x1F464;</div><p>ملف الشخصي<br>قريباً...</p></div>
+
+<!-- ═══════════════════ صفحة الملف الشخصي ═══════════════════ -->
+<div id="page-profile" class="page">
+  <div class="profile-wrapper">
+    <div class="profile-page-title">&#x1F464; الملف الشخصي</div>
+    <div class="profile-tabs">
+      <div class="profile-tab active" onclick="switchProfileTab('mine',this)">&#x1F9E9; ملفي</div>
+      <div class="profile-tab" onclick="switchProfileTab('all',this)">&#x1F465; جميع الأعضاء</div>
+    </div>
+    <div class="profile-panels">
+
+      <!-- ملفي -->
+      <div class="profile-panel active" id="pp-mine">
+        <div class="panel-info-box">
+          <strong>&#x1F9E9; ملفي الشخصي</strong>
+          ملفك داخل الطائفة. يظهر للجميع في قائمة الأعضاء. لتعديله انتقل لقسم سلايم بعد التفعيل.
+        </div>
+        <div id="myProfileContent"></div>
+      </div>
+
+      <!-- جميع الأعضاء -->
+      <div class="profile-panel" id="pp-all">
+        <div class="panel-info-box">
+          <strong>&#x1F465; جميع الأعضاء</strong>
+          قائمة بجميع أعضاء الطائفة الذين فعّلوا سلايم وأكملوا ملفاتهم الشخصية. كل عضو يحمل نقاط نشاط تعكس مشاركته.
+        </div>
+        <div id="allUsersContent"></div>
+      </div>
+
+    </div>
+  </div>
 </div>
 
+<!-- القائمة المنبثقة -->
 <div id="popupMenu" class="popup-menu">
   <div class="popup-header">
     <span id="popupTitle" class="popup-title">العنوان</span>
@@ -372,181 +627,153 @@ body{background:#000;color:#fff}
 </div>
 
 <script>
-/* ══════════════════════════════════════════
-   🫧  SLIME SYSTEM
-   idslaim       → قائمة الـ IDs الصالحة (idslaim.json)
-   dizactivislaim → الـ IDs المستخدمة    (dizactivislaim.json)
-   slime_profile  → ملف المستخدم الحالي
-══════════════════════════════════════════ */
-
-/* IDs الافتراضية — يمكن تعديلها أو إضافة المزيد */
-const DEFAULT_VALID_IDS = [
-  "SLIME-A1B2-C3D4",
-  "SLIME-E5F6-G7H8",
-  "SLIME-X9Y0-Z1W2",
-  "SLIME-KAGE-0001",
-  "SLIME-KAGE-0002",
-  "SLIME-KAGE-0003",
-  "SLIME-DARK-1111",
-  "SLIME-DARK-2222",
-  "SLIME-DARK-3333",
-  "SLIME-TEIO-AAAA"
-];
-
-function initSlimeDB(){
-  if(!localStorage.getItem('idslaim'))
-    localStorage.setItem('idslaim', JSON.stringify(DEFAULT_VALID_IDS));
-  if(!localStorage.getItem('dizactivislaim'))
-    localStorage.setItem('dizactivislaim', JSON.stringify([]));
-}
-
-function getValidIDs(){ return JSON.parse(localStorage.getItem('idslaim')||'[]'); }
-function getUsedIDs(){  return JSON.parse(localStorage.getItem('dizactivislaim')||'[]'); }
-function getProfile(){  return JSON.parse(localStorage.getItem('slime_profile')||'null'); }
-
-function markIDUsed(id){
-  const used = getUsedIDs();
-  if(!used.includes(id)){
-    used.push(id);
-    localStorage.setItem('dizactivislaim', JSON.stringify(used));
-  }
-}
-
-function saveProfile(slimeID, userID){
-  localStorage.setItem('slime_profile', JSON.stringify({
-    slimeID, userID,
-    activatedAt: new Date().toISOString()
-  }));
-}
-
-/* ── التفعيل الرئيسي ── */
-function activateSlime(){
-  playClick();
-  const input   = document.getElementById('slimeIdInput');
-  const raw     = input.value.trim().toUpperCase();
-
-  if(!raw){ showStatus('warn','⚠️','أدخل رمز السلايم أولاً'); return; }
-
-  /* هل المستخدم مفعّل مسبقاً؟ */
-  const existing = getProfile();
-  if(existing){
-    showStatus('warn','🫧','أنت مفعّل مسبقاً برقم عضوية: ' + existing.userID);
-    return;
-  }
-
-  const validIDs = getValidIDs();
-  const usedIDs  = getUsedIDs();
-
-  if(!validIDs.includes(raw)){
-    showStatus('error','❌','رمز سلايم غير صحيح أو غير موجود في النظام');
-    shakeInput(); return;
-  }
-
-  if(usedIDs.includes(raw)){
-    showStatus('error','🚫','هذا الرمز تم استخدامه من قبل — كل رمز يعمل مرة واحدة فقط');
-    shakeInput(); return;
-  }
-
-  /* ✅ تفعيل ناجح */
-  const userID = 'USR-' + Date.now().toString(36).toUpperCase();
-  markIDUsed(raw);
-  saveProfile(raw, userID);
-  input.value = '';
-
-  showStatus('success','✅',
-    'تم تفعيل سلايم بنجاح! 🎉<br>' +
-    '<span style="font-size:11px;opacity:.75">رقم عضويتك: ' + userID + '</span>'
-  );
-  updateCurrentStatusCard();
-  celebrateSlime();
-}
-
-/* ── بطاقة الحالة ── */
-function updateCurrentStatusCard(){
-  const profile = getProfile();
-  const card    = document.getElementById('currentStatusCard');
-  if(profile){
-    document.getElementById('csName').textContent = 'سلايم مفعّل ✓';
-    document.getElementById('csId').textContent   = 'ID: ' + profile.userID;
-    card.classList.add('show');
-  } else {
-    card.classList.remove('show');
-  }
-}
-
-/* ── رسالة الحالة ── */
-function showStatus(type, icon, msg){
-  const el  = document.getElementById('slimeStatus');
-  const ico = document.getElementById('statusIcon');
-  const txt = document.getElementById('statusMsg');
-  el.className = 'slime-status show ' + type;
-  ico.textContent = icon;
-  txt.innerHTML   = msg;
-  clearTimeout(el._t);
-  if(type !== 'success')
-    el._t = setTimeout(()=>{ el.classList.remove('show'); }, 3800);
-}
-
-/* ── اهتزاز حقل الإدخال ── */
-function shakeInput(){
-  const inp = document.getElementById('slimeIdInput');
-  let n = 0;
-  inp.style.transition = 'transform .07s';
-  const iv = setInterval(()=>{
-    inp.style.transform = n%2 ? 'translateX(7px)' : 'translateX(-7px)';
-    n++;
-    if(n > 6){ clearInterval(iv); inp.style.transform=''; inp.style.transition=''; }
-  }, 65);
-}
-
-/* ── احتفال ── */
-function celebrateSlime(){
-  const blob = document.querySelector('.slime-blob');
-  blob.style.transform = 'scale(1.3) rotate(5deg)';
-  blob.style.transition = 'transform .22s';
-  setTimeout(()=>{ blob.style.transform=''; blob.style.transition=''; }, 500);
-}
-
-/* تهيئة عند التحميل */
-initSlimeDB();
-setTimeout(updateCurrentStatusCard, 80);
-
-document.getElementById('slimeIdInput').addEventListener('keydown', e=>{
-  if(e.key === 'Enter') activateSlime();
-});
-
-/* ══════════════════════════════════════════
-   🌌  نجوم الفضاء
-══════════════════════════════════════════ */
+/* ════════════════════════════════════════════
+   🎆 BACKGROUND — نجمة شيطان + رعد + غليتش
+════════════════════════════════════════════ */
 (function(){
-  const c=document.getElementById('space-canvas');
-  const x=c.getContext('2d');
-  let W,H,stars=[];
-  function rsz(){W=c.width=innerWidth;H=c.height=innerHeight;}
-  rsz();addEventListener('resize',rsz);
-  function mk(){return{x:Math.random()*W,y:Math.random()*H,r:Math.random()*1.6+.3,spd:Math.random()*.1+.025,a:Math.random()*.7+.2,ts:Math.random()*.014+.003,td:Math.random()>.5?1:-1,col:Math.random()>.85?`rgba(255,${Math.random()*70|0},${Math.random()*70|0},`:'rgba(255,255,255,'};}
-  for(let i=0;i<300;i++)stars.push(mk());
-  for(let i=0;i<16;i++)stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2.2+1,spd:Math.random()*.05+.015,a:Math.random()*.5+.3,ts:.018,td:1,col:'rgba(180,0,255,'});
-  (function frame(){
-    x.clearRect(0,0,W,H);
-    const bg=x.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.8);
-    bg.addColorStop(0,'#06000e');bg.addColorStop(.5,'#020008');bg.addColorStop(1,'#000');
-    x.fillStyle=bg;x.fillRect(0,0,W,H);
-    const nb=x.createLinearGradient(0,H*.3,W,H*.7);
-    nb.addColorStop(0,'transparent');nb.addColorStop(.4,'rgba(60,0,80,.05)');nb.addColorStop(.6,'rgba(80,0,0,.04)');nb.addColorStop(1,'transparent');
-    x.fillStyle=nb;x.fillRect(0,0,W,H);
-    for(const s of stars){
-      s.a+=s.ts*s.td;if(s.a>.95||s.a<.08)s.td*=-1;
-      s.y+=s.spd;if(s.y>H+4){s.y=-4;s.x=Math.random()*W;}
-      x.beginPath();x.arc(s.x,s.y,s.r,0,Math.PI*2);x.fillStyle=s.col+s.a+')';x.fill();
+  const cv = document.getElementById('bg-canvas');
+  const ctx = cv.getContext('2d');
+  let W, H, stars = [], glitchTimer = 0, bolts = [], pentPhase = 0;
+
+  function resize(){ W = cv.width = innerWidth; H = cv.height = innerHeight; }
+  resize(); addEventListener('resize', resize);
+
+  /* نجوم */
+  function mkStar(){ return { x:Math.random()*W, y:Math.random()*H, r:Math.random()*1.4+.2, spd:Math.random()*.08+.018, a:Math.random()*.7+.2, ts:Math.random()*.012+.003, td:Math.random()>.5?1:-1, col:Math.random()>.88?`rgba(255,${Math.random()*50|0},${Math.random()*50|0},`:'rgba(255,255,255,' }; }
+  for(let i=0;i<280;i++) stars.push(mkStar());
+  for(let i=0;i<12;i++) stars.push({x:Math.random()*W,y:Math.random()*H,r:Math.random()*2+1,spd:Math.random()*.04+.01,a:Math.random()*.5+.3,ts:.016,td:1,col:'rgba(160,0,255,'});
+
+  /* رسم نجمة الشيطان (خماسية) */
+  function drawPentagram(x, y, r, rot, alpha){
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate(rot);
+    const pts = [];
+    for(let i=0;i<5;i++){
+      const a = (i * 4 * Math.PI / 5) - Math.PI/2;
+      pts.push({ x: Math.cos(a)*r, y: Math.sin(a)*r });
     }
+    /* الخطوط الخمسة */
+    ctx.beginPath();
+    for(let i=0;i<5;i++){
+      ctx.moveTo(pts[i].x, pts[i].y);
+      ctx.lineTo(pts[(i+2)%5].x, pts[(i+2)%5].y);
+    }
+    ctx.strokeStyle = `rgba(180,0,0,${alpha})`;
+    ctx.lineWidth = 1.5;
+    ctx.shadowColor = '#ff0000';
+    ctx.shadowBlur = 18;
+    ctx.stroke();
+    /* دائرة خارجية */
+    ctx.beginPath();
+    ctx.arc(0,0,r*1.06,0,Math.PI*2);
+    ctx.strokeStyle = `rgba(180,0,0,${alpha*.55})`;
+    ctx.lineWidth = .8;
+    ctx.shadowBlur = 8;
+    ctx.stroke();
+    /* دائرة داخلية */
+    ctx.beginPath();
+    ctx.arc(0,0,r*.38,0,Math.PI*2);
+    ctx.strokeStyle = `rgba(180,0,0,${alpha*.35})`;
+    ctx.lineWidth = .6;
+    ctx.stroke();
+    ctx.restore();
+  }
+
+  /* برق خلفي */
+  function spawnBolt(){
+    const x1 = Math.random()*W, x2 = x1+(Math.random()-0.5)*120;
+    const pts = [{x:x1,y:0}];
+    let cx=x1, cy=0;
+    const steps = 7+Math.random()*6|0;
+    for(let i=0;i<steps;i++){
+      cx += (Math.random()-0.5)*40;
+      cy += (30+Math.random()*28);
+      pts.push({x:cx,y:cy});
+    }
+    return {pts,life:1,decay:Math.random()*.14+.1};
+  }
+
+  /* غليتش: تشويه أفقي عشوائي */
+  let glitchActive = false, glitchLines = [];
+  function triggerGlitch(){
+    glitchActive = true;
+    glitchLines = [];
+    const n = 4+Math.random()*6|0;
+    for(let i=0;i<n;i++){
+      glitchLines.push({
+        y: Math.random()*H,
+        h: 2+Math.random()*12,
+        shift: (Math.random()-0.5)*30,
+        r: Math.random()>.5
+      });
+    }
+    setTimeout(()=>{ glitchActive=false; },120+Math.random()*180);
+  }
+
+  let frameCount = 0;
+  (function frame(){
+    frameCount++;
+    ctx.clearRect(0,0,W,H);
+
+    /* خلفية */
+    const bg = ctx.createRadialGradient(W/2,H/2,0,W/2,H/2,Math.max(W,H)*.85);
+    bg.addColorStop(0,'#06000e'); bg.addColorStop(.5,'#020008'); bg.addColorStop(1,'#000');
+    ctx.fillStyle=bg; ctx.fillRect(0,0,W,H);
+
+    /* نجمة الشيطان المركزية */
+    pentPhase += .003;
+    const pR = Math.min(W,H)*.26;
+    const baseAlpha = .12 + Math.sin(pentPhase)*.06;
+    drawPentagram(W/2, H/2, pR, pentPhase, baseAlpha);
+    /* طبقة داخلية أصغر */
+    drawPentagram(W/2, H/2, pR*.6, -pentPhase*1.3, baseAlpha*.7);
+
+    /* نجوم */
+    for(const s of stars){
+      s.a+=s.ts*s.td; if(s.a>.95||s.a<.08)s.td*=-1;
+      s.y+=s.spd; if(s.y>H+4){s.y=-4;s.x=Math.random()*W;}
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=s.col+s.a+')'; ctx.fill();
+    }
+
+    /* برق */
+    glitchTimer--;
+    if(glitchTimer<=0){
+      if(Math.random()>.6){ bolts.push(spawnBolt()); triggerGlitch(); }
+      glitchTimer = (30+Math.random()*90)|0;
+    }
+    for(let i=bolts.length-1;i>=0;i--){
+      const b=bolts[i];
+      ctx.save();
+      ctx.strokeStyle=`rgba(180,0,255,${b.life})`;
+      ctx.lineWidth=1+b.life*.8;
+      ctx.shadowColor='#cc00ff'; ctx.shadowBlur=10+b.life*16;
+      ctx.beginPath(); ctx.moveTo(b.pts[0].x,b.pts[0].y);
+      for(let j=1;j<b.pts.length;j++) ctx.lineTo(b.pts[j].x,b.pts[j].y);
+      ctx.stroke(); ctx.restore();
+      b.life-=b.decay; if(b.life<=0)bolts.splice(i,1);
+    }
+
+    /* غليتش */
+    if(glitchActive){
+      for(const g of glitchLines){
+        const imgData = ctx.getImageData(0,g.y,W,g.h);
+        ctx.putImageData(imgData, g.shift, g.y);
+        if(g.r){
+          ctx.fillStyle='rgba(255,0,0,.04)';
+          ctx.fillRect(0,g.y,W,g.h);
+        }
+      }
+    }
+
     requestAnimationFrame(frame);
   })();
 })();
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════
    💜  هالة الأيقونة
-══════════════════════════════════════════ */
+════════════════════════════════════════════ */
 (function(){
   const wrap=document.getElementById('profileWrap');
   const cv=document.getElementById('halo-canvas');
@@ -564,11 +791,11 @@ document.getElementById('slimeIdInput').addEventListener('keydown', e=>{
     const side=Math.random()<.5?'top':'bottom';
     const sx=30+Math.random()*(W2-60),sy=side==='top'?30:H2-30;
     const pts=[{x:sx,y:sy}];let cx=sx,cy=sy;
-    const steps=5+Math.random()*6|0;
-    for(let i=0;i<steps;i++){cx+=(Math.random()-.5)*28;cy+=(side==='top'?1:-1)*(12+Math.random()*10);pts.push({x:cx,y:cy});}
-    return{pts,life:1,decay:Math.random()*.12+.08,color:'rgba(180,0,255,'};
+    const steps=4+Math.random()*5|0;
+    for(let i=0;i<steps;i++){cx+=(Math.random()-.5)*24;cy+=(side==='top'?1:-1)*(10+Math.random()*9);pts.push({x:cx,y:cy});}
+    return{pts,life:1,decay:Math.random()*.13+.09,color:'rgba(180,0,255,'};
   }
-  function drawHalo(){
+  function draw(){
     ctx.clearRect(0,0,W2,H2);
     glowPhase+=.018;
     const base=.5+Math.sin(glowPhase)*.3,spike=Math.random()>.93?Math.random()*.8:0,gv=Math.min(1,base+spike);
@@ -598,30 +825,360 @@ document.getElementById('slimeIdInput').addEventListener('keydown', e=>{
       ctx.stroke();ctx.restore();
       b.life-=b.decay;if(b.life<=0)bolts.splice(i,1);
     }
-    nameEl.style.textShadow=`0 0 ${6+gv*10}px #cc00ff,0 0 ${12+gv*20}px #9900ff,0 0 ${spike>0?4:0}px #fff`;
+    nameEl.style.textShadow=`0 0 ${6+gv*10}px #cc00ff,0 0 ${12+gv*20}px #9900ff`;
     nameEl.style.color=`rgba(${180+gv*75|0},${100+gv*60|0},255,1)`;
-    requestAnimationFrame(drawHalo);
+    requestAnimationFrame(draw);
   }
-  setTimeout(()=>{resize();drawHalo();},120);
+  setTimeout(()=>{resize();draw();},100);
   addEventListener('resize',()=>setTimeout(resize,50));
 })();
 
-/* ══════════════════════════════════════════
+/* ════════════════════════════════════════════
+   🫧  SLIME SYSTEM
+════════════════════════════════════════════ */
+const DEFAULT_VALID_IDS = [
+  "SLIME-A1B2-C3D4","SLIME-E5F6-G7H8","SLIME-X9Y0-Z1W2",
+  "SLIME-KAGE-0001","SLIME-KAGE-0002","SLIME-KAGE-0003",
+  "SLIME-DARK-1111","SLIME-DARK-2222","SLIME-DARK-3333","SLIME-TEIO-AAAA"
+];
+function initSlimeDB(){
+  if(!localStorage.getItem('idslaim')) localStorage.setItem('idslaim',JSON.stringify(DEFAULT_VALID_IDS));
+  if(!localStorage.getItem('dizactivislaim')) localStorage.setItem('dizactivislaim',JSON.stringify([]));
+}
+function getValidIDs(){ return JSON.parse(localStorage.getItem('idslaim')||'[]'); }
+function getUsedIDs(){  return JSON.parse(localStorage.getItem('dizactivislaim')||'[]'); }
+function getMyProfile(){ return JSON.parse(localStorage.getItem('slime_profile')||'null'); }
+function getAllProfiles(){ return JSON.parse(localStorage.getItem('slime_all_profiles')||'[]'); }
+
+function markIDUsed(id){
+  const used=getUsedIDs();
+  if(!used.includes(id)){ used.push(id); localStorage.setItem('dizactivislaim',JSON.stringify(used)); }
+}
+function saveMyProfile(data){
+  localStorage.setItem('slime_profile',JSON.stringify(data));
+  /* أضفه لقائمة الكل */
+  let all = getAllProfiles();
+  const idx = all.findIndex(u=>u.userID===data.userID);
+  if(idx>=0) all[idx]=data; else all.push(data);
+  localStorage.setItem('slime_all_profiles',JSON.stringify(all));
+}
+
+/* تفعيل */
+function activateSlime(){
+  playClick();
+  const input=document.getElementById('slimeIdInput');
+  const raw=input.value.trim().toUpperCase();
+  if(!raw){ showStatus('warn','⚠️','أدخل رمز السلايم أولاً'); return; }
+  const existing=getMyProfile();
+  if(existing){ showStatus('warn','🫧','أنت مفعّل مسبقاً برقم: '+existing.userID); return; }
+  if(!getValidIDs().includes(raw)){ showStatus('error','❌','رمز غير صحيح أو غير موجود'); shakeInput(); return; }
+  if(getUsedIDs().includes(raw)){ showStatus('error','🚫','هذا الرمز تم استخدامه من قبل'); shakeInput(); return; }
+  const userID='USR-'+Date.now().toString(36).toUpperCase();
+  markIDUsed(raw);
+  const profile={slimeID:raw,userID,name:'',avatar:'',flag:'',points:0,activatedAt:new Date().toISOString()};
+  saveMyProfile(profile);
+  input.value='';
+  showStatus('success','✅','تم تفعيل سلايم! 🎉<br><span style="font-size:10.5px;opacity:.7">رقم عضويتك: '+userID+'</span>');
+  refreshSlimeUI();
+  setTimeout(()=>{ document.getElementById('slimeProfileSetup').scrollIntoView({behavior:'smooth',block:'center'}); },400);
+}
+
+function refreshSlimeUI(){
+  const profile=getMyProfile();
+  const card=document.getElementById('currentStatusCard');
+  const activateCard=document.getElementById('slimeActivateCard');
+  const setupDiv=document.getElementById('slimeProfileSetup');
+  if(profile){
+    document.getElementById('csName').textContent='سلايم مفعّل ✓';
+    document.getElementById('csId').textContent='ID: '+profile.userID;
+    card.classList.add('show');
+    activateCard.style.display='none';
+    setupDiv.classList.add('show');
+    if(profile.name) prefillSetup(profile);
+  } else {
+    card.classList.remove('show');
+    activateCard.style.display='';
+    setupDiv.classList.remove('show');
+  }
+}
+
+function prefillSetup(p){
+  document.getElementById('setupName').value=p.name||'';
+  document.getElementById('setupFlag').value=p.flag||'';
+  if(p.avatar){
+    const pr=document.getElementById('setupAvatarPreview');
+    pr.innerHTML=`<img src="${p.avatar}">`;
+  }
+}
+
+/* رفع صورة */
+function handleAvatarUpload(e){
+  const file=e.target.files[0]; if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    const src=ev.target.result;
+    const pr=document.getElementById('setupAvatarPreview');
+    pr.innerHTML=`<img src="${src}">`;
+    pr.dataset.src=src;
+  };
+  reader.readAsDataURL(file);
+}
+
+/* حفظ الملف */
+function saveSlimeProfile(){
+  playClick();
+  const profile=getMyProfile();
+  if(!profile){ showStatus('warn','⚠️','يجب التفعيل أولاً'); return; }
+  const name=document.getElementById('setupName').value.trim();
+  const flag=document.getElementById('setupFlag').value;
+  const avatarEl=document.getElementById('setupAvatarPreview');
+  const avatar=avatarEl.dataset.src || (avatarEl.querySelector('img')?avatarEl.querySelector('img').src:'') || '';
+  if(!name){ showStatus('warn','⚠️','أدخل اسمك أولاً'); return; }
+  profile.name=name; profile.flag=flag; profile.avatar=avatar;
+  profile.points = (profile.points||0) + 10;
+  saveMyProfile(profile);
+  showStatus('success','✅','تم حفظ ملفك الشخصي! 🎉');
+  updateNavAvatar();
+}
+
+function updateNavAvatar(){
+  const p=getMyProfile(); if(!p) return;
+  const el=document.getElementById('navProfileImg');
+  if(p.avatar) el.innerHTML=`<img src="${p.avatar}">`;
+  const nameEl=document.getElementById('profile-name-text');
+  if(p.name) nameEl.textContent=p.name;
+}
+
+/* رسالة حالة */
+function showStatus(type,icon,msg){
+  const el=document.getElementById('slimeStatus');
+  const ico=document.getElementById('statusIcon');
+  const txt=document.getElementById('statusMsg');
+  el.className='slime-status show '+type;
+  ico.textContent=icon; txt.innerHTML=msg;
+  clearTimeout(el._t);
+  if(type!=='success') el._t=setTimeout(()=>el.classList.remove('show'),3600);
+}
+function shakeInput(){
+  const inp=document.getElementById('slimeIdInput');
+  let n=0; inp.style.transition='transform .07s';
+  const iv=setInterval(()=>{ inp.style.transform=n%2?'translateX(7px)':'translateX(-7px)'; n++; if(n>6){clearInterval(iv);inp.style.transform='';inp.style.transition='';} },65);
+}
+
+document.getElementById('slimeIdInput').addEventListener('keydown',e=>{ if(e.key==='Enter') activateSlime(); });
+initSlimeDB();
+setTimeout(()=>{ refreshSlimeUI(); updateNavAvatar(); renderMyProfile(); renderAllUsers(); },100);
+
+/* ════════════════════════════════════════════
+   💬  CHAT SYSTEM
+════════════════════════════════════════════ */
+function switchChatTab(tab,btn){
+  playClick();
+  document.querySelectorAll('.chat-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.chat-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('chat-'+tab).classList.add('active');
+  if(tab==='group') initGroupChat();
+  if(tab==='private') initPrivateChat();
+}
+
+/* دردشة جماعية */
+function initGroupChat(){
+  const p=getMyProfile();
+  const locked=document.getElementById('groupChatLocked');
+  const inp=document.getElementById('groupChatInput');
+  if(p && p.name){ locked.style.display='none'; inp.style.display=''; }
+  else { locked.style.display=''; inp.style.display='none'; }
+  renderGroupMessages();
+}
+
+function renderGroupMessages(){
+  const msgs=JSON.parse(localStorage.getItem('groupChat')||'[]');
+  const box=document.getElementById('groupChatBox');
+  box.innerHTML='';
+  const myProfile=getMyProfile();
+  for(const m of msgs){
+    const isMine=myProfile && m.userID===myProfile.userID;
+    const div=document.createElement('div');
+    div.className='chat-msg'+(isMine?' mine':'');
+    const avatarHtml=m.avatar?`<img src="${m.avatar}">`:(m.name?m.name[0]:'?');
+    div.innerHTML=`
+      <div class="chat-avatar">${m.avatar?`<img src="${m.avatar}">`:m.name?m.name[0]:'👤'}</div>
+      <div>
+        ${!isMine?`<div class="chat-name">${m.flag||''} ${m.name||'مجهول'}</div>`:''}
+        <div class="chat-bubble">${escHtml(m.text)}</div>
+      </div>`;
+    box.appendChild(div);
+  }
+  box.scrollTop=box.scrollHeight;
+}
+
+function sendGroupMsg(){
+  const p=getMyProfile(); if(!p||!p.name) return;
+  const inp=document.getElementById('groupMsgInput');
+  const text=inp.value.trim(); if(!text) return;
+  const msgs=JSON.parse(localStorage.getItem('groupChat')||'[]');
+  msgs.push({userID:p.userID,name:p.name,avatar:p.avatar,flag:p.flag,text,time:Date.now()});
+  if(msgs.length>100) msgs.splice(0,msgs.length-100);
+  localStorage.setItem('groupChat',JSON.stringify(msgs));
+  inp.value='';
+  p.points=(p.points||0)+1; saveMyProfile(p);
+  renderGroupMessages();
+}
+
+/* دردشة خاصة */
+let currentPrivateTarget=null;
+function initPrivateChat(){
+  const p=getMyProfile();
+  const locked=document.getElementById('privateChatLocked');
+  const content=document.getElementById('privateSlimeContent');
+  if(p && p.name){ locked.style.display='none'; content.style.display='flex'; renderPrivateUsers(); }
+  else { locked.style.display=''; content.style.display='none'; }
+}
+
+function renderPrivateUsers(){
+  const myP=getMyProfile();
+  const all=getAllProfiles().filter(u=>myP&&u.userID!==myP.userID&&u.name);
+  const list=document.getElementById('privateUserList');
+  if(all.length===0){
+    list.innerHTML=`<div style="font-size:12px;color:rgba(0,255,136,.35);text-align:center;padding:16px 0">لا يوجد أعضاء آخرون حتى الآن</div>`;
+    return;
+  }
+  list.innerHTML=all.map(u=>`
+    <div onclick="openPrivateConv('${u.userID}','${escHtml(u.name)}','${u.avatar||''}')" style="display:flex;align-items:center;gap:10px;background:rgba(0,255,136,.05);border:1px solid rgba(0,255,136,.15);border-radius:10px;padding:9px 11px;cursor:pointer;transition:all .2s" onmouseover="this.style.borderColor='rgba(0,255,136,.35)'" onmouseout="this.style.borderColor='rgba(0,255,136,.15)'">
+      <div style="width:36px;height:36px;border-radius:50%;border:1.5px solid var(--green);background:rgba(0,255,136,.1);display:flex;align-items:center;justify-content:center;overflow:hidden;flex-shrink:0">${u.avatar?`<img src="${u.avatar}" style="width:100%;height:100%;object-fit:cover;border-radius:50%">`:u.name[0]}</div>
+      <div style="flex:1"><div style="font-size:13px;font-weight:bold;color:#fff">${u.flag||''} ${escHtml(u.name)}</div><div style="font-size:9.5px;color:rgba(0,255,136,.4);font-family:monospace">${u.userID}</div></div>
+      <div style="font-size:18px;color:rgba(0,255,136,.4)">&#x27A4;</div>
+    </div>`).join('');
+}
+
+function openPrivateConv(uid, name, avatar){
+  currentPrivateTarget={uid,name,avatar};
+  document.getElementById('privateUserList').style.display='none';
+  document.getElementById('privateConv').style.display='flex';
+  document.getElementById('privateConvTitle').textContent='💬 '+name;
+  renderPrivateMessages();
+}
+function backToUserList(){
+  currentPrivateTarget=null;
+  document.getElementById('privateUserList').style.display='';
+  document.getElementById('privateConv').style.display='none';
+}
+function renderPrivateMessages(){
+  if(!currentPrivateTarget) return;
+  const myP=getMyProfile();
+  const key='priv_'+[myP.userID,currentPrivateTarget.uid].sort().join('_');
+  const msgs=JSON.parse(localStorage.getItem(key)||'[]');
+  const box=document.getElementById('privateChatBox');
+  box.innerHTML='';
+  for(const m of msgs){
+    const isMine=m.userID===myP.userID;
+    const div=document.createElement('div');
+    div.className='chat-msg'+(isMine?' mine':'');
+    div.innerHTML=`
+      <div class="chat-avatar">${m.avatar?`<img src="${m.avatar}">`:m.name?m.name[0]:'👤'}</div>
+      <div>
+        ${!isMine?`<div class="chat-name">${escHtml(m.name||'')}</div>`:''}
+        <div class="chat-bubble">${escHtml(m.text)}</div>
+      </div>`;
+    box.appendChild(div);
+  }
+  box.scrollTop=box.scrollHeight;
+}
+function sendPrivateMsg(){
+  if(!currentPrivateTarget) return;
+  const p=getMyProfile(); if(!p||!p.name) return;
+  const inp=document.getElementById('privateMsgInput');
+  const text=inp.value.trim(); if(!text) return;
+  const key='priv_'+[p.userID,currentPrivateTarget.uid].sort().join('_');
+  const msgs=JSON.parse(localStorage.getItem(key)||'[]');
+  msgs.push({userID:p.userID,name:p.name,avatar:p.avatar,text,time:Date.now()});
+  if(msgs.length>200) msgs.splice(0,msgs.length-200);
+  localStorage.setItem(key,JSON.stringify(msgs));
+  inp.value='';
+  renderPrivateMessages();
+}
+
+/* ════════════════════════════════════════════
+   👤  PROFILE SYSTEM
+════════════════════════════════════════════ */
+function switchProfileTab(tab,btn){
+  playClick();
+  document.querySelectorAll('.profile-tab').forEach(t=>t.classList.remove('active'));
+  btn.classList.add('active');
+  document.querySelectorAll('.profile-panel').forEach(p=>p.classList.remove('active'));
+  document.getElementById('pp-'+tab).classList.add('active');
+  if(tab==='mine') renderMyProfile();
+  if(tab==='all') renderAllUsers();
+}
+
+function renderMyProfile(){
+  const p=getMyProfile();
+  const el=document.getElementById('myProfileContent');
+  if(!p||!p.name){
+    el.innerHTML=`<div class="no-profile-msg"><div class="big-icon">&#x1FAE7;</div><p>لم تُكمل ملفك الشخصي بعد<br>فعّل سلايم وأضف بياناتك من قسم سلايم</p></div>`;
+    return;
+  }
+  el.innerHTML=`
+    <div class="my-profile-card">
+      <div class="my-profile-avatar">${p.avatar?`<img src="${p.avatar}">`:'👤'}</div>
+      <div class="my-profile-name">${escHtml(p.name)}</div>
+      ${p.flag?`<div class="my-profile-flag">${p.flag}</div>`:''}
+      <div class="my-profile-id">${p.userID}</div>
+      <div class="slime-badge-row"><div class="slime-badge-dot"></div><span class="slime-badge-text">سلايم مفعّل ✓</span></div>
+      <div class="profile-info-row">
+        <div class="profile-stat"><span class="stat-val">${p.points||0}</span><span class="stat-lbl">نقاط نشاط</span></div>
+        <div class="profile-stat"><span class="stat-val">${new Date(p.activatedAt).toLocaleDateString('ar')}</span><span class="stat-lbl">تاريخ الانضمام</span></div>
+      </div>
+    </div>`;
+}
+
+function renderAllUsers(){
+  const all=getAllProfiles().filter(u=>u.name);
+  const el=document.getElementById('allUsersContent');
+  if(all.length===0){
+    el.innerHTML=`<div class="empty-users"><div class="big-icon">&#x1F465;</div><p>لا يوجد أعضاء بعد<br>كن أول من يُكمل ملفه الشخصي</p></div>`;
+    return;
+  }
+  all.sort((a,b)=>(b.points||0)-(a.points||0));
+  el.innerHTML=`<div class="users-grid">${all.map((u,i)=>`
+    <div class="user-card">
+      <div style="font-size:13px;font-weight:bold;color:rgba(160,0,255,.45);min-width:22px;text-align:center">#${i+1}</div>
+      <div class="user-card-avatar">
+        ${u.avatar?`<img src="${u.avatar}">`:(u.name?u.name[0]:'👤')}
+        <div class="frame-ring"></div>
+      </div>
+      <div class="user-card-info">
+        <div class="user-card-name">${u.flag||''} ${escHtml(u.name)} <span class="slime-verified">&#x1FAE7; سلايم</span></div>
+        <div class="user-card-id">${u.userID}</div>
+      </div>
+      <div class="user-card-points">
+        <div class="points-val">${u.points||0}</div>
+        <div class="points-lbl">نقطة</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+
+/* ════════════════════════════════════════════
    📌  التنقل
-══════════════════════════════════════════ */
+════════════════════════════════════════════ */
 const pages={
   main:document.getElementById('page-main'),
   slime:document.getElementById('page-slime'),
+  chat:document.getElementById('page-chat'),
   archive:document.getElementById('page-archive'),
   profile:document.getElementById('page-profile'),
 };
 let cur='main';
 function showPage(n,b){
   playClick();
-  pages[cur].classList.remove('active');cur=n;pages[n].classList.add('active');
+  pages[cur].classList.remove('active'); cur=n; pages[n].classList.add('active');
   document.querySelectorAll('.nav-btn').forEach(x=>x.classList.remove('active'));
-  if(b)b.classList.add('active');
-  if(n==='slime') updateCurrentStatusCard();
+  if(b) b.classList.add('active');
+  if(n==='slime') refreshSlimeUI();
+  if(n==='chat') initGroupChat();
+  if(n==='profile'){ renderMyProfile(); renderAllUsers(); }
 }
 
 function openPopup(t,ic){
@@ -633,31 +1190,36 @@ function openPopup(t,ic){
 }
 function closePopup(){playClick();document.getElementById('popupMenu').classList.remove('active');}
 
+/* ════════════════════════════════════════════
+   🔊  صوت + موجة
+════════════════════════════════════════════ */
 let AC;
 function playClick(){
   try{
-    if(!AC)AC=new(AudioContext||webkitAudioContext)();
+    if(!AC) AC=new(AudioContext||webkitAudioContext)();
     const o=AC.createOscillator(),g=AC.createGain();
     o.connect(g);g.connect(AC.destination);
     o.frequency.value=380;o.type='sine';
-    g.gain.setValueAtTime(.1,AC.currentTime);
-    g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.14);
-    o.start();o.stop(AC.currentTime+.14);
+    g.gain.setValueAtTime(.08,AC.currentTime);
+    g.gain.exponentialRampToValueAtTime(.0001,AC.currentTime+.12);
+    o.start();o.stop(AC.currentTime+.12);
   }catch(e){}
 }
-
 const WL=document.getElementById('waveLayer');
 let cw=true;
 document.addEventListener('pointerdown',e=>{
-  if(!cw)return;cw=false;
-  const w=document.createElement('div');w.className='wave';
-  w.style.left=e.clientX+'px';w.style.top=e.clientY+'px';
-  WL.appendChild(w);setTimeout(()=>{w.remove();cw=true;},1200);
+  if(!cw) return; cw=false;
+  const w=document.createElement('div'); w.className='wave';
+  w.style.left=e.clientX+'px'; w.style.top=e.clientY+'px';
+  WL.appendChild(w); setTimeout(()=>{w.remove();cw=true;},1200);
 });
 document.addEventListener('touchmove',e=>{
   if(!e.target.closest('.popup-body')&&!e.target.closest('.page'))e.preventDefault();
 },{passive:false});
 document.querySelectorAll('button,.nav-btn').forEach(el=>el.addEventListener('click',playClick));
+
+/* مساعد */
+function escHtml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 </script>
 </body>
 </html>
