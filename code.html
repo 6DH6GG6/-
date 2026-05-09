@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>لوحة إدارة سلايم</title>
+<style>
+:root{--green:#00ff88;--green2:#00cc66;--red:#ff4444;--purple:#9900ff;--purple2:#cc66ff}
+*{margin:0;padding:0;box-sizing:border-box;font-family:'Tahoma',sans-serif}
+body{background:#000;color:#fff;min-height:100vh;padding:16px}
+h1{text-align:center;color:var(--green);font-size:20px;margin-bottom:18px;
+   text-shadow:0 0 14px var(--green);letter-spacing:2px}
+
+/* ── بطاقة ── */
+.card{background:rgba(0,20,12,.9);border:1px solid rgba(0,255,136,.2);
+      border-radius:14px;padding:16px;margin-bottom:14px;position:relative;overflow:hidden}
+.card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;
+              background:linear-gradient(90deg,transparent,var(--green),transparent)}
+.card-title{font-size:13px;font-weight:bold;color:var(--green);margin-bottom:12px;
+            display:flex;align-items:center;gap:7px}
+
+/* ── إضافة رمز ── */
+.input-row{display:flex;gap:8px}
+.g-input{flex:1;background:rgba(0,255,136,.05);border:1.5px solid rgba(0,255,136,.25);
+         border-radius:9px;color:var(--green);font-size:13px;padding:9px 12px;outline:none;
+         font-family:'Courier New',monospace;letter-spacing:1px;direction:ltr}
+.g-input:focus{border-color:var(--green)}
+.g-input::placeholder{color:rgba(0,255,136,.2);font-size:11px}
+select.g-input{cursor:pointer}
+.btn-add{background:linear-gradient(135deg,var(--green2),#009944);border:none;
+         border-radius:9px;color:#000;font-size:13px;font-weight:bold;padding:0 16px;cursor:pointer}
+.btn-add:active{opacity:.8}
+.btn-gen{background:rgba(0,255,136,.12);border:1px solid rgba(0,255,136,.3);border-radius:9px;
+         color:var(--green);font-size:12px;padding:8px 13px;cursor:pointer;white-space:nowrap}
+.btn-gen:active{opacity:.8}
+
+/* ── جدول الرموز ── */
+.codes-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.codes-table th{color:rgba(0,255,136,.5);font-weight:bold;padding:7px 8px;
+                border-bottom:1px solid rgba(0,255,136,.15);text-align:right}
+.codes-table td{padding:8px 8px;border-bottom:1px solid rgba(0,255,136,.07);vertical-align:middle}
+.codes-table tr:last-child td{border-bottom:none}
+.code-id{font-family:'Courier New',monospace;font-size:11px;color:rgba(200,255,220,.8);
+         letter-spacing:.5px;direction:ltr;display:inline-block}
+.tier-badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:10px;font-weight:bold}
+.tier-عادي  {background:rgba(0,255,136,.1);border:1px solid rgba(0,255,136,.3);color:var(--green)}
+.tier-ظل    {background:rgba(100,0,200,.15);border:1px solid rgba(160,0,255,.3);color:var(--purple2)}
+.tier-نخبة  {background:rgba(255,180,0,.1);border:1px solid rgba(255,180,0,.3);color:#ffcc44}
+.tier-إمبراطور{background:rgba(255,0,0,.1);border:1px solid rgba(255,0,0,.35);color:#ff6666}
+.status-used{color:var(--red);font-size:11px}
+.status-free{color:var(--green);font-size:11px}
+.btn-del{background:rgba(255,50,50,.1);border:1px solid rgba(255,50,50,.3);border-radius:7px;
+         color:#ff6666;font-size:11px;padding:3px 9px;cursor:pointer}
+.btn-del:active{opacity:.7}
+.btn-copy{background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.2);border-radius:7px;
+          color:var(--green);font-size:10px;padding:3px 8px;cursor:pointer;margin-left:4px}
+
+/* ── إحصاء ── */
+.stats-row{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:4px}
+.stat-box{flex:1;min-width:80px;background:rgba(0,255,136,.06);border:1px solid rgba(0,255,136,.18);
+          border-radius:10px;padding:10px 8px;text-align:center}
+.stat-val{font-size:22px;font-weight:bold;color:var(--green);text-shadow:0 0 8px var(--green)}
+.stat-lbl{font-size:10px;color:rgba(0,255,136,.45);margin-top:3px}
+
+/* ── تصدير ── */
+.btn-export{width:100%;background:rgba(0,255,136,.08);border:1px solid rgba(0,255,136,.25);
+            border-radius:10px;color:var(--green);font-size:13px;font-weight:bold;
+            padding:11px 0;cursor:pointer;margin-top:4px;transition:all .2s}
+.btn-export:active{background:rgba(0,255,136,.18)}
+.btn-import{width:100%;background:rgba(100,0,200,.1);border:1px solid rgba(160,0,255,.25);
+            border-radius:10px;color:var(--purple2);font-size:13px;font-weight:bold;
+            padding:11px 0;cursor:pointer;margin-top:8px}
+
+/* ── toast ── */
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);
+       background:rgba(0,20,12,.97);border:1px solid var(--green);border-radius:10px;
+       color:var(--green);font-size:12px;padding:9px 18px;opacity:0;transition:opacity .3s;
+       pointer-events:none;z-index:9999;white-space:nowrap}
+#toast.show{opacity:1}
+
+/* ── empty ── */
+.empty-msg{text-align:center;padding:20px;color:rgba(0,255,136,.3);font-size:12px}
+</style>
+</head>
+<body>
+
+<h1>🫧 لوحة إدارة سلايم</h1>
+
+<!-- إحصائيات -->
+<div class="card">
+  <div class="card-title">📊 إحصائيات الرموز</div>
+  <div class="stats-row">
+    <div class="stat-box"><div class="stat-val" id="statTotal">0</div><div class="stat-lbl">إجمالي</div></div>
+    <div class="stat-box"><div class="stat-val" id="statFree" style="color:#00ff88">0</div><div class="stat-lbl">متاح</div></div>
+    <div class="stat-box"><div class="stat-val" id="statUsed" style="color:#ff4444">0</div><div class="stat-lbl">مستخدم</div></div>
+    <div class="stat-box"><div class="stat-val" id="statMembers" style="color:#cc66ff">0</div><div class="stat-lbl">عضو</div></div>
+  </div>
+</div>
+
+<!-- إضافة رمز جديد -->
+<div class="card">
+  <div class="card-title">➕ إضافة رمز جديد</div>
+  <div class="input-row" style="margin-bottom:8px">
+    <input class="g-input" id="newCode" placeholder="SLIME-XXXX-XXXX" maxlength="32" oninput="this.value=this.value.toUpperCase()">
+    <button class="btn-gen" onclick="generateCode()">🎲 توليد</button>
+  </div>
+  <div class="input-row">
+    <select class="g-input" id="newTier">
+      <option value="عادي">عادي</option>
+      <option value="ظل">ظل</option>
+      <option value="نخبة">نخبة</option>
+      <option value="إمبراطور">إمبراطور</option>
+    </select>
+    <button class="btn-add" onclick="addCode()">إضافة ✓</button>
+  </div>
+</div>
+
+<!-- قائمة الرموز -->
+<div class="card">
+  <div class="card-title">🔑 قائمة الرموز</div>
+  <div style="overflow-x:auto">
+    <table class="codes-table">
+      <thead>
+        <tr>
+          <th>الرمز</th>
+          <th>الرتبة</th>
+          <th>الحالة</th>
+          <th>إجراء</th>
+        </tr>
+      </thead>
+      <tbody id="codesBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<!-- تصدير / استيراد -->
+<div class="card">
+  <div class="card-title">💾 تصدير / استيراد</div>
+  <button class="btn-export" onclick="exportJSON()">⬇️ تصدير JSON</button>
+  <button class="btn-import" onclick="document.getElementById('importFile').click()">⬆️ استيراد JSON</button>
+  <input type="file" id="importFile" accept=".json" style="display:none" onchange="importJSON(event)">
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ══ مفاتيح التخزين — نفس الكود الرئيسي ══ */
+const KEY_IDS    = 'idslaim';
+const KEY_USED   = 'dizactivislaim';
+const KEY_PROFILES = 'slime_all_profiles';
+
+const DEFAULT_IDS = [
+  "SLIME-A1B2-C3D4","SLIME-E5F6-G7H8","SLIME-X9Y0-Z1W2",
+  "SLIME-KAGE-0001","SLIME-KAGE-0002","SLIME-KAGE-0003",
+  "SLIME-DARK-1111","SLIME-DARK-2222","SLIME-DARK-3333","SLIME-TEIO-AAAA"
+];
+
+/* ══ بيانات الرتب — مخزنة منفصلة ══ */
+const KEY_TIERS = 'slime_tiers';
+
+function getTiers(){
+  return JSON.parse(localStorage.getItem(KEY_TIERS)||'{}');
+}
+function saveTier(id,tier){
+  const t=getTiers(); t[id]=tier;
+  localStorage.setItem(KEY_TIERS,JSON.stringify(t));
+}
+function removeTier(id){
+  const t=getTiers(); delete t[id];
+  localStorage.setItem(KEY_TIERS,JSON.stringify(t));
+}
+
+function getIDs(){
+  if(!localStorage.getItem(KEY_IDS))
+    localStorage.setItem(KEY_IDS,JSON.stringify(DEFAULT_IDS));
+  return JSON.parse(localStorage.getItem(KEY_IDS));
+}
+function getUsed(){return JSON.parse(localStorage.getItem(KEY_USED)||'[]');}
+function getProfiles(){return JSON.parse(localStorage.getItem(KEY_PROFILES)||'[]');}
+
+/* ══ عرض الجدول ══ */
+function render(){
+  const ids=getIDs(), used=getUsed(), tiers=getTiers();
+  const body=document.getElementById('codesBody');
+
+  // إحصائيات
+  document.getElementById('statTotal').textContent=ids.length;
+  document.getElementById('statFree').textContent=ids.filter(i=>!used.includes(i)).length;
+  document.getElementById('statUsed').textContent=used.filter(i=>ids.includes(i)).length;
+  document.getElementById('statMembers').textContent=getProfiles().filter(p=>p.name).length;
+
+  if(ids.length===0){
+    body.innerHTML=`<tr><td colspan="4"><div class="empty-msg">لا توجد رموز</div></td></tr>`;
+    return;
+  }
+
+  body.innerHTML=ids.map(id=>{
+    const isUsed=used.includes(id);
+    const tier=tiers[id]||'عادي';
+    return `<tr>
+      <td>
+        <span class="code-id">${id}</span>
+        <button class="btn-copy" onclick="copyCode('${id}')">نسخ</button>
+      </td>
+      <td><span class="tier-badge tier-${tier}">${tier}</span></td>
+      <td>${isUsed
+        ?'<span class="status-used">✗ مستخدم</span>'
+        :'<span class="status-free">✓ متاح</span>'}</td>
+      <td>${!isUsed
+        ?`<button class="btn-del" onclick="deleteCode('${id}')">حذف</button>`
+        :'—'}</td>
+    </tr>`;
+  }).join('');
+}
+
+/* ══ إضافة رمز ══ */
+function addCode(){
+  const inp=document.getElementById('newCode');
+  const tier=document.getElementById('newTier').value;
+  const code=inp.value.trim().toUpperCase();
+  if(!code){toast('⚠️ أدخل رمزاً أولاً');return;}
+  if(!/^SLIME-/.test(code)){toast('⚠️ يجب أن يبدأ بـ SLIME-');return;}
+  const ids=getIDs();
+  if(ids.includes(code)){toast('⚠️ الرمز موجود مسبقاً');return;}
+  ids.push(code);
+  localStorage.setItem(KEY_IDS,JSON.stringify(ids));
+  saveTier(code,tier);
+  inp.value='';
+  toast('✅ تمت إضافة الرمز');
+  render();
+}
+
+/* ══ توليد تلقائي ══ */
+function generateCode(){
+  const chars='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+  const seg=()=>Array.from({length:4},()=>chars[Math.random()*chars.length|0]).join('');
+  document.getElementById('newCode').value=`SLIME-${seg()}-${seg()}`;
+}
+
+/* ══ حذف رمز ══ */
+function deleteCode(id){
+  if(!confirm('حذف الرمز: '+id+'؟'))return;
+  let ids=getIDs();
+  ids=ids.filter(i=>i!==id);
+  localStorage.setItem(KEY_IDS,JSON.stringify(ids));
+  removeTier(id);
+  toast('🗑️ تم الحذف');
+  render();
+}
+
+/* ══ نسخ ══ */
+function copyCode(id){
+  navigator.clipboard.writeText(id).then(()=>toast('📋 تم النسخ: '+id));
+}
+
+/* ══ تصدير JSON ══ */
+function exportJSON(){
+  const ids=getIDs(), used=getUsed(), tiers=getTiers();
+  const data={
+    version:"1.0",
+    exportedAt:new Date().toISOString(),
+    codes:ids.map(id=>({
+      id, tier:tiers[id]||'عادي', used:used.includes(id), grantedTo:null
+    }))
+  };
+  const blob=new Blob([JSON.stringify(data,null,2)],{type:'application/json'});
+  const a=document.createElement('a');
+  a.href=URL.createObjectURL(blob);
+  a.download='slime-codes.json';
+  a.click();
+  toast('⬇️ تم التصدير');
+}
+
+/* ══ استيراد JSON ══ */
+function importJSON(e){
+  const file=e.target.files[0];if(!file)return;
+  const reader=new FileReader();
+  reader.onload=ev=>{
+    try{
+      const data=JSON.parse(ev.target.result);
+      if(!data.codes)throw new Error('تنسيق خاطئ');
+      const ids=data.codes.map(c=>c.id);
+      localStorage.setItem(KEY_IDS,JSON.stringify(ids));
+      const tiers={};
+      data.codes.forEach(c=>{if(c.tier)tiers[c.id]=c.tier;});
+      localStorage.setItem(KEY_TIERS,JSON.stringify(tiers));
+      toast('✅ تم الاستيراد: '+ids.length+' رمز');
+      render();
+    }catch(err){toast('❌ ملف غير صالح');}
+  };
+  reader.readAsText(file);
+  e.target.value='';
+}
+
+/* ══ Toast ══ */
+function toast(msg){
+  const el=document.getElementById('toast');
+  el.textContent=msg;el.classList.add('show');
+  clearTimeout(el._t);el._t=setTimeout(()=>el.classList.remove('show'),2400);
+}
+
+render();
+</script>
+</body>
+</html>
