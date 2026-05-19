@@ -15,7 +15,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   display:flex;flex-direction:column;align-items:center;justify-content:center;
 }
 
-/* ── شريط علوي: تدرج أحمر غامق ← أسود ← بنفسجي ── */
 #bridge-banner {
   position: absolute; top: 0; width: 100%; height: 120px;
   background: linear-gradient(
@@ -45,7 +44,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   pointer-events: none;
 }
 
-/* طبقة بريق داخلي فوق الشريط */
 #bridge-banner::before {
   content: '';
   position: absolute;
@@ -234,7 +232,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   box-shadow:inset 0 0 25px rgba(120,0,255,0.9),0 0 30px rgba(100,0,200,0.6);
 }
 
-/* ── شاشة التلاشي عند الانتقال ── */
 #fade-cover {
   position:fixed;inset:0;z-index:999;
   background:#000;
@@ -247,12 +244,11 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   pointer-events:all;
 }
 </style>
-<!-- ملف الحماية من الكونسول -->
+
 <script src="Shield_Slaym.php"></script>
 </head>
 <body>
 
-<!-- صوت الزر — ضع مسار ملف الـ ogg هنا -->
 <audio id="btn-sfx" preload="auto">
   <source src="click.ogg" type="audio/ogg">
 </audio>
@@ -279,13 +275,11 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   </div>
 </div>
 
-<!-- شاشة تلاشي سوداء قبل الانتقال -->
 <div id="fade-cover"></div>
 
 <script>
 'use strict';
 
-/* ══ رعد أحمر ══ */
 (function(){
   var cv  = document.getElementById('red-lightning-canvas');
   var ctx = cv.getContext('2d');
@@ -346,7 +340,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   setTimeout(scheduleBolt, Math.random()*600);
 })();
 
-/* ══ تدرج أصفر ↔ بنفسجي ══ */
 (function(){
   var texts = document.querySelectorAll('.banner-text');
   var t = 0, direction = 1;
@@ -364,7 +357,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   }, 30);
 })();
 
-/* ══ غليتش كل ثانية ══ */
 (function(){
   var texts = document.querySelectorAll('.banner-text');
   function doGlitch(){
@@ -379,7 +371,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   setTimeout(doGlitch, 200);
 })();
 
-/* ══ نيازك ══ */
 (function(){
   var container = document.getElementById('m-container');
   for(var i = 0; i < 25; i++){
@@ -393,7 +384,6 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   }
 })();
 
-/* ══ ساكورا ══ */
 (function(){
   var cv = document.getElementById('s1-sakura'), ctx = cv.getContext('2d');
   var W = cv.width = window.innerWidth, H = cv.height = window.innerHeight;
@@ -415,19 +405,16 @@ html,body{width:100%;height:100%;background:#000;overflow:hidden;font-family:'Ci
   })();
 })();
 
-/* ══ Shadow Monarch Dark Aura + انتقال لـ gateway.html بعد 3 ثوان مع صوت ══ */
 var auraActive = false;
 
 function triggerAura(){
   if(auraActive) return;
   auraActive = true;
 
-  /* ── تشغيل صوت الضغط ── */
   var sfx = document.getElementById('btn-sfx');
   sfx.currentTime = 0;
-  sfx.play().catch(function(){});  /* catch لتجنب خطأ autoplay policy */
+  sfx.play().catch(function(){});
 
-  /* ── بعد 3 ثوان: تلاشي ثم انتقال ── */
   setTimeout(function(){
     var cover = document.getElementById('fade-cover');
     cover.classList.add('visible');
