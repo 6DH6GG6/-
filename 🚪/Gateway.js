@@ -120,7 +120,7 @@ var GW = (function(){
 
   function loadGLB(){
     if(!window.THREE || !window.THREE.GLTFLoader){ buildFallback(); return; }
-    new THREE.GLTFLoader().load('GggG.glb', function(gltf){
+    new THREE.GLTFLoader().load('🚪/GggG.glb', function(gltf){
       var model = gltf.scene;
       model.traverse(function(c){
         if(c.name === 'Door_L') doorL = c;
