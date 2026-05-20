@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>البوابة</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@700;900&family=Cinzel:wght@400;600&family=Cairo:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{ --gold:#c9a84c; --gold2:#f5e090; }
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Cinzel',serif}
+
+/* ═══ LOADER ═══ */
+#loader-overlay{
+  position:fixed;inset:0;z-index:90;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(ellipse 80% 55% at 50% 0%,#1a0a2e 0%,#0d0118 45%,#04000a 100%);
+}
+#loader-overlay.show{display:flex}
+#loader-title{font-family:'Cairo',sans-serif;font-weight:700;font-size:clamp(16px,2.5vw,24px);color:var(--gold2);letter-spacing:1px;margin-bottom:clamp(24px,4vh,44px);text-shadow:0 0 20px rgba(245,224,144,.6);animation:labelPulse 1.5s ease-in-out infinite;}
+@keyframes labelPulse{0%,100%{opacity:.8}50%{opacity:1}}
+#loader-wrap{position:relative;width:clamp(220px,52vw,460px);height:clamp(16px,2.2vh,24px);}
+#loader-wrap::before{content:'';position:absolute;inset:0;border:1.5px solid rgba(201,168,76,.45);border-radius:2px;box-shadow:0 0 18px rgba(201,168,76,.2),inset 0 0 14px rgba(0,0,0,.7);}
+#loader-wrap::after{content:'';position:absolute;inset:-4px;border-radius:3px;box-shadow:-4px -4px 0 0 rgba(201,168,76,.55),4px -4px 0 0 rgba(201,168,76,.55),-4px 4px 0 0 rgba(201,168,76,.55),4px 4px 0 0 rgba(201,168,76,.55);}
+#loader-bar{position:absolute;top:3px;left:3px;bottom:3px;width:0%;border-radius:1px;background:linear-gradient(90deg,rgba(201,168,76,.4),rgba(245,224,144,.9) 50%,rgba(201,168,76,.4));box-shadow:0 0 18px rgba(201,168,76,.8),0 0 40px rgba(201,168,76,.4);transition:width .05s linear;}
+#loader-bar::after{content:'';position:absolute;right:0;top:0;bottom:0;width:24px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.7));animation:barShine .6s ease-in-out infinite alternate;}
+@keyframes barShine{0%{opacity:.4}100%{opacity:1}}
+#loader-pct{font-family:'Cinzel',serif;font-size:clamp(12px,1.6vw,16px);font-weight:600;color:var(--gold2);letter-spacing:2px;margin-top:clamp(12px,2vh,20px);text-shadow:0 0 12px rgba(201,168,76,.6);}
+
+/* ═══ SCREEN2 ═══ */
+#screen2{position:fixed;inset:0;z-index:10;background:radial-gradient(ellipse 60% 45% at 50% 0%,#2a003a 0%,#120020 40%,#000 100%);}
+#s2-castle{position:absolute;bottom:0;left:50%;transform:translateX(-50%);width:min(1100px,100vw);z-index:1;filter:drop-shadow(0 0 40px rgba(200,0,0,.5)) drop-shadow(0 0 80px rgba(160,0,0,.3));opacity:.85;}
+#s2-fog{position:absolute;bottom:0;left:0;right:0;height:35%;z-index:2;background:linear-gradient(0deg,rgba(60,0,80,.5),transparent);pointer-events:none;}
+#s2-fire{position:absolute;bottom:0;left:0;right:0;height:25%;z-index:2;background:radial-gradient(ellipse 80% 100% at 50% 100%,rgba(120,0,200,.35),transparent 70%);animation:fireFlicker 1.8s ease-in-out infinite alternate;pointer-events:none;}
+@keyframes fireFlicker{0%{opacity:.7}100%{opacity:1}}
+#s2-embers{position:absolute;inset:0;z-index:3;pointer-events:none}
+#three-canvas{position:absolute;z-index:4;width:100%!important;height:100%!important;top:0!important;left:0!important;cursor:pointer;}
+#s2-title{position:absolute;top:clamp(12px,4vh,50px);left:50%;transform:translateX(-50%);z-index:8;font-family:'Cinzel Decorative','Cinzel',serif;font-size:clamp(10px,2vw,16px);font-weight:700;color:#ff6666;letter-spacing:3px;text-shadow:0 0 20px rgba(255,0,0,1),0 0 50px rgba(180,0,0,.7);white-space:nowrap;animation:titlePulse 2.5s ease-in-out infinite;pointer-events:none;}
+@keyframes titlePulse{0%,100%{text-shadow:0 0 18px rgba(255,0,0,.8),0 0 40px rgba(180,0,0,.4)}50%{text-shadow:0 0 30px rgba(255,0,0,1),0 0 70px rgba(255,0,0,.5)}}
+#s2-glow{position:absolute;inset:0;z-index:5;pointer-events:none;background:radial-gradient(ellipse 40% 50% at 50% 52%,rgba(140,0,255,0),transparent);transition:background 1s;}
+#s2-glow.lit{background:radial-gradient(ellipse 40% 50% at 50% 52%,rgba(140,0,255,.25),rgba(80,0,180,.08) 55%,transparent 80%)}
+#s2-lightning{position:absolute;inset:0;z-index:6;pointer-events:none}
+
+/* ═══ THUNDER MENU ═══ */
+#thunder-menu{
+  position:fixed;inset:0;z-index:60;
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(0,0,0,0);backdrop-filter:blur(0px);
+  pointer-events:none;
+  transition:background .5s,backdrop-filter .5s;
+}
+#thunder-menu.show{display:flex;pointer-events:auto;background:rgba(0,0,0,.93);backdrop-filter:blur(10px);}
+#tm-lightning{position:absolute;inset:0;pointer-events:none;z-index:0}
+.tm-inner{position:relative;z-index:2;display:flex;flex-direction:column;align-items:center;width:min(680px,96vw);opacity:0;transform:translateY(24px) scale(.96);transition:opacity .55s ease .2s,transform .55s ease .2s;}
+#thunder-menu.show .tm-inner{opacity:1;transform:translateY(0) scale(1)}
+.tm-top-deco{display:flex;align-items:center;gap:12px;margin-bottom:10px;color:rgba(201,168,76,.4);font-size:clamp(7px,1.1vw,10px);letter-spacing:6px;}
+.tm-top-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,rgba(201,168,76,.4),transparent)}
+.tm-title{font-family:'Cinzel Decorative','Cinzel',serif;font-size:clamp(22px,5vw,52px);color:var(--gold2);letter-spacing:clamp(5px,1.5vw,16px);text-align:center;text-shadow:0 0 30px rgba(201,168,76,.9),0 0 80px rgba(201,168,76,.5);animation:tmShine 2.2s ease-in-out infinite alternate;margin-bottom:8px;}
+@keyframes tmShine{from{text-shadow:0 0 22px rgba(201,168,76,.7),0 0 55px rgba(201,168,76,.35);}to{text-shadow:0 0 50px rgba(245,224,144,1),0 0 110px rgba(201,168,76,.75);}}
+.tm-subtitle{font-size:clamp(7px,1.1vw,10px);color:rgba(201,168,76,.35);letter-spacing:6px;margin-bottom:clamp(18px,4vh,38px);text-align:center;}
+.tm-divider{width:88%;height:1px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent);box-shadow:0 0 16px rgba(201,168,76,.45);margin-bottom:clamp(18px,4vh,36px);}
+.tm-btns{display:flex;flex-direction:column;gap:clamp(7px,1.5vh,14px);width:100%;align-items:center}
+.tm-btn{
+  position:relative;width:min(540px,94vw);
+  padding:clamp(13px,2.3vh,18px) clamp(22px,4vw,48px);
+  background:linear-gradient(135deg,rgba(45,28,0,.92),rgba(18,10,0,.96));
+  border:1px solid rgba(201,168,76,.35);
+  border-top-color:rgba(245,224,144,.55);border-bottom-color:rgba(201,168,76,.18);
+  color:var(--gold2);
+  font-family:'Cinzel Decorative','Cinzel',serif;
+  font-size:clamp(12px,1.8vw,16px);
+  letter-spacing:2px;
+  cursor:pointer;text-align:center;
+  clip-path:polygon(18px 0%,100% 0%,calc(100% - 18px) 100%,0% 100%);
+  transition:all .22s;
+  text-shadow:0 0 14px rgba(201,168,76,.55);
+  overflow:hidden;
+  opacity:0;transform:translateX(50px);
+}
+#thunder-menu.show .tm-btn{opacity:1;transform:translateX(0);}
+#thunder-menu.show .tm-btn:nth-child(1){transition:opacity .4s ease .3s,transform .4s ease .3s,background .22s,box-shadow .22s;}
+#thunder-menu.show .tm-btn:nth-child(2){transition:opacity .4s ease .4s,transform .4s ease .4s,background .22s,box-shadow .22s;}
+.tm-btn::before{content:'';position:absolute;top:0;left:-120%;width:100%;height:100%;background:linear-gradient(90deg,transparent,rgba(201,168,76,.07),transparent);transition:left .45s;}
+.tm-btn:hover::before{left:120%}
+.tm-btn:hover{background:linear-gradient(135deg,rgba(90,56,0,.98),rgba(55,33,0,.99));border-color:rgba(245,224,144,.75);box-shadow:0 0 32px rgba(201,168,76,.45),inset 0 0 22px rgba(201,168,76,.06);color:#fff;}
+.tm-btn:active{transform:scale(.97)!important}
+.tm-prog-wrap{width:min(540px,94vw);height:2px;background:rgba(201,168,76,.08);border:1px solid rgba(201,168,76,.15);margin-top:clamp(16px,3.5vh,32px);overflow:hidden;}
+.tm-prog-fill{height:100%;width:0%;background:linear-gradient(90deg,var(--gold),var(--gold2),var(--gold));box-shadow:0 0 14px var(--gold);transition:width .05s linear;}
+
+/* ═══ PASSWORD PANEL ═══ */
+#pw-panel{position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.72);backdrop-filter:blur(12px);}
+#pw-panel.show{display:flex}
+.pw-card{position:relative;background:linear-gradient(160deg,rgba(6,2,14,.97),rgba(12,2,22,.98));border:1px solid rgba(201,168,76,.38);border-radius:4px;padding:32px 26px 24px;width:min(340px,92vw);display:flex;flex-direction:column;align-items:center;overflow:hidden;animation:cardIn .38s cubic-bezier(.34,1.56,.64,1);}
+@keyframes cardIn{from{transform:scale(.84) translateY(18px);opacity:0}to{transform:none;opacity:1}}
+.pw-card::before{content:'';position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,transparent,var(--gold),var(--gold2),var(--gold),transparent);}
+.pw-corner{position:absolute;width:12px;height:12px;border-color:var(--gold);border-style:solid}
+.pw-corner.tl{top:0;right:0;border-width:1.5px 1.5px 0 0}.pw-corner.tr{top:0;left:0;border-width:1.5px 0 0 1.5px}
+.pw-corner.bl{bottom:0;right:0;border-width:0 1.5px 1.5px 0}.pw-corner.br{bottom:0;left:0;border-width:0 0 1.5px 1.5px}
+.pw-icon{font-size:32px;margin-bottom:8px;filter:drop-shadow(0 0 12px rgba(201,168,76,.8));animation:iconPulse 3s ease-in-out infinite}
+@keyframes iconPulse{0%,100%{filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}50%{filter:drop-shadow(0 0 18px rgba(201,168,76,.95))}}
+.pw-title{font-family:'Cinzel Decorative','Cinzel',serif;font-size:clamp(11px,2.2vw,14px);color:var(--gold2);text-shadow:0 0 12px rgba(201,168,76,.7);letter-spacing:2px;margin-bottom:3px;text-align:center;}
+.pw-sub{font-size:9px;color:rgba(201,168,76,.35);letter-spacing:2px;margin-bottom:14px;text-align:center}
+.pw-rule{width:100%;display:flex;align-items:center;gap:6px;margin-bottom:14px}
+.pw-rl{flex:1;height:1px;background:linear-gradient(90deg,transparent,var(--gold),transparent)}
+.pw-rd{width:5px;height:5px;background:var(--gold2);transform:rotate(45deg);box-shadow:0 0 7px var(--gold);flex-shrink:0}
+.pw-input{width:100%;background:rgba(201,168,76,.04);border:1.5px solid rgba(201,168,76,.25);border-radius:3px;color:var(--gold2);font-family:'Cinzel',serif;font-size:14px;padding:11px 14px;outline:none;text-align:center;letter-spacing:3px;transition:border-color .2s,box-shadow .2s;margin-bottom:12px;}
+.pw-input:focus{border-color:var(--gold);box-shadow:0 0 16px rgba(201,168,76,.18)}
+.pw-input::placeholder{color:rgba(201,168,76,.2);font-size:11px}
+.pw-btns{display:flex;gap:8px;width:100%}
+.pw-ok{flex:1;background:linear-gradient(135deg,#3d2200,#c9a84c 40%,#f5e090 60%,#c9a84c 80%,#3d2200);border:none;border-radius:3px;color:#1a0900;font-family:'Cinzel Decorative','Cinzel',serif;font-size:13px;font-weight:700;padding:10px 0;cursor:pointer;letter-spacing:2px;box-shadow:0 0 16px rgba(201,168,76,.32);}
+.pw-ok:active{transform:scale(.96)}
+.pw-back{background:rgba(201,168,76,.06);border:1px solid rgba(201,168,76,.25);border-radius:3px;color:rgba(201,168,76,.5);font-family:'Cinzel',serif;font-size:10px;padding:10px 13px;cursor:pointer;transition:all .2s;}
+.pw-back:hover{background:rgba(201,168,76,.1);color:var(--gold)}
+.pw-err{font-size:10px;color:#ff5544;margin-top:9px;display:none;text-align:center}
+.pw-err.show{display:block;animation:errShake .35s ease}
+@keyframes errShake{0%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}100%{transform:translateX(0)}}
+
+/* ═══ COVERS ═══ */
+#black-cover{position:fixed;inset:0;z-index:80;background:#000;opacity:0;pointer-events:none;transition:opacity .9s;}
+#black-cover.show{opacity:1;pointer-events:auto}
+#purple-cover{position:fixed;inset:0;z-index:79;background:radial-gradient(ellipse at 50% 50%,#28004c,#0a0020,#000);opacity:0;pointer-events:none;transition:opacity 1.5s ease;}
+#purple-cover.show{opacity:1;pointer-events:auto}
+.wave-ring{position:fixed;pointer-events:none;border-radius:50%;border:2px solid rgba(201,168,76,.55);transform:translate(-50%,-50%) scale(0);animation:waveRing .9s ease-out forwards;z-index:200;}
+@keyframes waveRing{to{transform:translate(-50%,-50%) scale(4.5);opacity:0}}
+</style>
+</head>
+<body>
+
+<div id="black-cover"></div>
+<div id="purple-cover"></div>
+
+<!-- Loader -->
+<div id="loader-overlay">
+  <div id="loader-title">جاري تحميل البوابة...</div>
+  <div id="loader-wrap"><div id="loader-bar"></div></div>
+  <div id="loader-pct">0%</div>
+</div>
+
+<!-- Screen 2: Gateway -->
+<div id="screen2">
+  <div id="s2-bg">
+    <svg id="s2-castle" viewBox="0 0 1100 620" xmlns="http://www.w3.org/2000/svg" fill="none">
+      <defs>
+        <radialGradient id="skyG" cx="50%" cy="0%" r="90%"><stop offset="0%" stop-color="#5a0000"/><stop offset="100%" stop-color="#000"/></radialGradient>
+        <radialGradient id="moonG" cx="50%" cy="50%" r="50%"><stop offset="0%" stop-color="#ffddcc"/><stop offset="100%" stop-color="#880000"/></radialGradient>
+        <filter id="sGlow"><feGaussianBlur stdDeviation="12" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      </defs>
+      <rect x="0" y="0" width="1100" height="620" fill="url(#skyG)"/>
+      <circle cx="550" cy="90" r="58" fill="url(#moonG)" opacity=".75" filter="url(#sGlow)"/>
+      <rect x="300" y="310" width="500" height="310" fill="#1a0000"/>
+      <path d="M500 620 L500 450 Q550 390 600 450 L600 620 Z" fill="#050000" stroke="#660000" stroke-width="2.5"/>
+    </svg>
+    <div id="s2-fog"></div>
+    <div id="s2-fire"></div>
+    <canvas id="s2-embers"></canvas>
+  </div>
+  <canvas id="three-canvas"></canvas>
+  <div id="s2-glow"></div>
+  <canvas id="s2-lightning"></canvas>
+  <div id="s2-title">مخصص لظلال فقط</div>
+</div>
+
+<!-- Thunder Menu -->
+<div id="thunder-menu">
+  <canvas id="tm-lightning"></canvas>
+  <div class="tm-inner">
+    <div class="tm-top-deco"><div class="tm-top-line"></div>影 · KAGE · 暗<div class="tm-top-line"></div></div>
+    <div class="tm-title">✦ بوابة الظلام ✦</div>
+    <div class="tm-subtitle">GATE OF SHADOWS · مملكة الظلال</div>
+    <div class="tm-divider"></div>
+    <div class="tm-btns">
+      <button class="tm-btn" id="btn-enter">♦♠ دخول الى مملكة طائفة الظلام ♠♦</button>
+      <button class="tm-btn" id="btn-gangs">🔱 &nbsp; تجريد العصابات وتشريد حياتها &nbsp; 🔱</button>
+    </div>
+    <div class="tm-prog-wrap"><div class="tm-prog-fill" id="tm-bar"></div></div>
+  </div>
+</div>
+
+<!-- Password Panel -->
+<div id="pw-panel">
+  <div class="pw-card">
+    <div class="pw-corner tl"></div><div class="pw-corner tr"></div>
+    <div class="pw-corner bl"></div><div class="pw-corner br"></div>
+    <div class="pw-icon">🔐</div>
+    <div class="pw-title">كلمة السر المقدسة</div>
+    <div class="pw-sub">أدخل رمز العبور لتفتح البوابة</div>
+    <div class="pw-rule"><div class="pw-rl"></div><div class="pw-rd"></div><div class="pw-rl"></div></div>
+    <input class="pw-input" id="pw-input" type="password" placeholder="✦ · · · · · · · ✦" maxlength="40"
+      onkeydown="if(event.key==='Enter'){ GW.playClick(); GW.checkPW(); }">
+    <div class="pw-btns">
+      <button class="pw-ok" onclick="GW.playClick(); GW.checkPW()">✦ &nbsp;دخول&nbsp; ✦</button>
+      <button class="pw-back" onclick="GW.playClick(); GW.closePW()">↩ رجوع</button>
+    </div>
+    <div class="pw-err" id="pw-err">⚔ الرمز خاطئ</div>
+  </div>
+</div>
+
+<audio id="sfx-open"  src="open.ogg"  preload="auto"></audio>
+<audio id="sfx-music" src="music.ogg" loop preload="auto"></audio>
+<audio id="sfx-kps"   src="kps.ogg"   preload="auto"></audio>
+
+<script src="gateway.js"></script>
+</body>
+</html>
