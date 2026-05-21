@@ -619,7 +619,7 @@ window.Gate2={
         setTimeout(function(){
           var s2=document.getElementById('screen2');
           if(s2){s2.classList.add('fade-out');s2.style.display='none';}
-          var ds=document.createElement('script');ds.src='D⚜️A⚜️R⚜️K⚜️S_.js';document.head.appendChild(ds);
+          var ds=document.createElement('script');ds.src='⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🪞⚜️/D⚜️A⚜️R⚜️K⚜️S_.js';document.head.appendChild(ds);
           var oldMusic=document.getElementById('sfx-music');
           if(oldMusic){oldMusic.pause();oldMusic.currentTime=0;}
           setTimeout(function(){bc.classList.remove('show');setTimeout(function(){pc.classList.remove('show');},600);},500);
