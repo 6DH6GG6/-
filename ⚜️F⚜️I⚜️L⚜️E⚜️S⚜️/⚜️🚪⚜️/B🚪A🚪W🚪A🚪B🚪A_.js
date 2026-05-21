@@ -416,7 +416,7 @@ function openPasswordScreen(){
   }
 
   var s=document.createElement('script');
-  s.src='P🔑A🔑S_.js';
+  s.src='⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🪞⚜️/P🔑A🔑S_.js';
   document.head.appendChild(s);
 }
 
