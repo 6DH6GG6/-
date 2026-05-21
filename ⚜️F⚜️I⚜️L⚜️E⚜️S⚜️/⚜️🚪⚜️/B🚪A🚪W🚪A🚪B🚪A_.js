@@ -602,7 +602,7 @@ window.Gate2={
     var glow=document.getElementById('s2-glow');if(glow)glow.classList.add('lit');
     startGL();
 
-    var gateMusic=new Audio('F🚪A🚪T🚪H🚪BWB_.ogg');
+    var gateMusic=new Audio('⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🎶⚜️/F🎶A🎶T🎶H🎶BWB_.ogg');
     gateMusic.loop = false;
     gateMusic.volume=0.8;
     gateMusic.play().catch(function(){});
