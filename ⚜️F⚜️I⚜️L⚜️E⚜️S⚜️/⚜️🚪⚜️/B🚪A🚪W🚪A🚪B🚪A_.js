@@ -533,7 +533,7 @@ function initThree(){
   });
 
   if(window.THREE&&window.THREE.GLTFLoader){
-    new THREE.GLTFLoader().load('B🚪W🚪B_.glb',function(gltf){
+    new THREE.GLTFLoader().load('⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🚪⚜️/B🚪W🚪B_.glb',function(gltf){
       var model=gltf.scene;
       model.traverse(function(c){if(c.name==='Door_L')doorL=c;if(c.name==='Door_R')doorR=c;});
       var box=new THREE.Box3().setFromObject(model),sz=box.getSize(new THREE.Vector3()),cn=box.getCenter(new THREE.Vector3());
