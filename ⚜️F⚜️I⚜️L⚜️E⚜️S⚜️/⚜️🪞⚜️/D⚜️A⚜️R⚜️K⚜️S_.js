@@ -566,7 +566,7 @@
 
     overlay.style.animation = 'dw-fadeOut .4s ease forwards';
 
-    var music = new Audio('M🎶U🎶S🎶I🎶C_R🎶A🎶A🎶D_.ogg');
+    var music = new Audio('⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🎶⚜️/M🎶U🎶S🎶I🎶C_R🎶A🎶A🎶D_.ogg');
     music.loop=true; music.volume=0.6;
     music.play().catch(function(){});
 
