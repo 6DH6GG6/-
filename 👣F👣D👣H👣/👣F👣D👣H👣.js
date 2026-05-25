@@ -4,7 +4,7 @@
 var BASE = 'https://6dh6gg6.github.io/-/';
 
 var MEMBERS = [
-  { id:'001', name:'إمبراطور الجليد',  img:'members/001.jpg', href: BASE + '👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html' },
+  { id:'001', name:'جلجامشة الوردية',  img:'members/001.jpg', href: BASE + '👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html' },
   { id:'002', name:'سيد الظلام',       img:'members/002.jpg', href: BASE + '002.html' },
   { id:'003', name:'الأمير الأسود',    img:'members/003.jpg', href: BASE + '003.html' },
   { id:'004', name:'حارس العرش',       img:'members/004.jpg', href: BASE + '004.html' },
