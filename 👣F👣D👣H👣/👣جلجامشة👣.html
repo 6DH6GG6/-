@@ -1,0 +1,940 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>جلخامشة الوىدية</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --pink:       #f472b6;
+      --pink-light: #fbcfe8;
+      --pink-dim:   rgba(244,114,182,0.18);
+      --red:        #ef4444;
+      --red-dark:   #b91c1c;
+      --blue:       #3b82f6;
+      --gold:       #f59e0b;
+      --bg-dark:    #0a0a0a;
+      --nav-h:      56px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html, body {
+      width: 100%; height: 100%;
+      font-family: 'Cairo', sans-serif;
+      background: var(--bg-dark);
+      color: #fff;
+      overflow-x: hidden;
+    }
+
+    /* ═══════════════════════════════════════════
+       SPLASH / BLUR OVERLAY
+    ═══════════════════════════════════════════ */
+    #splash {
+      position: fixed; inset: 0; z-index: 9999;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 32px;
+      background: rgba(10,10,10,0.72);
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      transition: opacity .5s ease, visibility .5s ease;
+    }
+    #splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
+
+    #splash-title {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.6rem, 5vw, 3rem);
+      font-weight: 700;
+      color: var(--red);
+      text-align: center;
+      letter-spacing: .02em;
+      text-shadow: 0 2px 24px rgba(239,68,68,.35);
+      line-height: 1.4;
+    }
+
+    /* Entry button */
+    #enter-btn {
+      width: 72px; height: 72px;
+      border-radius: 50%;
+      border: 3px solid var(--gold);
+      box-shadow:
+        0 0 0 6px rgba(245,158,11,.18),
+        0 0 0 12px rgba(245,158,11,.08),
+        inset 0 0 18px rgba(245,158,11,.12);
+      background: rgba(20,10,0,.7);
+      font-size: 2rem;
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      color: var(--gold);
+      outline: none;
+      transition: box-shadow .2s, transform .15s;
+    }
+    #enter-btn:active { transform: scale(.94); }
+
+    /* ═══════════════════════════════════════════
+       LOADING OVERLAY
+    ═══════════════════════════════════════════ */
+    #loading-overlay {
+      position: fixed; inset: 0; z-index: 9998;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px;
+      background: #0a0a0a;
+      opacity: 0; visibility: hidden;
+      transition: opacity .3s ease, visibility .3s ease;
+    }
+    #loading-overlay.show { opacity: 1; visibility: visible; }
+    #loading-overlay.hide { opacity: 0; visibility: hidden; }
+
+    .loader-label {
+      font-size: .85rem;
+      letter-spacing: .18em;
+      color: var(--pink-light);
+      text-transform: uppercase;
+    }
+    .loader-track {
+      width: min(340px, 80vw);
+      height: 6px;
+      background: rgba(255,255,255,.08);
+      border-radius: 99px;
+      overflow: hidden;
+      position: relative;
+    }
+    .loader-bar {
+      height: 100%;
+      width: 0%;
+      border-radius: 99px;
+      background: linear-gradient(90deg, var(--pink), #c026d3, var(--pink-light));
+      box-shadow: 0 0 12px var(--pink);
+      transition: width .05s linear;
+    }
+    .loader-pct {
+      font-size: 1.6rem;
+      font-weight: 900;
+      color: var(--pink);
+      letter-spacing: .04em;
+    }
+
+    /* ═══════════════════════════════════════════
+       MAIN SITE (hidden until splash gone)
+    ═══════════════════════════════════════════ */
+    #site {
+      opacity: 0; visibility: hidden;
+      transition: opacity .6s ease .1s;
+      min-height: 100vh;
+    }
+    #site.visible { opacity: 1; visibility: visible; }
+
+    /* ═══════════════════════════════════════════
+       NAV BAR
+    ═══════════════════════════════════════════ */
+    #nav-wrapper {
+      position: sticky; top: 0; z-index: 500;
+      background: linear-gradient(135deg, #0d0d1a 60%, #1a0a14);
+      border-bottom: 1.5px solid rgba(244,114,182,.22);
+      box-shadow: 0 2px 18px rgba(0,0,0,.55);
+    }
+    #nav-inner {
+      display: flex; align-items: center;
+      height: var(--nav-h);
+      padding: 0 8px;
+      gap: 4px;
+      overflow: hidden;
+    }
+
+    /* scroll arrows */
+    .nav-arrow {
+      flex-shrink: 0;
+      background: none; border: none; cursor: pointer;
+      color: var(--pink); font-size: 1.2rem;
+      padding: 6px 8px;
+      border-radius: 6px;
+      line-height: 1;
+      transition: background .15s;
+    }
+    .nav-arrow:active { background: var(--pink-dim); }
+
+    #nav-scroll {
+      flex: 1;
+      display: flex; align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+    }
+    #nav-scroll::-webkit-scrollbar { display: none; }
+
+    .nav-btn {
+      flex-shrink: 0;
+      padding: 7px 14px;
+      border-radius: 20px;
+      border: 1.5px solid rgba(244,114,182,.35);
+      background: transparent;
+      color: #e0b4c8;
+      font-family: 'Cairo', sans-serif;
+      font-size: .82rem;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background .2s, color .2s, border-color .2s, box-shadow .2s;
+    }
+    .nav-btn:hover,
+    .nav-btn.active {
+      background: var(--pink-dim);
+      border-color: var(--pink);
+      color: #fff;
+      box-shadow: 0 0 10px rgba(244,114,182,.3);
+    }
+
+    /* ═══════════════════════════════════════════
+       SECTION FRAME
+    ═══════════════════════════════════════════ */
+    #content-area {
+      width: 100%;
+      min-height: calc(100vh - var(--nav-h));
+    }
+    .section-page {
+      display: none;
+      width: 100%;
+      min-height: calc(100vh - var(--nav-h));
+    }
+    .section-page.active { display: block; }
+
+    /* Stars background (shared) */
+    .stars-bg {
+      position: relative;
+      background: #060608;
+      overflow: hidden;
+    }
+    .stars-bg::before {
+      content: '';
+      position: absolute; inset: 0;
+      background-image:
+        radial-gradient(1px 1px at 10% 15%, #fff 100%, transparent),
+        radial-gradient(1px 1px at 25% 40%, rgba(255,255,255,.7) 100%, transparent),
+        radial-gradient(1.5px 1.5px at 40% 8%, rgba(255,255,255,.8) 100%, transparent),
+        radial-gradient(1px 1px at 55% 70%, rgba(255,255,255,.6) 100%, transparent),
+        radial-gradient(1px 1px at 70% 30%, #fff 100%, transparent),
+        radial-gradient(1.5px 1.5px at 80% 55%, rgba(255,255,255,.75) 100%, transparent),
+        radial-gradient(1px 1px at 90% 20%, rgba(255,255,255,.65) 100%, transparent),
+        radial-gradient(1px 1px at 15% 80%, rgba(255,255,255,.5) 100%, transparent),
+        radial-gradient(1px 1px at 33% 60%, rgba(255,255,255,.55) 100%, transparent),
+        radial-gradient(1px 1px at 62% 45%, rgba(255,255,255,.6) 100%, transparent),
+        radial-gradient(1px 1px at 48% 88%, rgba(255,255,255,.45) 100%, transparent),
+        radial-gradient(1px 1px at 5%  50%, rgba(255,255,255,.4) 100%, transparent),
+        radial-gradient(1px 1px at 95% 75%, rgba(255,255,255,.45) 100%, transparent),
+        radial-gradient(1px 1px at 77% 10%, rgba(255,255,255,.5) 100%, transparent),
+        radial-gradient(1px 1px at 20% 95%, rgba(255,255,255,.4) 100%, transparent);
+      background-size: 100% 100%;
+      pointer-events: none;
+      z-index: 0;
+    }
+    .section-content {
+      position: relative; z-index: 1;
+      padding: 24px 16px 48px;
+      max-width: 680px;
+      margin: 0 auto;
+    }
+
+    /* ═══════════════════════════════════════════
+       HOMEPAGE SECTION (home.js injects here)
+    ═══════════════════════════════════════════ */
+    /* profile */
+    .profile-wrap {
+      display: flex; flex-direction: column;
+      align-items: center; gap: 10px;
+      padding: 28px 0 8px;
+    }
+    .profile-img-ring {
+      width: 110px; height: 110px;
+      border-radius: 50%;
+      border: 3.5px solid var(--pink);
+      box-shadow: 0 0 0 6px rgba(244,114,182,.15);
+      overflow: hidden;
+      background: #1a1a2e;
+      flex-shrink: 0;
+    }
+    .profile-img-ring img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+    }
+    .profile-name {
+      font-family: 'Amiri', serif;
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--pink);
+      text-align: center;
+    }
+
+    /* notification cards */
+    .notif-list { display: flex; flex-direction: column; gap: 12px; margin-top: 20px; }
+    .notif-card {
+      background: rgba(255,255,255,.04);
+      border: 1px solid rgba(244,114,182,.2);
+      border-radius: 12px;
+      padding: 12px 14px;
+      cursor: pointer;
+      display: flex; align-items: center; gap: 12px;
+      transition: background .2s, border-color .2s;
+    }
+    .notif-card:active { background: rgba(244,114,182,.1); }
+    .notif-dot {
+      width: 10px; height: 10px; border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .notif-dot.green  { background: #22c55e; box-shadow: 0 0 6px #22c55e; }
+    .notif-dot.red    { background: var(--red); box-shadow: 0 0 6px var(--red); }
+    .notif-dot.yellow { background: var(--gold); box-shadow: 0 0 6px var(--gold); }
+    .notif-body { flex: 1; }
+    .notif-title { font-size: .88rem; font-weight: 700; color: #f0d4e8; }
+    .notif-meta  { font-size: .74rem; color: #a07090; margin-top: 3px; }
+    .notif-badge {
+      background: var(--red);
+      color: #fff;
+      font-size: .68rem;
+      font-weight: 700;
+      border-radius: 50%;
+      width: 20px; height: 20px;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+
+    /* ═══════════════════════════════════════════
+       SHARED: pink separator strip
+    ═══════════════════════════════════════════ */
+    .pink-strip {
+      height: 2px;
+      background: linear-gradient(90deg, transparent, var(--pink-dim), rgba(244,114,182,.45), var(--pink-dim), transparent);
+      margin: 0;
+      border-radius: 99px;
+    }
+
+    /* ═══════════════════════════════════════════
+       NEWS / PHOTOS / VIDEOS shared card styles
+    ═══════════════════════════════════════════ */
+    .media-card {
+      background: rgba(255,255,255,.03);
+      border: 1.5px solid rgba(239,68,68,.28);
+      border-radius: 14px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color .2s;
+    }
+    .media-card:active { border-color: var(--red); }
+    .media-card-desc {
+      padding: 10px 14px;
+      font-size: .83rem;
+      color: #e0b4b4;
+      font-weight: 600;
+      background: rgba(10,0,0,.4);
+    }
+    .media-card img,
+    .media-card video {
+      width: 100%; display: block;
+      background: #111;
+    }
+
+    /* ═══════════════════════════════════════════
+       FULLSCREEN VIEWER
+    ═══════════════════════════════════════════ */
+    #viewer {
+      position: fixed; inset: 0; z-index: 8000;
+      background: #000;
+      display: none;
+      flex-direction: column;
+    }
+    #viewer.open { display: flex; }
+    #viewer-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 14px;
+      background: rgba(0,0,0,.8);
+      flex-shrink: 0;
+    }
+    .viewer-btn {
+      background: rgba(255,255,255,.08);
+      border: 1px solid rgba(255,255,255,.15);
+      color: #fff; border-radius: 8px;
+      padding: 6px 12px; font-size: .8rem;
+      cursor: pointer; font-family: 'Cairo', sans-serif;
+      display: flex; align-items: center; gap: 5px;
+    }
+    .viewer-btn:active { background: rgba(255,255,255,.18); }
+    #viewer-body {
+      flex: 1; display: flex;
+      align-items: center; justify-content: center;
+      overflow: auto; padding: 8px;
+    }
+    #viewer-body img { max-width: 100%; max-height: 100%; border-radius: 8px; }
+    #viewer-body video { max-width: 100%; max-height: 100%; border-radius: 8px; }
+
+    /* share modal */
+    #share-modal {
+      position: fixed; inset: 0; z-index: 9000;
+      background: rgba(0,0,0,.7);
+      backdrop-filter: blur(6px);
+      display: none; align-items: flex-end; justify-content: center;
+    }
+    #share-modal.open { display: flex; }
+    .share-sheet {
+      background: #1a0d14;
+      border: 1px solid rgba(244,114,182,.25);
+      border-radius: 20px 20px 0 0;
+      padding: 24px 20px 32px;
+      width: 100%; max-width: 480px;
+    }
+    .share-title { font-size: 1rem; font-weight: 700; color: var(--pink); text-align: center; margin-bottom: 18px; }
+    .share-btns { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+    .share-btn {
+      padding: 10px 20px;
+      border-radius: 10px;
+      border: 1px solid;
+      font-family: 'Cairo', sans-serif;
+      font-size: .85rem; font-weight: 700;
+      cursor: pointer;
+      transition: opacity .15s;
+    }
+    .share-btn:active { opacity: .7; }
+    .share-btn.wa  { background: #128c7e22; border-color: #128c7e; color: #25d366; }
+    .share-btn.tg  { background: #0088cc22; border-color: #0088cc; color: #34aadf; }
+    .share-btn.ms  { background: #0050ff22; border-color: #0050ff; color: #6a9fff; }
+    .share-btn.cl  { background: rgba(244,114,182,.1); border-color: var(--pink); color: var(--pink); }
+    .share-cancel {
+      margin-top: 14px; text-align: center;
+      font-size: .8rem; color: #806070; cursor: pointer;
+    }
+
+    /* ═══════════════════════════════════════════
+       BLOGS
+    ═══════════════════════════════════════════ */
+    .blog-card {
+      position: relative;
+      background: rgba(244,114,182,.06);
+      border: 1px solid rgba(244,114,182,.22);
+      border-radius: 14px;
+      padding: 16px 18px 14px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .blog-card:active { background: rgba(244,114,182,.12); }
+    .blog-quote-mark {
+      position: absolute; top: 10px; left: 14px;
+      font-size: 2.2rem; color: rgba(244,114,182,.25);
+      font-family: 'Amiri', serif; line-height: 1;
+    }
+    .blog-text {
+      font-size: .87rem; line-height: 1.8;
+      color: #dcc8d4; padding-top: 8px;
+      display: -webkit-box;
+      -webkit-line-clamp: 3;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+    }
+    .blog-date { font-size: .72rem; color: #a08090; margin-top: 8px; }
+
+    /* blog fullscreen */
+    #blog-viewer {
+      position: fixed; inset: 0; z-index: 8000;
+      background: #060608;
+      display: none; flex-direction: column;
+      overflow-y: auto;
+    }
+    #blog-viewer.open { display: flex; }
+    .blog-viewer-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px;
+      background: rgba(0,0,0,.8);
+      position: sticky; top: 0; z-index: 10;
+      border-bottom: 1px solid rgba(244,114,182,.15);
+    }
+    .blog-viewer-body {
+      padding: 24px 20px 60px;
+      max-width: 660px; margin: 0 auto;
+      font-size: .95rem; line-height: 2;
+      color: #e4d0dc;
+      white-space: pre-wrap;
+    }
+
+    /* ═══════════════════════════════════════════
+       LINKS SECTION
+    ═══════════════════════════════════════════ */
+    .link-card {
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1.5px solid rgba(239,68,68,.25);
+      cursor: pointer;
+      background: rgba(255,255,255,.03);
+    }
+    .link-card img {
+      width: 100%; display: block;
+      min-height: 120px; object-fit: cover;
+      background: #111;
+    }
+    .link-desc {
+      padding: 10px 14px;
+      font-size: .83rem; color: #e0b4b4; font-weight: 600;
+    }
+
+    /* ═══════════════════════════════════════════
+       SUPPORTERS
+    ═══════════════════════════════════════════ */
+    .section-title-big {
+      font-family: 'Amiri', serif;
+      font-size: clamp(1.5rem, 5vw, 2.2rem);
+      font-weight: 700;
+      color: var(--pink);
+      text-align: center;
+      margin-bottom: 20px;
+      text-shadow: 0 0 20px rgba(244,114,182,.3);
+    }
+    .supporter-row {
+      display: flex; align-items: center; gap: 12px;
+      background: rgba(239,68,68,.08);
+      border: 1px solid rgba(239,68,68,.28);
+      border-radius: 14px;
+      padding: 12px 14px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .supporter-row:active { background: rgba(239,68,68,.16); }
+    .supporter-avatar {
+      width: 46px; height: 46px;
+      border-radius: 50%;
+      border: 2px solid var(--red);
+      overflow: hidden; flex-shrink: 0;
+      background: #1a0a0a;
+    }
+    .supporter-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .supporter-name { font-weight: 700; font-size: .9rem; color: #f4b4b4; }
+    .supporter-desc { font-size: .76rem; color: #a07070; margin-top: 2px; }
+
+    /* supporter fullscreen */
+    #supporter-viewer {
+      position: fixed; inset: 0; z-index: 8000;
+      background: #060608;
+      display: none; flex-direction: column;
+      overflow-y: auto;
+    }
+    #supporter-viewer.open { display: flex; }
+    .sup-viewer-header {
+      display: flex; align-items: center; gap: 8px;
+      padding: 12px 14px;
+      background: rgba(0,0,0,.8);
+      position: sticky; top: 0; z-index: 10;
+      border-bottom: 1px solid rgba(239,68,68,.2);
+    }
+    .sup-viewer-body {
+      padding: 28px 20px 60px;
+      max-width: 600px; margin: 0 auto;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 12px;
+    }
+    .sup-viewer-avatar {
+      width: 90px; height: 90px;
+      border-radius: 50%;
+      border: 3px solid var(--pink);
+      overflow: hidden;
+      box-shadow: 0 0 0 6px rgba(244,114,182,.12);
+      background: #1a0a0a;
+    }
+    .sup-viewer-avatar img { width: 100%; height: 100%; object-fit: cover; }
+    .sup-viewer-name {
+      font-family: 'Amiri', serif;
+      font-size: 1.4rem; font-weight: 700;
+      color: var(--pink); text-align: center;
+    }
+    .sup-viewer-desc {
+      font-size: .9rem; line-height: 1.9;
+      color: #dcc8d4; text-align: center;
+      white-space: pre-wrap; max-width: 500px;
+    }
+    .sup-viewer-extra-img {
+      max-width: 100%; border-radius: 12px;
+      border: 1px solid rgba(244,114,182,.2);
+    }
+
+    /* ═══════════════════════════════════════════
+       NEWS TEXT CARDS
+    ═══════════════════════════════════════════ */
+    .news-card {
+      background: rgba(255,255,255,.03);
+      border: 1.5px solid rgba(239,68,68,.25);
+      border-radius: 14px;
+      padding: 16px 16px 14px;
+      cursor: pointer;
+      transition: background .2s;
+    }
+    .news-card:active { background: rgba(239,68,68,.08); }
+    .news-card-title { font-size: .95rem; font-weight: 700; color: #f0caca; }
+    .news-card-body  { font-size: .83rem; color: #b08888; margin-top: 6px; line-height: 1.8; }
+    .news-card-date  { font-size: .72rem; color: #7a5555; margin-top: 8px; }
+
+    /* ═══════════════════════════════════════════
+       INFO SECTION (same as photos but no click)
+    ═══════════════════════════════════════════ */
+
+    /* ═══════════════════════════════════════════
+       SCROLLBAR GLOBAL
+    ═══════════════════════════════════════════ */
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #0a0a0a; }
+    ::-webkit-scrollbar-thumb { background: rgba(244,114,182,.3); border-radius: 99px; }
+  </style>
+</head>
+<body>
+
+  <!-- ════════════════ SPLASH ════════════════ -->
+  <div id="splash">
+    <p id="splash-title">أهلا بك يا عزيزي المشاهد</p>
+    <button id="enter-btn" title="دخول">🔱</button>
+  </div>
+
+  <!-- ════════════════ LOADING ════════════════ -->
+  <div id="loading-overlay">
+    <span class="loader-pct" id="loader-pct">0%</span>
+    <div class="loader-track"><div class="loader-bar" id="loader-bar"></div></div>
+    <span class="loader-label">جاري التحميل...</span>
+  </div>
+
+  <!-- ════════════════ MAIN SITE ════════════════ -->
+  <div id="site">
+    <audio id="bg-music" src="Tooop.ogg" loop></audio>
+
+    <!-- NAV -->
+    <div id="nav-wrapper">
+      <div id="nav-inner">
+        <button class="nav-arrow" id="nav-left"  aria-label="يسار">‹</button>
+        <div id="nav-scroll">
+          <button class="nav-btn active" data-section="home">🏠 الرئيسي</button>
+          <button class="nav-btn" data-section="news">📰 أحدث الأخبار</button>
+          <button class="nav-btn" data-section="videos">🎬 فيديوهات</button>
+          <button class="nav-btn" data-section="photos">🖼 صور</button>
+          <button class="nav-btn" data-section="blogs">📝 مدونات</button>
+          <button class="nav-btn" data-section="links">🔗 روابط</button>
+          <button class="nav-btn" data-section="info">ℹ️ معلومات</button>
+          <button class="nav-btn" data-section="supporters">💎 الداعمون</button>
+        </div>
+        <button class="nav-arrow" id="nav-right" aria-label="يمين">›</button>
+      </div>
+    </div>
+
+    <!-- CONTENT AREA -->
+    <div id="content-area">
+
+      <!-- HOME -->
+      <div id="sec-home" class="section-page stars-bg active">
+        <div class="section-content">
+          <div class="profile-wrap">
+            <div class="profile-img-ring">
+              <img id="profile-img" src="https://via.placeholder.com/110" alt="صورة الملف" />
+            </div>
+            <div class="profile-name">جلخامشة الوىدية</div>
+          </div>
+          <div class="notif-list" id="notif-list">
+            <!-- filled by home.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- NEWS -->
+      <div id="sec-news" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="notif-list" id="news-list">
+            <!-- filled by news.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- VIDEOS -->
+      <div id="sec-videos" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="section-title-big">👑 قائمة فيديوهات 👑</div>
+          <div class="notif-list" id="videos-list">
+            <!-- filled by videos.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- PHOTOS -->
+      <div id="sec-photos" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="notif-list" id="photos-list">
+            <!-- filled by photos.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- BLOGS -->
+      <div id="sec-blogs" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="notif-list" id="blogs-list">
+            <!-- filled by blogs.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- LINKS -->
+      <div id="sec-links" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="notif-list" id="links-list">
+            <!-- filled by links.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- INFO -->
+      <div id="sec-info" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="notif-list" id="info-list">
+            <!-- filled by info.js -->
+          </div>
+        </div>
+      </div>
+
+      <!-- SUPPORTERS -->
+      <div id="sec-supporters" class="section-page stars-bg">
+        <div class="section-content">
+          <div class="section-title-big" id="supporters-title">💖 من دعموني 💖</div>
+          <div class="notif-list" id="supporters-list">
+            <!-- filled by supporters.js -->
+          </div>
+        </div>
+      </div>
+
+    </div><!-- /content-area -->
+  </div><!-- /site -->
+
+  <!-- ════════════════ FULLSCREEN VIEWER ════════════════ -->
+  <div id="viewer">
+    <div id="viewer-header">
+      <button class="viewer-btn" id="viewer-back">← رجوع</button>
+      <button class="viewer-btn" id="viewer-download">⬇ تحميل</button>
+      <button class="viewer-btn" id="viewer-share">↗ مشاركة</button>
+    </div>
+    <div id="viewer-body"></div>
+  </div>
+
+  <!-- BLOG VIEWER -->
+  <div id="blog-viewer">
+    <div class="blog-viewer-header">
+      <button class="viewer-btn" id="blog-back">← رجوع</button>
+      <button class="viewer-btn" id="blog-copy">📋 نسخ</button>
+    </div>
+    <div class="blog-viewer-body" id="blog-viewer-body"></div>
+  </div>
+
+  <!-- SUPPORTER VIEWER -->
+  <div id="supporter-viewer">
+    <div class="sup-viewer-header">
+      <button class="viewer-btn" id="sup-back">← رجوع</button>
+    </div>
+    <div class="sup-viewer-body" id="sup-viewer-body"></div>
+  </div>
+
+  <!-- SHARE MODAL -->
+  <div id="share-modal">
+    <div class="share-sheet">
+      <div class="share-title">مشاركة عبر</div>
+      <div class="share-btns">
+        <button class="share-btn wa"  id="share-wa">WhatsApp</button>
+        <button class="share-btn tg"  id="share-tg">Telegram</button>
+        <button class="share-btn ms"  id="share-ms">Messenger</button>
+        <button class="share-btn cl"  id="share-copy">نسخ الرابط</button>
+      </div>
+      <div class="share-cancel" id="share-cancel">إلغاء</div>
+    </div>
+  </div>
+
+  <!-- ════════════════ CORE JS ════════════════ -->
+  <script>
+  // ─── SPLASH + LOADER ──────────────────────────────────────────────
+  const splash   = document.getElementById('splash');
+  const loadOv   = document.getElementById('loading-overlay');
+  const loaderBar= document.getElementById('loader-bar');
+  const loaderPct= document.getElementById('loader-pct');
+  const site     = document.getElementById('site');
+  const bgMusic  = document.getElementById('bg-music');
+
+  document.getElementById('enter-btn').addEventListener('click', () => {
+    splash.classList.add('hidden');
+    loadOv.classList.add('show');
+    runLoader();
+  });
+
+  function runLoader() {
+    let pct = 0;
+    const iv = setInterval(() => {
+      pct += Math.random() * 14 + 4;
+      if (pct >= 100) { pct = 100; clearInterval(iv); finishLoader(); }
+      loaderBar.style.width = pct + '%';
+      loaderPct.textContent = Math.floor(pct) + '%';
+    }, 80);
+  }
+
+  function finishLoader() {
+    setTimeout(() => {
+      loadOv.classList.remove('show');
+      loadOv.classList.add('hide');
+      site.classList.add('visible');
+      bgMusic.volume = 0.45;
+      bgMusic.play().catch(() => {});
+    }, 300);
+  }
+
+  // ─── SECTION NAVIGATION ──────────────────────────────────────────
+  const navBtns   = document.querySelectorAll('.nav-btn');
+  const sections  = document.querySelectorAll('.section-page');
+  const navScroll = document.getElementById('nav-scroll');
+
+  navBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      navBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const id = 'sec-' + btn.dataset.section;
+      sections.forEach(s => s.classList.remove('active'));
+      document.getElementById(id).classList.add('active');
+      window.scrollTo({top: 0, behavior: 'smooth'});
+    });
+  });
+
+  document.getElementById('nav-left').addEventListener('click',  () => {
+    navScroll.scrollBy({left: -120, behavior: 'smooth'});
+  });
+  document.getElementById('nav-right').addEventListener('click', () => {
+    navScroll.scrollBy({left:  120, behavior: 'smooth'});
+  });
+
+  // ─── VIEWER (images / videos) ─────────────────────────────────────
+  const viewer       = document.getElementById('viewer');
+  const viewerBody   = document.getElementById('viewer-body');
+  let   currentShareUrl = '';
+
+  function openViewer(type, src) {
+    currentShareUrl = src;
+    viewerBody.innerHTML = '';
+    if (type === 'img') {
+      const img = document.createElement('img');
+      img.src = src;
+      viewerBody.appendChild(img);
+      document.getElementById('viewer-download').style.display = '';
+    } else {
+      const vid = document.createElement('video');
+      vid.src = src; vid.controls = true; vid.autoplay = true;
+      viewerBody.appendChild(vid);
+      document.getElementById('viewer-download').style.display = 'none';
+    }
+    viewer.classList.add('open');
+  }
+
+  document.getElementById('viewer-back').addEventListener('click', () => {
+    viewer.classList.remove('open');
+    viewerBody.innerHTML = '';
+  });
+
+  document.getElementById('viewer-download').addEventListener('click', () => {
+    const a = document.createElement('a');
+    a.href = currentShareUrl;
+    a.download = '';
+    a.target = '_blank';
+    a.click();
+  });
+
+  document.getElementById('viewer-share').addEventListener('click', () => {
+    openShare(currentShareUrl);
+  });
+
+  // ─── BLOG VIEWER ──────────────────────────────────────────────────
+  const blogViewer     = document.getElementById('blog-viewer');
+  const blogViewerBody = document.getElementById('blog-viewer-body');
+
+  function openBlog(text) {
+    blogViewerBody.textContent = text;
+    blogViewer.classList.add('open');
+  }
+  document.getElementById('blog-back').addEventListener('click', () => {
+    blogViewer.classList.remove('open');
+  });
+  document.getElementById('blog-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(blogViewerBody.textContent).then(() => {
+      document.getElementById('blog-copy').textContent = '✅ تم النسخ';
+      setTimeout(() => document.getElementById('blog-copy').textContent = '📋 نسخ', 2000);
+    });
+  });
+
+  // ─── SUPPORTER VIEWER ─────────────────────────────────────────────
+  const supViewer = document.getElementById('supporter-viewer');
+  const supBody   = document.getElementById('sup-viewer-body');
+
+  function openSupporter(data) {
+    supBody.innerHTML = `
+      <div class="sup-viewer-avatar"><img src="${data.avatar}" alt="${data.name}" /></div>
+      <div class="sup-viewer-name">${data.name}</div>
+      <div class="sup-viewer-desc">${data.desc}</div>
+      ${data.extraImg ? `<img class="sup-viewer-extra-img" src="${data.extraImg}" alt="صورة إضافية" />` : ''}
+    `;
+    supViewer.classList.add('open');
+  }
+  document.getElementById('sup-back').addEventListener('click', () => {
+    supViewer.classList.remove('open');
+  });
+
+  // ─── SHARE MODAL ──────────────────────────────────────────────────
+  const shareModal = document.getElementById('share-modal');
+  let   shareTarget = '';
+
+  function openShare(url) {
+    shareTarget = url;
+    shareModal.classList.add('open');
+  }
+  document.getElementById('share-cancel').addEventListener('click', () => {
+    shareModal.classList.remove('open');
+  });
+  document.getElementById('share-wa').addEventListener('click', () => {
+    window.open('https://wa.me/?text=' + encodeURIComponent(shareTarget), '_blank');
+    shareModal.classList.remove('open');
+  });
+  document.getElementById('share-tg').addEventListener('click', () => {
+    window.open('https://t.me/share/url?url=' + encodeURIComponent(shareTarget), '_blank');
+    shareModal.classList.remove('open');
+  });
+  document.getElementById('share-ms').addEventListener('click', () => {
+    window.open('https://www.facebook.com/dialog/send?link=' + encodeURIComponent(shareTarget) + '&app_id=181477252021&redirect_uri=' + encodeURIComponent(shareTarget), '_blank');
+    shareModal.classList.remove('open');
+  });
+  document.getElementById('share-copy').addEventListener('click', () => {
+    navigator.clipboard.writeText(shareTarget);
+    document.getElementById('share-copy').textContent = '✅ تم النسخ';
+    setTimeout(() => {
+      document.getElementById('share-copy').textContent = 'نسخ الرابط';
+      shareModal.classList.remove('open');
+    }, 1500);
+  });
+
+  // ─── NAV SECTION DEEP-LINK HELPER (used by JS files) ──────────────
+  window.goSection = function(name) {
+    const btn = document.querySelector(`.nav-btn[data-section="${name}"]`);
+    if (btn) btn.click();
+  };
+
+  // ─── EXPOSE VIEWERS GLOBALLY (used by JS files) ───────────────────
+  window.openViewer   = openViewer;
+  window.openBlog     = openBlog;
+  window.openShare    = openShare;
+  window.openSupporter= openSupporter;
+  </script>
+
+  <!-- Section JS files loaded here -->
+  <script src="home.js"></script>
+  <script src="news.js"></script>
+  <script src="videos.js"></script>
+  <script src="photos.js"></script>
+  <script src="blogs.js"></script>
+  <script src="links.js"></script>
+  <script src="info.js"></script>
+  <script src="supporters.js"></script>
+
+</body>
+</html>
