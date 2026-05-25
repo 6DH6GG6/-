@@ -3,7 +3,7 @@
 
 /* ══ بيانات الأزرار الـ 25 ══ */
 var MEMBERS = [
-  { id:'001', name:'إمبراطور الجليد',      img:'members/001.jpg', js:'👣F👣D👣H👣/SSS.html'    },
+  { id:'001', name:'إمبراطور الجليد',      img:'members/001.jpg', js:'👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html'    },
   { id:'002', name:'سيد الظلام',           img:'members/002.jpg', js:'realms/dark_lord.js'       },
   { id:'003', name:'الأمير الأسود',        img:'members/003.jpg', js:'realms/black_prince.js'    },
   { id:'004', name:'حارس العرش',           img:'members/004.jpg', js:'realms/throne_guard.js'    },
