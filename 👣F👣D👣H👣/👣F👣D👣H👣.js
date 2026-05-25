@@ -2,7 +2,7 @@
 'use strict';
 
 var MEMBERS = [
-  { id:'001', name:'إمبراطور الجليد',      img:'members/001.jpg', href:'3.html'                        },
+  { id:'001', name:'إمبراطور الجليد',      img:'members/001.jpg', href:'👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html'                        },
   { id:'002', name:'سيد الظلام',           img:'members/002.jpg', href:'realms/dark_lord.js'           },
   { id:'003', name:'الأمير الأسود',        img:'members/003.jpg', href:'realms/black_prince.js'        },
   { id:'004', name:'حارس العرش',           img:'members/004.jpg', href:'realms/throne_guard.js'        },
