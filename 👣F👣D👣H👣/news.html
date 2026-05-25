@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>أحدث الأخبار</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared.css">
+<style>
+.news-card {
+  background: rgba(255,255,255,0.04);
+  border: 1px solid rgba(255,110,180,0.2);
+  border-radius:14px; margin-bottom:1.4rem;
+  overflow:hidden; transition:all 0.3s;
+  cursor:pointer;
+}
+.news-card:hover { border-color:rgba(255,110,180,0.6); transform:translateX(-4px); box-shadow:0 0 25px rgba(255,110,180,0.15); }
+
+.news-label {
+  padding:0.8rem 1.2rem;
+  font-size:0.8rem; color:rgba(255,255,255,0.45);
+  display:flex; align-items:center; gap:0.8rem;
+}
+.news-badge { background:var(--red); color:#fff; font-size:0.65rem; font-weight:700; padding:2px 8px; border-radius:10px; }
+
+.news-body { padding:1rem 1.2rem 1.4rem; }
+.news-headline { font-family:'Amiri',serif; font-size:1.2rem; color:#fff; margin-bottom:0.6rem; line-height:1.6; }
+.news-excerpt { font-size:0.88rem; color:rgba(255,255,255,0.55); line-height:1.7; }
+
+.news-footer {
+  padding:0.7rem 1.2rem;
+  background:rgba(255,110,180,0.06);
+  border-top:1px solid rgba(255,110,180,0.1);
+  font-size:0.75rem; color:rgba(255,255,255,0.35);
+  display:flex; justify-content:space-between;
+}
+</style>
+</head>
+<body>
+<div class="stars-bg" id="starsContainer"></div>
+
+<div class="page-wrap">
+  <div class="section-title">📰 أحدث الأخبار</div>
+
+  <div class="news-card">
+    <div class="news-label"><span class="news-badge">عاجل</span> · محلي</div>
+    <div class="news-body">
+      <div class="news-headline">عنوان الخبر الأول — يمكن تعديل هذا النص بحرية</div>
+      <div class="news-excerpt">تفاصيل الخبر تظهر هنا. يمكنك وضع وصف مختصر للخبر في هذا المكان بما يصف المحتوى ويشجع القارئ على المتابعة.</div>
+    </div>
+    <div class="news-footer"><span>📅 2025/05/25</span><span>⏰ 14:30</span></div>
+  </div>
+
+  <div class="news-card">
+    <div class="news-label"><span class="news-badge" style="background:#2196f3;">جديد</span> · عالمي</div>
+    <div class="news-body">
+      <div class="news-headline">عنوان الخبر الثاني — استمر في إضافة أخبارك هنا</div>
+      <div class="news-excerpt">يمكنك تكرار هذا القالب لكل خبر تريد إضافته. تعديل النص والتاريخ والتصنيف بكل سهولة.</div>
+    </div>
+    <div class="news-footer"><span>📅 2025/05/24</span><span>⏰ 10:00</span></div>
+  </div>
+
+  <div class="news-card">
+    <div class="news-label"><span class="news-badge" style="background:#4caf50;">مميز</span> · تقني</div>
+    <div class="news-body">
+      <div class="news-headline">عنوان الخبر الثالث — مثال على خبر تقني</div>
+      <div class="news-excerpt">نص تجريبي للخبر الثالث. استبدل هذا المحتوى بالخبر الحقيقي الذي تريد نشره لجمهورك.</div>
+    </div>
+    <div class="news-footer"><span>📅 2025/05/23</span><span>⏰ 18:00</span></div>
+  </div>
+
+</div>
+
+<script>
+const container = document.getElementById('starsContainer');
+for (let i = 0; i < 180; i++) {
+  const s = document.createElement('div'); s.className = 'star';
+  const sz = Math.random()*2.5+0.5;
+  s.style.cssText=`width:${sz}px;height:${sz}px;top:${Math.random()*100}%;left:${Math.random()*100}%;--d:${2+Math.random()*4}s;--delay:${Math.random()*4}s;opacity:${Math.random()*0.5+0.1};`;
+  container.appendChild(s);
+}
+// inject nav
+const currentPage = location.pathname.split('/').pop()||'index.html';
+const nav = document.createElement('nav'); nav.id='main-nav';
+nav.innerHTML=`<ul class="nav-links">
+  <li><a href="index.html">🏠 الرئيسي</a></li>
+  <li><a href="news.html">📰 أحدث الأخبار</a></li>
+  <li><a href="videos.html">🎬 فيديوهات</a></li>
+  <li><a href="photos.html">🖼️ صور</a></li>
+  <li><a href="blogs.html">✍️ مدونات</a></li>
+  <li><a href="links.html">🔗 روابط</a></li>
+  <li><a href="info.html">ℹ️ معلومات</a></li>
+</ul>`;
+document.body.prepend(nav);
+document.querySelectorAll('.nav-links a').forEach(a=>{ if(a.getAttribute('href')===currentPage||a.getAttribute('href')==='news.html') a.classList.add('active'); });
+</script>
+</body>
+</html>
