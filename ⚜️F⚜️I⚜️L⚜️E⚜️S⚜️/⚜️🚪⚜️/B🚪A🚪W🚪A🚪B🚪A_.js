@@ -428,7 +428,7 @@ addPressEffect(document.getElementById('tm-btn-shadow'), function(){
   TM.hide();
   window._fadDirectOpen = true;
   var s=document.createElement('script');
-  s.src='⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/⚜️🪞⚜️/F_A_D_👣_A_I_H_.js';
+  s.src='👣F👣D👣H👣/SSS.html';
   document.head.appendChild(s);
 });
 
