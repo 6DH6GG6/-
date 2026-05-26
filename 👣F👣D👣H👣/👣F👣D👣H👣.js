@@ -4,31 +4,31 @@
 var BASE = 'https://6dh6gg6.github.io/-/';
 
 var MEMBERS = [
-  { id:'001', name:'جلجامشة الوردية',  img:'https://i.imgur.com/sDYtHw5.jpg', href: BASE + '👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html' },
-  { id:'002', name:'سيد الظلام',       img:'members/002.jpg', href: BASE + '002.html' },
-  { id:'003', name:'الأمير الأسود',    img:'members/003.jpg', href: BASE + '003.html' },
-  { id:'004', name:'حارس العرش',       img:'members/004.jpg', href: BASE + '004.html' },
-  { id:'005', name:'فارس العاصفة',     img:'members/005.jpg', href: BASE + '005.html' },
-  { id:'006', name:'شبح الليل',        img:'members/006.jpg', href: BASE + '006.html' },
-  { id:'007', name:'ملك الرماد',       img:'members/007.jpg', href: BASE + '007.html' },
-  { id:'008', name:'وريث الأبدية',     img:'members/008.jpg', href: BASE + '008.html' },
-  { id:'009', name:'صياد الأرواح',     img:'members/009.jpg', href: BASE + '009.html' },
-  { id:'010', name:'سيف القدر',        img:'members/010.jpg', href: BASE + '010.html' },
-  { id:'011', name:'أمير الثلج',       img:'members/011.jpg', href: BASE + '011.html' },
-  { id:'012', name:'الظل الأزلي',      img:'members/012.jpg', href: BASE + '012.html' },
-  { id:'013', name:'حاكم الكون',       img:'members/013.jpg', href: BASE + '013.html' },
-  { id:'014', name:'قاطع الأفق',       img:'members/014.jpg', href: BASE + '014.html' },
-  { id:'015', name:'روح الجبال',       img:'members/015.jpg', href: BASE + '015.html' },
-  { id:'016', name:'ناسج الأقدار',     img:'members/016.jpg', href: BASE + '016.html' },
-  { id:'017', name:'سيد الصمت',        img:'members/017.jpg', href: BASE + '017.html' },
-  { id:'018', name:'حارق الأساطير',    img:'members/018.jpg', href: BASE + '018.html' },
-  { id:'019', name:'عاصفة الشمال',     img:'members/019.jpg', href: BASE + '019.html' },
-  { id:'020', name:'كاسر القيود',      img:'members/020.jpg', href: BASE + '020.html' },
-  { id:'021', name:'ملاك الدمار',      img:'members/021.jpg', href: BASE + '021.html' },
-  { id:'022', name:'حامل الصاعقة',     img:'members/022.jpg', href: BASE + '022.html' },
-  { id:'023', name:'ذئب القمر',        img:'members/023.jpg', href: BASE + '023.html' },
-  { id:'024', name:'إمبراطور الفراغ',  img:'members/024.jpg', href: BASE + '024.html' },
-  { id:'025', name:'أسطورة الأبد',     img:'members/025.jpg', href: BASE + '025.html' },
+  { id:'001', name:'جلجامشة الوردية',  img:'https://i.imgur.com/sDYtHw5.jpg',  href: BASE + '👣F👣D👣H👣/👣♤l💩جلجامشة💩l♤👣/👣GLGMSHA👣.html' },
+  { id:'002', name:'سيد الظلام',        img:'',  href: BASE + '002.html' },
+  { id:'003', name:'الأمير الأسود',     img:'',  href: BASE + '003.html' },
+  { id:'004', name:'حارس العرش',        img:'',  href: BASE + '004.html' },
+  { id:'005', name:'فارس العاصفة',      img:'',  href: BASE + '005.html' },
+  { id:'006', name:'شبح الليل',         img:'',  href: BASE + '006.html' },
+  { id:'007', name:'ملك الرماد',        img:'',  href: BASE + '007.html' },
+  { id:'008', name:'وريث الأبدية',      img:'',  href: BASE + '008.html' },
+  { id:'009', name:'صياد الأرواح',      img:'',  href: BASE + '009.html' },
+  { id:'010', name:'سيف القدر',         img:'',  href: BASE + '010.html' },
+  { id:'011', name:'أمير الثلج',        img:'',  href: BASE + '011.html' },
+  { id:'012', name:'الظل الأزلي',       img:'',  href: BASE + '012.html' },
+  { id:'013', name:'حاكم الكون',        img:'',  href: BASE + '013.html' },
+  { id:'014', name:'قاطع الأفق',        img:'',  href: BASE + '014.html' },
+  { id:'015', name:'روح الجبال',        img:'',  href: BASE + '015.html' },
+  { id:'016', name:'ناسج الأقدار',      img:'',  href: BASE + '016.html' },
+  { id:'017', name:'سيد الصمت',         img:'',  href: BASE + '017.html' },
+  { id:'018', name:'حارق الأساطير',     img:'',  href: BASE + '018.html' },
+  { id:'019', name:'عاصفة الشمال',      img:'',  href: BASE + '019.html' },
+  { id:'020', name:'كاسر القيود',       img:'',  href: BASE + '020.html' },
+  { id:'021', name:'ملاك الدمار',       img:'',  href: BASE + '021.html' },
+  { id:'022', name:'حامل الصاعقة',      img:'',  href: BASE + '022.html' },
+  { id:'023', name:'ذئب القمر',         img:'',  href: BASE + '023.html' },
+  { id:'024', name:'إمبراطور الفراغ',   img:'',  href: BASE + '024.html' },
+  { id:'025', name:'أسطورة الأبد',      img:'',  href: BASE + '025.html' },
 ];
 
 var css = document.createElement('style');
@@ -234,6 +234,27 @@ css.textContent = `
 }
 .fad-card:hover .fad-card-img{opacity:.9;transform:scale(1.05)}
 
+/* placeholder shown when img src is empty or fails */
+.fad-card-placeholder{
+  position:absolute;inset:0;
+  width:100%;height:75%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:linear-gradient(160deg,#001828 0%,#002a40 50%,#001020 100%);
+  gap:6px;
+}
+.fad-card-placeholder .ph-icon{
+  font-size:clamp(22px,3vw,34px);
+  opacity:.35;
+  filter:drop-shadow(0 0 8px rgba(100,200,255,.4));
+}
+.fad-card-placeholder .ph-text{
+  font-family:'Cinzel',serif;
+  font-size:clamp(7px,.8vw,9px);
+  color:rgba(100,200,255,.25);
+  letter-spacing:2px;
+  text-transform:uppercase;
+}
+
 .fad-card-fade{
   position:absolute;bottom:0;left:0;right:0;height:60%;
   background:linear-gradient(0deg,rgba(0,5,15,1) 0%,rgba(0,10,25,.9) 40%,transparent 100%);
@@ -314,6 +335,32 @@ css.textContent = `
 `;
 document.head.appendChild(css);
 
+function buildCard(m, i){
+  var hasImg = m.img && m.img.trim() !== '';
+  var imgHtml = hasImg
+    ? `<img class="fad-card-img" src="${m.img}" alt="${m.name}"
+         onload="this.style.display='block'"
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>`
+    : '';
+
+  var placeholderDisplay = hasImg ? 'none' : 'flex';
+
+  return `<a class="fad-card"
+      href="${m.href}"
+      data-name="${m.name}"
+      data-id="${m.id}"
+      style="animation-delay:${(i * 0.04).toFixed(2)}s">
+      ${imgHtml}
+      <div class="fad-card-placeholder" style="display:${placeholderDisplay}">
+        <div class="ph-icon">❄</div>
+        <div class="ph-text">قريباً</div>
+      </div>
+      <div class="fad-card-fade"></div>
+      <div class="fad-card-id">#${m.id}</div>
+      <div class="fad-card-name">${m.name}</div>
+    </a>`;
+}
+
 var html = `
 <div id="fad-root">
   <div id="fad-bg"></div>
@@ -345,7 +392,6 @@ var html = `
   </svg>
 
   <div id="fad-mist"></div>
-
   <button id="fad-close">✕</button>
 
   <div id="fad-main">
@@ -369,18 +415,7 @@ var html = `
     </div>
 
     <div id="fad-grid">
-      ${MEMBERS.map(function(m, i){
-        return `<a class="fad-card"
-          href="${m.href}"
-          data-name="${m.name}"
-          data-id="${m.id}"
-          style="animation-delay:${(i * 0.04).toFixed(2)}s">
-          <img class="fad-card-img" src="${m.img}" alt="${m.name}" onerror="this.style.display='none'"/>
-          <div class="fad-card-fade"></div>
-          <div class="fad-card-id">#${m.id}</div>
-          <div class="fad-card-name">${m.name}</div>
-        </a>`;
-      }).join('')}
+      ${MEMBERS.map(function(m, i){ return buildCard(m, i); }).join('')}
       <div id="fad-no-results">❄ لا توجد نتائج ❄</div>
     </div>
   </div>
@@ -391,6 +426,7 @@ var tmp = document.createElement('div');
 tmp.innerHTML = html;
 while(tmp.firstChild) document.body.appendChild(tmp.firstChild);
 
+// Stars animation
 (function(){
   var cv = document.getElementById('fad-stars');
   if(!cv) return;
@@ -400,7 +436,6 @@ while(tmp.firstChild) document.body.appendChild(tmp.firstChild);
     W = cv.width = window.innerWidth;
     H = cv.height = window.innerHeight;
   }
-
   resize();
   window.addEventListener('resize', resize);
 
@@ -409,14 +444,12 @@ while(tmp.firstChild) document.body.appendChild(tmp.firstChild);
       x: Math.random() * W,
       y: Math.random() * H,
       r: Math.random() * 1.5 + .3,
-      o: Math.random(),
       speed: .003 + Math.random() * .008,
       phase: Math.random() * Math.PI * 2
     });
   }
 
   var t = 0;
-
   (function loop(){
     ctx.clearRect(0, 0, W, H);
     t += .016;
@@ -431,6 +464,7 @@ while(tmp.firstChild) document.body.appendChild(tmp.firstChild);
   })();
 })();
 
+// Search
 var searchEl = document.getElementById('fad-search');
 var countEl  = document.getElementById('fad-search-count');
 var cards    = document.querySelectorAll('.fad-card');
