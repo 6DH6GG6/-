@@ -158,24 +158,6 @@ css.textContent = `
 }
 @keyframes llMsgFade{from{opacity:0;transform:translateX(10px);}to{opacity:1;transform:translateX(0);}}
 
-#ll-dots{
-  display:flex;gap:8px;
-  margin-top:10px;
-}
-.ll-dot{
-  width:5px;height:5px;border-radius:50%;
-  background:rgba(201,168,76,0.25);
-  animation:llDotBeat 1.2s ease-in-out infinite;
-}
-.ll-dot:nth-child(2){animation-delay:0.2s;}
-.ll-dot:nth-child(3){animation-delay:0.4s;}
-.ll-dot:nth-child(4){animation-delay:0.6s;}
-.ll-dot:nth-child(5){animation-delay:0.8s;}
-@keyframes llDotBeat{
-  0%,100%{background:rgba(201,168,76,0.2);transform:scale(1);}
-  50%{background:rgba(245,224,144,1);transform:scale(1.6);box-shadow:0 0 10px rgba(201,168,76,0.9);}
-}
-
 #ll-scan{
   position:absolute;inset:0;
   background:linear-gradient(180deg,transparent 0%,rgba(201,168,76,0.025) 50%,transparent 100%);
@@ -477,13 +459,6 @@ var html = `
       <div id="ll-bar-fill"></div>
       <div id="ll-bar-pulse"></div>
     </div>
-  </div>
-  <div id="ll-dots">
-    <div class="ll-dot"></div>
-    <div class="ll-dot"></div>
-    <div class="ll-dot"></div>
-    <div class="ll-dot"></div>
-    <div class="ll-dot"></div>
   </div>
 </div>
 
