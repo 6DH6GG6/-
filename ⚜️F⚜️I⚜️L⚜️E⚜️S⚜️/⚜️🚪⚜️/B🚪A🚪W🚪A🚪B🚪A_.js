@@ -428,7 +428,7 @@ addPressEffect(document.getElementById('tm-btn-shadow'), function(){
   TM.hide();
   window._fadDirectOpen = true;
   var s=document.createElement('script');
-  s.src='👣F👣D👣H👣/👣F👣D👣H👣.js';
+  s.src='👣F👣D👣H👣/👣F👣D👣H👣.html';
   document.head.appendChild(s);
 });
 
