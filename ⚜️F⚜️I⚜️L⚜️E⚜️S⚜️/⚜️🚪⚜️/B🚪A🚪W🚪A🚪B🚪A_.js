@@ -625,8 +625,8 @@ function spawnLoaderParticles(container) {
 
   function advanceTarget(){
     var step = 8 + Math.random() * 20;
-    targetProgress = Math.min(targetProgress + step, 92);
-    if(targetProgress < 92){
+    targetProgress = Math.min(targetProgress + step, 99);
+    if(targetProgress < 99){
       setTimeout(advanceTarget, 180 + Math.random() * 350);
     }
   }
