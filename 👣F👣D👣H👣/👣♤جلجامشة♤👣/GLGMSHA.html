@@ -707,7 +707,6 @@ function buildHomeMenu(){
   });
 }
 
-/* ══ زر الإشعارات FAB ══ */
 function buildNotifFab(){
   const fab=document.getElementById('notif-fab');
   const badge=document.getElementById('notif-fab-badge');
@@ -753,11 +752,6 @@ function buildNotifFab(){
   renderBadge();
 }
 
-/* ══════════════════════════════════════
-   فتح قسم — يفحص الملف أولاً
-   إذا ما وجد: نبضة على الكارت فقط، لا تفتح أي شيء
-   إذا وجد: تفتح الصفحة وتحمّل الملف
-══════════════════════════════════════ */
 const loadedScripts = new Set();
 const checkedFiles  = new Map(); /* file → true (موجود) | false (غير موجود) */
 
@@ -770,19 +764,16 @@ function pulseCard(cardEl) {
 
 function openSection(id, file, globalName, label, cardEl) {
 
-  /* إذا سبق فحصه وهو غير موجود → نبضة فقط */
   if (checkedFiles.get(file) === false) {
     pulseCard(cardEl);
     return;
   }
 
-  /* إذا سبق فحصه وهو موجود → افتح مباشرة */
   if (checkedFiles.get(file) === true) {
     _doOpen(id, file, globalName, label, cardEl);
     return;
   }
 
-  /* أول مرة → افحص الملف */
   fetch(file, { method: 'HEAD' })
     .then(res => {
       if (res.ok) {
@@ -823,7 +814,7 @@ function _doOpen(id, file, globalName, label, cardEl) {
   }
 }
 
-/* ══ زر الرجوع ══ */
+
 document.getElementById('back-btn').addEventListener('click', closeSection);
 
 function closeSection(){
