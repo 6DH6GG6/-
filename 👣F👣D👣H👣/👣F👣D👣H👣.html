@@ -125,37 +125,7 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
 .card:hover .card-rule{width:65%}
 #no-results{display:none;grid-column:1/-1;text-align:center;padding:80px 20px;font-family:'Cinzel',serif;color:rgba(168,85,247,.25);font-size:12px;letter-spacing:5px;}
 
-/* ── Overlay عام ── */
-#js-overlay{
-  position:fixed;inset:0;z-index:9999;
-  background:var(--void);
-  display:none;
-  flex-direction:column;
-  align-items:center;
-  justify-content:center;
-  animation:overlayIn .45s cubic-bezier(.16,1,.3,1) both;
-}
-#js-overlay.active{display:flex;}
-@keyframes overlayIn{from{opacity:0}to{opacity:1}}
-#js-overlay-close{
-  position:absolute;top:22px;right:22px;
-  background:rgba(168,85,247,.12);
-  border:1px solid rgba(168,85,247,.35);
-  color:rgba(220,170,255,.8);
-  font-family:'Cinzel',serif;
-  font-size:10px;letter-spacing:4px;
-  padding:9px 20px;
-  cursor:pointer;
-  transition:all .25s;
-  z-index:10;
-}
-#js-overlay-close:hover{background:rgba(168,85,247,.25);color:#f0abfc;border-color:rgba(200,120,255,.6);}
-#js-overlay-loader{display:flex;flex-direction:column;align-items:center;gap:18px;}
-#js-overlay-spinner{width:48px;height:48px;border:2px solid rgba(168,85,247,.15);border-top:2px solid rgba(168,85,247,.9);border-radius:50%;animation:spin .9s linear infinite;}
-@keyframes spin{to{transform:rotate(360deg)}}
-#js-overlay-msg{font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:rgba(168,85,247,.5);}
-#js-overlay-content{width:100%;max-width:900px;padding:20px;overflow-y:auto;max-height:100vh;}
-
+/* ── Overlay عام (iframe) ── */
 /* Iframe overlay */
 #iframe-overlay{
   position:fixed;inset:0;z-index:9998;
@@ -249,17 +219,7 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
   </div>
 </div>
 
-<!-- Overlay لملفات JS -->
-<div id="js-overlay">
-  <button id="js-overlay-close" onclick="closeOverlay()">✦ إغلاق</button>
-  <div id="js-overlay-loader">
-    <div id="js-overlay-spinner"></div>
-    <div id="js-overlay-msg">جاري التحميل ...</div>
-  </div>
-  <div id="js-overlay-content"></div>
-</div>
-
-<!-- Overlay لملفات HTML/CSS عبر iframe -->
+<!-- iFrame Overlay (HTML / CSS / JS) -->
 <div id="iframe-overlay">
   <div id="iframe-topbar">
     <div id="iframe-title">✦ &nbsp; <span id="iframe-member-name"></span></div>
@@ -349,6 +309,7 @@ MEMBERS.forEach(function(m, i) {
 
   /* ── منطق النقر ── */
   el.addEventListener('click', function() { handleCardClick(m); });
+  el.style.cursor = 'pointer';
 
   grid.insertBefore(el, noRes);
 });
@@ -359,9 +320,9 @@ var allCards = document.querySelectorAll('.card');
    دالة توجيه النقر بحسب نوع الملف
    ══════════════════════════════════════════ */
 function handleCardClick(m) {
-  /* JS overlay */
+  /* JS → يُفتح في iframe كامل عبر صفحة وسيطة تحمّل الـ script */
   if (m.jsFile) {
-    loadJsOverlay(m.jsPath || JS_PATH);
+    openJsInIframe(m.jsPath || JS_PATH, m.name);
     return;
   }
 
@@ -372,12 +333,10 @@ function handleCardClick(m) {
       openIframeOverlay(m.href, m.name);
       return;
     }
-    /* أي امتداد آخر → فتح في تبويب جديد */
     window.open(m.href, '_blank');
     return;
   }
 
-  /* cssFile مباشر */
   if (m.cssFile) {
     openIframeOverlay(m.cssFile, m.name);
     return;
@@ -385,65 +344,55 @@ function handleCardClick(m) {
 }
 
 /* ══════════════════════════════════════════
-   JS Overlay
+   فتح ملف JS داخل iframe معزول
+   الفكرة: نبني صفحة HTML وسيطة كـ blob
+   تحمّل الـ script المطلوب بشكل طبيعي
    ══════════════════════════════════════════ */
-function loadJsOverlay(jsPath) {
-  var overlay  = document.getElementById('js-overlay');
-  var loader   = document.getElementById('js-overlay-loader');
-  var content  = document.getElementById('js-overlay-content');
-  var closeBtn = document.getElementById('js-overlay-close');
+function openJsInIframe(jsPath, memberName) {
+  /* بناء مسار الـ JS المطلق */
+  var absoluteJs = jsPath;
+  if (!jsPath.match(/^https?:\/\//)) {
+    /* مسار نسبي → نحوّله لمطلق بالنسبة للصفحة الحالية */
+    var base = window.location.href.replace(/[^\/]*$/, '');
+    absoluteJs = base + jsPath;
+  }
 
-  content.innerHTML     = '';
-  loader.style.display  = 'flex';
-  content.style.display = 'none';
-  closeBtn.style.display = 'none';
-  overlay.classList.add('active');
+  /* صفحة HTML بسيطة تحمّل الـ script في بيئة معزولة */
+  var html = '<!DOCTYPE html>'
+    + '<html lang="ar" dir="rtl"><head>'
+    + '<meta charset="UTF-8"/>'
+    + '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
+    + '<style>*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;min-height:100vh;}</style>'
+    + '</head><body>'
+    + '<script src="' + absoluteJs + '"><\/script>'
+    + '</body></html>';
 
-  window.__jsOverlayContainer = content;
+  var blob = new Blob([html], { type: 'text/html' });
+  var url  = URL.createObjectURL(blob);
 
-  var existing = document.getElementById('__glgmsha_script');
-  if (existing) existing.remove();
-
-  var s = document.createElement('script');
-  s.id  = '__glgmsha_script';
-  s.src = jsPath;
-  s.onload = function() {
-    loader.style.display   = 'none';
-    content.style.display  = 'block';
-    closeBtn.style.display = 'block';
-  };
-  s.onerror = function() {
-    loader.style.display   = 'none';
-    content.style.display  = 'block';
-    closeBtn.style.display = 'block';
-    content.innerHTML = '<div style="text-align:center;padding:60px 20px;font-family:Cinzel,serif;font-size:11px;letter-spacing:4px;color:rgba(240,100,100,.5);">✦ تعذّر تحميل الملف ✦</div>';
-  };
-  document.body.appendChild(s);
+  openIframeOverlay(url, memberName, function() {
+    URL.revokeObjectURL(url);
+  });
 }
 
 function closeOverlay() {
-  var overlay = document.getElementById('js-overlay');
-  overlay.style.animation  = 'none';
-  overlay.style.opacity    = '0';
-  overlay.style.transition = 'opacity .3s';
-  setTimeout(function() {
-    overlay.classList.remove('active');
-    overlay.style.opacity    = '';
-    overlay.style.transition = '';
-    overlay.style.animation  = '';
-  }, 300);
+  /* متروك للتوافقية — لا يُستخدم بعد الآن */
+  closeIframeOverlay();
 }
 
 /* ══════════════════════════════════════════
-   iFrame Overlay (HTML / CSS)
+   iFrame Overlay (HTML / CSS / JS blob)
    ══════════════════════════════════════════ */
-function openIframeOverlay(url, name) {
+var _iframeCleanup = null;
+
+function openIframeOverlay(url, name, onClose) {
   var overlay = document.getElementById('iframe-overlay');
   var frame   = document.getElementById('iframe-frame');
   var loader  = document.getElementById('iframe-loader');
   var nameEl  = document.getElementById('iframe-member-name');
 
-  nameEl.textContent  = name || '';
+  _iframeCleanup    = onClose || null;
+  nameEl.textContent = name || '';
   loader.style.display = 'flex';
   frame.src = url;
   overlay.classList.add('active');
@@ -457,8 +406,10 @@ function closeIframeOverlay() {
   var overlay = document.getElementById('iframe-overlay');
   var frame   = document.getElementById('iframe-frame');
   overlay.classList.remove('active');
-  /* تأخير صغير قبل تفريغ الإطار لتجنب وميض */
-  setTimeout(function() { frame.src = 'about:blank'; }, 320);
+  setTimeout(function() {
+    frame.src = 'about:blank';
+    if (_iframeCleanup) { _iframeCleanup(); _iframeCleanup = null; }
+  }, 320);
 }
 
 /* ══════════════════════════════════════════
