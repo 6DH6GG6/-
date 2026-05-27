@@ -65,9 +65,56 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
 .card-bottom-fade{position:absolute;bottom:0;left:0;right:0;height:40%;background:linear-gradient(0deg,rgba(3,0,12,.92) 0%,transparent 100%);pointer-events:none;}
 .card-num{position:absolute;top:7px;right:9px;z-index:6;font-family:'Cinzel',serif;font-size:7.5px;color:rgba(200,140,255,.35);letter-spacing:1.5px;transition:color .3s;background:rgba(4,0,12,.5);padding:2px 5px;}
 .card:hover .card-num{color:rgba(230,175,255,.8)}
-.card-ph{width:100%;height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;background:linear-gradient(160deg,#0a0018,#180030,#060010);}
-.card-ph-icon{font-size:clamp(24px,4vw,40px);filter:drop-shadow(0 0 10px rgba(168,85,247,.6))}
-.card-ph-txt{font-family:'Cinzel',serif;font-size:7px;color:rgba(168,85,247,.25);letter-spacing:4px}
+
+/* ── Placeholder بدون صورة ── */
+.card-ph{
+  width:100%;height:100%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;
+  background:linear-gradient(160deg,#0a0018,#180030,#060010);
+  position:relative;overflow:hidden;
+}
+.card-ph::before{
+  content:'';position:absolute;inset:0;
+  background:radial-gradient(ellipse 80% 60% at 50% 50%,rgba(120,40,200,.18) 0%,transparent 70%);
+  animation:phGlow 3s ease-in-out infinite alternate;
+}
+@keyframes phGlow{
+  from{opacity:.4;transform:scale(.95)}
+  to{opacity:1;transform:scale(1.05)}
+}
+.card-ph-icon{
+  font-size:clamp(28px,4vw,44px);
+  filter:drop-shadow(0 0 14px rgba(168,85,247,.7));
+  animation:phIconFloat 4s ease-in-out infinite;
+  position:relative;z-index:1;
+}
+@keyframes phIconFloat{
+  0%,100%{transform:translateY(0)}
+  50%{transform:translateY(-6px)}
+}
+.card-ph-badge{
+  position:relative;z-index:1;
+  font-family:'Cinzel',serif;font-size:7px;letter-spacing:3px;
+  color:rgba(200,130,255,.5);
+  border:1px solid rgba(168,85,247,.2);
+  padding:3px 10px;
+  background:rgba(80,0,140,.15);
+}
+.card-ph-dots{
+  display:flex;gap:5px;position:relative;z-index:1;
+}
+.card-ph-dots span{
+  width:4px;height:4px;border-radius:50%;
+  background:rgba(168,85,247,.4);
+  animation:phDot 1.4s ease-in-out infinite;
+}
+.card-ph-dots span:nth-child(2){animation-delay:.18s}
+.card-ph-dots span:nth-child(3){animation-delay:.36s}
+@keyframes phDot{
+  0%,100%{opacity:.2;transform:scale(.8)}
+  50%{opacity:1;transform:scale(1.3);background:rgba(220,130,255,.8)}
+}
+
 .card-glow-top{position:absolute;top:0;left:0;right:0;height:50%;background:linear-gradient(180deg,rgba(180,85,255,.13) 0%,transparent 100%);opacity:0;transition:opacity .4s;pointer-events:none;z-index:4;}
 .card:hover .card-glow-top{opacity:1}
 .card-label{background:rgba(5,0,12,.88);border:1px solid rgba(90,25,160,.25);border-top:none;padding:10px 10px 9px;text-align:center;transition:background .35s,border-color .35s;}
@@ -78,7 +125,7 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
 .card:hover .card-rule{width:65%}
 #no-results{display:none;grid-column:1/-1;text-align:center;padding:80px 20px;font-family:'Cinzel',serif;color:rgba(168,85,247,.25);font-size:12px;letter-spacing:5px;}
 
-
+/* ── Overlay عام ── */
 #js-overlay{
   position:fixed;inset:0;z-index:9999;
   background:var(--void);
@@ -90,7 +137,6 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
 }
 #js-overlay.active{display:flex;}
 @keyframes overlayIn{from{opacity:0}to{opacity:1}}
-
 #js-overlay-close{
   position:absolute;top:22px;right:22px;
   background:rgba(168,85,247,.12);
@@ -104,28 +150,52 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
   z-index:10;
 }
 #js-overlay-close:hover{background:rgba(168,85,247,.25);color:#f0abfc;border-color:rgba(200,120,255,.6);}
-
-#js-overlay-loader{
-  display:flex;flex-direction:column;align-items:center;gap:18px;
-}
-#js-overlay-spinner{
-  width:48px;height:48px;
-  border:2px solid rgba(168,85,247,.15);
-  border-top:2px solid rgba(168,85,247,.9);
-  border-radius:50%;
-  animation:spin .9s linear infinite;
-}
+#js-overlay-loader{display:flex;flex-direction:column;align-items:center;gap:18px;}
+#js-overlay-spinner{width:48px;height:48px;border:2px solid rgba(168,85,247,.15);border-top:2px solid rgba(168,85,247,.9);border-radius:50%;animation:spin .9s linear infinite;}
 @keyframes spin{to{transform:rotate(360deg)}}
-#js-overlay-msg{
-  font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;
-  color:rgba(168,85,247,.5);
+#js-overlay-msg{font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:rgba(168,85,247,.5);}
+#js-overlay-content{width:100%;max-width:900px;padding:20px;overflow-y:auto;max-height:100vh;}
+
+/* Iframe overlay */
+#iframe-overlay{
+  position:fixed;inset:0;z-index:9998;
+  background:var(--void);
+  display:none;
+  flex-direction:column;
 }
-#js-overlay-content{
-  width:100%;max-width:900px;
-  padding:20px;
-  overflow-y:auto;
-  max-height:100vh;
+#iframe-overlay.active{display:flex;}
+#iframe-topbar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 18px;
+  background:rgba(5,0,14,.9);
+  border-bottom:1px solid rgba(120,40,200,.3);
+  flex-shrink:0;
 }
+#iframe-title{
+  font-family:'Cinzel',serif;font-size:10px;letter-spacing:4px;
+  color:rgba(200,140,255,.6);
+}
+#iframe-close{
+  background:rgba(168,85,247,.12);
+  border:1px solid rgba(168,85,247,.35);
+  color:rgba(220,170,255,.8);
+  font-family:'Cinzel',serif;
+  font-size:10px;letter-spacing:4px;
+  padding:7px 18px;
+  cursor:pointer;
+  transition:all .25s;
+}
+#iframe-close:hover{background:rgba(168,85,247,.25);color:#f0abfc;}
+#iframe-frame{flex:1;border:none;width:100%;height:100%;}
+#iframe-loader{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;
+  background:var(--void);
+  z-index:2;
+  pointer-events:none;
+}
+#iframe-spinner{width:48px;height:48px;border:2px solid rgba(168,85,247,.15);border-top:2px solid rgba(168,85,247,.9);border-radius:50%;animation:spin .9s linear infinite;}
+#iframe-loader-msg{font-family:'Cinzel',serif;font-size:10px;letter-spacing:5px;color:rgba(168,85,247,.5);}
 
 @keyframes heroIn{from{opacity:0;transform:translateY(-24px)}to{opacity:1;transform:translateY(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
@@ -179,6 +249,7 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
   </div>
 </div>
 
+<!-- Overlay لملفات JS -->
 <div id="js-overlay">
   <button id="js-overlay-close" onclick="closeOverlay()">✦ إغلاق</button>
   <div id="js-overlay-loader">
@@ -188,44 +259,81 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
   <div id="js-overlay-content"></div>
 </div>
 
-<script>
-var BASE = 'https://6dh6gg6.github.io/-/';
-var JS_PATH = '👣F👣D👣H👣/👣♤جلجامشة♤👣/GLGMSHA.js';
+<!-- Overlay لملفات HTML/CSS عبر iframe -->
+<div id="iframe-overlay">
+  <div id="iframe-topbar">
+    <div id="iframe-title">✦ &nbsp; <span id="iframe-member-name"></span></div>
+    <button id="iframe-close" onclick="closeIframeOverlay()">✦ إغلاق</button>
+  </div>
+  <div style="position:relative;flex:1;">
+    <div id="iframe-loader">
+      <div id="iframe-spinner"></div>
+      <div id="iframe-loader-msg">جاري التحميل ...</div>
+    </div>
+    <iframe id="iframe-frame" src="about:blank" onload="iframeLoaded()"></iframe>
+  </div>
+</div>
 
+<script>
+var BASE     = 'https://6dh6gg6.github.io/-/';
+var JS_PATH  = '👣F👣D👣H👣/👣♤جلجامشة♤👣/GLGMSHA.js';
+
+/*
+  ══════════════════════════════════════════════
+  قائمة الأعضاء
+  ──────────────────────────────────────────────
+  لكل عضو يمكنك إضافة:
+    img    : رابط الصورة (اتركه فارغاً أو احذفه لعرض قريباً)
+    href   : مسار .html  → يُفتح داخل iframe
+    cssFile: مسار .css   → يُفتح داخل iframe كصفحة CSS
+    jsFile : true        → يُحمَّل ملف JS داخل overlay
+    jsPath : مسار مخصص للـ JS (اختياري، يُستخدم بدلاً من JS_PATH)
+  ══════════════════════════════════════════════
+*/
 var MEMBERS = [
   { id:'01', name:'جلجامشة الوردية',  img:'https://i.imgur.com/sDYtHw5.jpg',  jsFile: true },
   { id:'02', name:'سيد الظلام',        img:'https://i.imgur.com/8Km9tLL.jpg',  href: BASE + 'member02.html' },
-  { id:'03', name:'الأمير الأسود',     img:'https://i.imgur.com/4nXHx3e.jpg',  href: BASE + 'member03.html' },
-  { id:'04', name:'حارس العرش',        img:'https://i.imgur.com/2yaf2ig.jpg',  href: BASE + 'member04.html' },
-  { id:'05', name:'فارس العاصفة',      img:'https://i.imgur.com/Q3oSEaP.jpg',  href: BASE + 'member05.html' },
-  { id:'06', name:'شبح الليل',         img:'https://i.imgur.com/xGR3ybQ.jpg',  href: BASE + 'member06.html' },
-  { id:'07', name:'ملك الرماد',        img:'https://i.imgur.com/oVfKorR.jpg',  href: BASE + 'member07.html' },
-  { id:'08', name:'وريث الأبدية',      img:'https://i.imgur.com/XMFnQkR.jpg',  href: BASE + 'member08.html' },
-  { id:'09', name:'صياد الأرواح',      img:'https://i.imgur.com/6n3sCOc.jpg',  href: BASE + 'member09.html' },
-  { id:'10', name:'سيف القدر',         img:'https://i.imgur.com/Lx7B4vP.jpg',  href: BASE + 'member10.html' },
+  { id:'03', name:'الأمير الأسود',     img:'',                                  href: BASE + 'member03.html' },
+  { id:'04', name:'حارس العرش',        img:'',                                  href: BASE + 'member04.html' },
+  { id:'05', name:'فارس العاصفة',      img:'',                                  href: BASE + 'member05.html' },
+  { id:'06', name:'شبح الليل',         img:'',                                  href: BASE + 'member06.html' },
+  { id:'07', name:'ملك الرماد',        img:'',                                  href: BASE + 'member07.html' },
+  { id:'08', name:'وريث الأبدية',      img:'',                                  href: BASE + 'member08.html' },
+  { id:'09', name:'صياد الأرواح',      img:'',                                  href: BASE + 'member09.html' },
+  { id:'10', name:'سيف القدر',         img:'',                                  href: BASE + 'member10.html' },
 ];
 
 var grid  = document.getElementById('grid');
 var noRes = document.getElementById('no-results');
 
+/* ── بناء البطاقات ── */
 MEMBERS.forEach(function(m, i) {
-  var el = document.createElement(m.jsFile ? 'div' : 'a');
+  var el = document.createElement('div');
   el.className = 'card';
-  if (!m.jsFile) {
-    el.href = m.href;
-  } else {
-    el.style.cursor = 'pointer';
-    el.addEventListener('click', function() { loadJsOverlay(); });
-  }
   el.setAttribute('data-name', m.name);
   el.setAttribute('data-id',   m.id);
   el.setAttribute('data-num',  String(i + 1));
   el.style.animationDelay = (i * 0.06).toFixed(2) + 's';
 
-  var imgHTML = m.img
-    ? '<img class="card-img" src="' + m.img + '" alt="' + m.name + '" onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
-      + '<div class="card-ph" style="display:none"><div class="card-ph-icon">🔮</div><div class="card-ph-txt">قريباً</div></div>'
-    : '<div class="card-ph"><div class="card-ph-icon">🔮</div><div class="card-ph-txt">قريباً</div></div>';
+  /* منطق الصورة / placeholder */
+  var imgHTML;
+  if (m.img) {
+    imgHTML =
+      '<img class="card-img" src="' + m.img + '" alt="' + m.name + '" '
+      + 'onerror="this.style.display=\'none\';this.nextElementSibling.style.display=\'flex\'"/>'
+      + '<div class="card-ph" style="display:none">'
+      +   '<div class="card-ph-icon">🔮</div>'
+      +   '<div class="card-ph-badge">قريباً</div>'
+      +   '<div class="card-ph-dots"><span></span><span></span><span></span></div>'
+      + '</div>';
+  } else {
+    imgHTML =
+      '<div class="card-ph">'
+      +   '<div class="card-ph-icon">🔮</div>'
+      +   '<div class="card-ph-badge">قريباً</div>'
+      +   '<div class="card-ph-dots"><span></span><span></span><span></span></div>'
+      + '</div>';
+  }
 
   el.innerHTML =
     '<div class="card-frame">'
@@ -239,18 +347,53 @@ MEMBERS.forEach(function(m, i) {
     + '<div class="card-rule"></div>'
     + '</div>';
 
+  /* ── منطق النقر ── */
+  el.addEventListener('click', function() { handleCardClick(m); });
+
   grid.insertBefore(el, noRes);
 });
 
 var allCards = document.querySelectorAll('.card');
 
-function loadJsOverlay() {
+/* ══════════════════════════════════════════
+   دالة توجيه النقر بحسب نوع الملف
+   ══════════════════════════════════════════ */
+function handleCardClick(m) {
+  /* JS overlay */
+  if (m.jsFile) {
+    loadJsOverlay(m.jsPath || JS_PATH);
+    return;
+  }
+
+  /* HTML أو CSS → iframe overlay */
+  if (m.href) {
+    var ext = m.href.split('?')[0].split('#')[0].split('.').pop().toLowerCase();
+    if (ext === 'html' || ext === 'css' || ext === 'htm') {
+      openIframeOverlay(m.href, m.name);
+      return;
+    }
+    /* أي امتداد آخر → فتح في تبويب جديد */
+    window.open(m.href, '_blank');
+    return;
+  }
+
+  /* cssFile مباشر */
+  if (m.cssFile) {
+    openIframeOverlay(m.cssFile, m.name);
+    return;
+  }
+}
+
+/* ══════════════════════════════════════════
+   JS Overlay
+   ══════════════════════════════════════════ */
+function loadJsOverlay(jsPath) {
   var overlay  = document.getElementById('js-overlay');
   var loader   = document.getElementById('js-overlay-loader');
   var content  = document.getElementById('js-overlay-content');
   var closeBtn = document.getElementById('js-overlay-close');
 
-  content.innerHTML = '';
+  content.innerHTML     = '';
   loader.style.display  = 'flex';
   content.style.display = 'none';
   closeBtn.style.display = 'none';
@@ -263,15 +406,15 @@ function loadJsOverlay() {
 
   var s = document.createElement('script');
   s.id  = '__glgmsha_script';
-  s.src = JS_PATH;
+  s.src = jsPath;
   s.onload = function() {
-    loader.style.display  = 'none';
-    content.style.display = 'block';
+    loader.style.display   = 'none';
+    content.style.display  = 'block';
     closeBtn.style.display = 'block';
   };
   s.onerror = function() {
-    loader.style.display = 'none';
-    content.style.display = 'block';
+    loader.style.display   = 'none';
+    content.style.display  = 'block';
     closeBtn.style.display = 'block';
     content.innerHTML = '<div style="text-align:center;padding:60px 20px;font-family:Cinzel,serif;font-size:11px;letter-spacing:4px;color:rgba(240,100,100,.5);">✦ تعذّر تحميل الملف ✦</div>';
   };
@@ -280,17 +423,47 @@ function loadJsOverlay() {
 
 function closeOverlay() {
   var overlay = document.getElementById('js-overlay');
-  overlay.style.animation = 'none';
-  overlay.style.opacity   = '0';
+  overlay.style.animation  = 'none';
+  overlay.style.opacity    = '0';
   overlay.style.transition = 'opacity .3s';
   setTimeout(function() {
     overlay.classList.remove('active');
-    overlay.style.opacity   = '';
+    overlay.style.opacity    = '';
     overlay.style.transition = '';
     overlay.style.animation  = '';
   }, 300);
 }
 
+/* ══════════════════════════════════════════
+   iFrame Overlay (HTML / CSS)
+   ══════════════════════════════════════════ */
+function openIframeOverlay(url, name) {
+  var overlay = document.getElementById('iframe-overlay');
+  var frame   = document.getElementById('iframe-frame');
+  var loader  = document.getElementById('iframe-loader');
+  var nameEl  = document.getElementById('iframe-member-name');
+
+  nameEl.textContent  = name || '';
+  loader.style.display = 'flex';
+  frame.src = url;
+  overlay.classList.add('active');
+}
+
+function iframeLoaded() {
+  document.getElementById('iframe-loader').style.display = 'none';
+}
+
+function closeIframeOverlay() {
+  var overlay = document.getElementById('iframe-overlay');
+  var frame   = document.getElementById('iframe-frame');
+  overlay.classList.remove('active');
+  /* تأخير صغير قبل تفريغ الإطار لتجنب وميض */
+  setTimeout(function() { frame.src = 'about:blank'; }, 320);
+}
+
+/* ══════════════════════════════════════════
+   البحث
+   ══════════════════════════════════════════ */
 function doSearch() {
   var raw = document.getElementById('search-input').value.trim();
   var q   = raw.toLowerCase();
@@ -341,14 +514,17 @@ function resetSearch() {
   g.style.transition = 'opacity .28s';
   g.style.opacity    = '0';
   setTimeout(function() {
-    document.getElementById('search-input').value   = '';
-    document.getElementById('result-count').textContent = '';
+    document.getElementById('search-input').value        = '';
+    document.getElementById('result-count').textContent  = '';
     allCards.forEach(function(c) { c.classList.remove('hidden'); });
     noRes.style.display = 'none';
     g.style.opacity = '1';
   }, 280);
 }
 
+/* ══════════════════════════════════════════
+   خلفية الجسيمات
+   ══════════════════════════════════════════ */
 (function() {
   var cv  = document.getElementById('bg-canvas');
   var ctx = cv.getContext('2d');
@@ -362,7 +538,7 @@ function resetSearch() {
   window.addEventListener('resize', resize);
 
   var EMBERS = [];
-  var MAX = 120;
+  var MAX    = 120;
 
   function newEmber(bottom) {
     return {
