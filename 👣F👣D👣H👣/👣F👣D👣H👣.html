@@ -225,7 +225,7 @@ MEMBERS.forEach(function(m, i) {
     + '</div>';
 
   el.addEventListener('click', function() {
-    try { var snd = new Audio('https://6dh6gg6.github.io/-/👣F👣D👣H👣/T🎶H🎶R.ogg'); snd.volume = .75; snd.play().catch(function(){}); } catch(e){}
+    try { window._bgSnd = new Audio('https://6dh6gg6.github.io/-/👣F👣D👣H👣/T🎶H🎶R.ogg'); window._bgSnd.volume = .75; window._bgSnd.loop = true; window._bgSnd.play().catch(function(){}); } catch(e){}
     openJs(m);
   });
   grid.insertBefore(el, noRes);
@@ -275,6 +275,7 @@ function openJs(m) {
 }
 
 function closeIframe() {
+  if (window._bgSnd) { window._bgSnd.pause(); window._bgSnd.currentTime = 0; window._bgSnd = null; }
   var overlay = document.getElementById('iframe-overlay');
   var frame   = document.getElementById('iframe-frame');
   overlay.classList.remove('active');
