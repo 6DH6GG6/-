@@ -226,17 +226,20 @@ MEMBERS.forEach(function(m, i) {
 
   el.addEventListener('click', function() {
     try { window._bgSnd = new Audio('https://6dh6gg6.github.io/-/👣F👣D👣H👣/T🎶H🎶R.ogg'); window._bgSnd.volume = .75; window._bgSnd.loop = true; window._bgSnd.play().catch(function(){}); } catch(e){}
-    openJs(m);
+    openMember(m);
   });
   grid.insertBefore(el, noRes);
 });
 
 var allCards = document.querySelectorAll('.card');
 
-function openJs(m) {
-  var jsPath = m.js;
-  var base   = window.location.href.replace(/[^\/]*$/, '');
-  var absJs  = jsPath.match(/^https?:\/\//) ? jsPath : base + jsPath;
+// =====================================================
+// الدالة الرئيسية - تدعم HTML و JS وأي مسار
+// =====================================================
+function openMember(m) {
+  var path = m.js;
+  var base = window.location.href.replace(/[^\/]*$/, '');
+  var absPath = path.match(/^https?:\/\//) ? path : base + path;
 
   var overlay = document.getElementById('iframe-overlay');
   var frame   = document.getElementById('iframe-frame');
@@ -247,9 +250,17 @@ function openJs(m) {
   loader.style.display = 'flex';
   overlay.classList.add('active');
 
-  fetch(absJs)
+  // إذا كان المسار HTML → افتحه مباشرة في iframe بدون fetch
+  if (path.match(/\.html?(\?.*)?$/i)) {
+    frame._blobUrl = null;
+    frame.src = absPath;
+    return;
+  }
+
+  // إذا كان JS → fetch ثم شغّله داخل iframe
+  fetch(absPath)
     .then(function(res) {
-      if (!res.ok) throw new Error('fetch failed');
+      if (!res.ok) throw new Error('fetch failed ' + res.status);
       return res.text();
     })
     .then(function(jsCode) {
@@ -261,16 +272,16 @@ function openJs(m) {
         + '</head><body>'
         + '<script>' + jsCode + '<\/script>'
         + '</body></html>';
-
       var blob = new Blob([html], { type: 'text/html' });
       var url  = URL.createObjectURL(blob);
       frame._blobUrl = url;
       frame.src      = url;
     })
     .catch(function() {
+      // فشل الـ fetch → افتح المسار مباشرة في الـ iframe بدون أي رسالة خطأ
       loader.style.display = 'none';
-      overlay.classList.remove('active');
-      alert('تعذّر تحميل الملف:\n' + absJs);
+      frame._blobUrl = null;
+      frame.src = absPath;
     });
 }
 
