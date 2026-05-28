@@ -1,7 +1,7 @@
 (function () {
 
   var AVATAR_URL = 'https://i.imgur.com/sDYtHw5.jpg';
-  var LAUGH_URL  = 'https://6dh6gg6.github.io/-/👣F👣D👣H👣/T🎶H🎶R.ogg';
+  var LAUGH_URL  = 'https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3';
 
   var MENU_ITEMS = [
     { id: 'news',       icon: '📰', label: 'أحدث الأخبار', file: 'news.js',       global: 'NewsSection'       },
