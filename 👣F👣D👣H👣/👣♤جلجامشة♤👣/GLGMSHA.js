@@ -1,10 +1,7 @@
 (function () {
 
-  /* ══════════════════════════════════════════
-     الإعدادات — عدّل هنا فقط
-     ══════════════════════════════════════════ */
-  var AVATAR_URL   = 'https://i.imgur.com/sDYtHw5.jpg';
-  var LAUGH_URL    = 'https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3'; /* ← غيّر المسار هنا */
+  var AVATAR_URL = 'https://i.imgur.com/sDYtHw5.jpg';
+  var LAUGH_URL  = 'https://assets.mixkit.co/active_storage/sfx/2354/2354-preview.mp3';
 
   var MENU_ITEMS = [
     { id: 'news',       icon: '📰', label: 'أحدث الأخبار', file: 'news.js',       global: 'NewsSection'       },
@@ -17,577 +14,148 @@
   ];
 
   var NOTIFICATIONS = [
-    { section: 'news',   label: '📰 أحدث الأخبار', dot: 'green', badge: 3, msg: 'تم إضافة 3 أخبار جديدة!',      time: '2025/01/15 — 10:30 م' },
-    { section: 'videos', label: '🎬 فيديوهات',      dot: 'red',   badge: 1, msg: 'فيديو جديد تم رفعه الآن',      time: '2025/01/14 — 08:00 م' },
-    { section: 'photos', label: '🖼 صور',            dot: 'green', badge: 5, msg: 'تمت إضافة 5 صور جديدة',        time: '2025/01/13 — 04:15 م' },
-    { section: 'blogs',  label: '📝 مدونات',         dot: 'red',   badge: 2, msg: 'مدونتان جديدتان في انتظارك',  time: '2025/01/12 — 09:00 ص' },
+    { section: 'news',   label: '📰 أحدث الأخبار', dot: 'green', badge: 3, msg: 'تم إضافة 3 أخبار جديدة!',     time: '2025/01/15 — 10:30 م' },
+    { section: 'videos', label: '🎬 فيديوهات',      dot: 'red',   badge: 1, msg: 'فيديو جديد تم رفعه الآن',     time: '2025/01/14 — 08:00 م' },
+    { section: 'photos', label: '🖼 صور',            dot: 'green', badge: 5, msg: 'تمت إضافة 5 صور جديدة',       time: '2025/01/13 — 04:15 م' },
+    { section: 'blogs',  label: '📝 مدونات',         dot: 'red',   badge: 2, msg: 'مدونتان جديدتان في انتظارك', time: '2025/01/12 — 09:00 ص' },
   ];
 
-  /* ══════════════════════════════════════════
-     متغيرات داخلية
-     ══════════════════════════════════════════ */
   var loadedScripts = new Set();
   var checkedFiles  = new Map();
 
-  /* ══════════════════════════════════════════
-     الأنماط
-     ══════════════════════════════════════════ */
   function injectStyles() {
     var css = `
 @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@400;700;900&family=Amiri:wght@400;700&display=swap');
-
-:root {
-  --pk1:#ff2d78; --pk2:#ff6fa8; --pk3:#ffb3d1; --pk4:#ffe0ef;
-  --pu1:#d63aff; --pu2:#f0a0ff;
-  --dk1:#0f000d; --dk2:#1a0018; --dk3:#260020;
-  --red1:#ff1a1a; --red2:#ff6666;
-}
-
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-html, body {
-  width: 100%; min-height: 100%;
-  background: var(--dk1);
-  font-family: 'Tajawal', 'Amiri', sans-serif;
-  direction: rtl; overflow-x: hidden;
-  -webkit-tap-highlight-color: transparent;
-}
-
-/* ── شاشة البداية ── */
-#glg-splash {
-  position: fixed; inset: 0; z-index: 9999;
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center;
-  overflow: hidden;
-  transition: opacity .7s ease, visibility .7s ease;
-}
-#glg-splash.hidden { opacity: 0; visibility: hidden; pointer-events: none; }
-
-/* خلفية متدرجة */
-.glg-splash-bg {
-  position: absolute; inset: 0; z-index: 0;
-  background:
-    radial-gradient(ellipse at 20% 20%, #ff2d7844 0%, transparent 55%),
-    radial-gradient(ellipse at 80% 10%, #d63aff33 0%, transparent 50%),
-    radial-gradient(ellipse at 50% 95%, #ff2d7866 0%, transparent 60%),
-    linear-gradient(170deg, #1e0028 0%, #0f000d 50%, #1a0008 100%);
-}
-
-/* جسيمات زهرية */
-.glg-particles { position: absolute; inset: 0; z-index: 1; pointer-events: none; }
-.glg-pt {
-  position: absolute; border-radius: 50%; opacity: 0;
-  animation: glgPtRise linear infinite;
-}
-@keyframes glgPtRise {
-  0%   { opacity: 0; transform: translateY(0) scale(0); }
-  10%  { opacity: .9; }
-  90%  { opacity: .2; }
-  100% { opacity: 0; transform: translateY(-100vh) scale(2); }
-}
-
-/* قلوب متطايرة */
-.glg-hearts { position: absolute; inset: 0; z-index: 2; pointer-events: none; }
-.glg-heart {
-  position: absolute; font-size: 1.1rem; opacity: 0;
-  animation: glgHeartUp ease-in-out infinite;
-}
-@keyframes glgHeartUp {
-  0%   { opacity: 0; transform: translateY(0) rotate(-10deg); }
-  15%  { opacity: .8; }
-  80%  { opacity: .3; }
-  100% { opacity: 0; transform: translateY(-90vh) rotate(20deg); }
-}
-
-/* محتوى البداية */
-.glg-splash-center {
-  position: relative; z-index: 10;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 18px;
-  padding: 0 28px;
-}
-
-/* الصورة الدائرية */
-.glg-avatar-wrap {
-  position: relative;
-  width: clamp(130px, 32vw, 180px);
-  height: clamp(130px, 32vw, 180px);
-}
-.glg-avatar-ring {
-  position: absolute; inset: 0; border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff2d78, #d63aff, #ff6fa8, #ffb3d1, #ff2d78);
-  animation: glgRingRotate 5s linear infinite;
-  padding: 3px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-}
-@keyframes glgRingRotate { to { transform: rotate(360deg); } }
-.glg-avatar-inner {
-  position: absolute; inset: 4px; border-radius: 50%;
-  background: #1a0018;
-  box-shadow: 0 0 0 2px #ff2d7833, 0 0 40px #ff2d7844 inset;
-  overflow: hidden;
-}
-.glg-avatar-inner img {
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center top;
-  display: block;
-}
-.glg-avatar-ph {
-  width: 100%; height: 100%;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 3rem;
-}
-/* وميض نابض حول الصورة */
-.glg-avatar-glow {
-  position: absolute; inset: -8px; border-radius: 50%;
-  background: transparent;
-  box-shadow: 0 0 30px #ff2d7877, 0 0 70px #ff2d7833;
-  animation: glgAvatarGlow 2.5s ease-in-out infinite;
-  pointer-events: none;
-}
-@keyframes glgAvatarGlow {
-  0%,100% { box-shadow: 0 0 25px #ff2d7866, 0 0 60px #ff2d7822; }
-  50%      { box-shadow: 0 0 50px #ff2d78bb, 0 0 100px #ff2d7855; }
-}
-
-/* اسم جلجامشة تشان */
-.glg-name {
-  font-size: clamp(1.4rem, 5vw, 2rem);
-  font-weight: 900;
-  color: var(--pk1);
-  text-shadow: 0 0 18px #ff2d7888, 0 0 40px #ff2d7844;
-  text-align: center;
-  letter-spacing: 1px;
-}
-
-/* فاصل */
-.glg-divider {
-  display: flex; align-items: center; gap: 10px;
-  width: min(320px, 80vw);
-}
-.glg-div-line {
-  flex: 1; height: 1px;
-  background: linear-gradient(90deg, transparent, #ff2d7866, transparent);
-}
-.glg-div-dot {
-  width: 5px; height: 5px; border-radius: 50%;
-  background: var(--pk1); opacity: .7;
-}
-
-/* نص "أهلا بكم في عالم الغموض" */
-.glg-sub1 {
-  font-size: clamp(.9rem, 3vw, 1.1rem);
-  font-weight: 700;
-  color: var(--red1);
-  text-shadow: 0 0 12px #ff1a1a88;
-  text-align: center;
-  letter-spacing: 2px;
-}
-
-/* نص الغليتش */
-.glg-glitch-wrap {
-  position: relative;
-  text-align: center;
-}
-.glg-glitch {
-  font-size: clamp(.82rem, 2.6vw, 1rem);
-  font-weight: 700;
-  color: #111;
-  text-shadow: 0 0 2px #000;
-  letter-spacing: 1px;
-  line-height: 1.5;
-  position: relative;
-  display: inline-block;
-  background: linear-gradient(135deg, #fff0f5, #ffe0ef);
-  padding: 6px 16px;
-  border-radius: 8px;
-}
-.glg-glitch::before,
-.glg-glitch::after {
-  content: attr(data-text);
-  position: absolute; inset: 0;
-  padding: 6px 16px;
-  border-radius: 8px;
-  overflow: hidden;
-}
-.glg-glitch::before {
-  color: #ff2d78;
-  clip-path: polygon(0 20%, 100% 20%, 100% 40%, 0 40%);
-  animation: glgGlitchA 2s steps(1) infinite;
-}
-.glg-glitch::after {
-  color: #00f0ff;
-  clip-path: polygon(0 60%, 100% 60%, 100% 75%, 0 75%);
-  animation: glgGlitchB 2s steps(1) infinite;
-}
-@keyframes glgGlitchA {
-  0%,89%,100% { transform: none; opacity: 0; }
-  90%          { transform: translateX(-4px) skewX(-3deg); opacity: 1; }
-  92%          { transform: translateX(4px)  skewX(3deg);  opacity: 1; }
-  94%          { transform: translateX(-2px); opacity: 1; }
-  96%,98%      { transform: none; opacity: 0; }
-  97%          { transform: translateX(6px);  opacity: 1; }
-}
-@keyframes glgGlitchB {
-  0%,89%,100% { transform: none; opacity: 0; }
-  90%          { transform: translateX(5px)  skewX(4deg);  opacity: 1; }
-  93%          { transform: translateX(-5px) skewX(-4deg); opacity: 1; }
-  95%,99%      { transform: none; opacity: 0; }
-  96%          { transform: translateX(3px);  opacity: 1; }
-}
-
-/* زر الدخول */
-#glg-enter-btn {
-  width: clamp(72px, 18vw, 90px);
-  height: clamp(72px, 18vw, 90px);
-  border-radius: 50%;
-  border: none;
-  cursor: pointer;
-  background: linear-gradient(135deg, #ff2d78, #d63aff 50%, #ff6fa8);
-  background-size: 200% 200%;
-  animation: glgBtnShift 3s ease-in-out infinite, glgBtnGlow 2.5s ease-in-out infinite;
-  color: #fff;
-  font-size: 1.8rem;
-  display: flex; align-items: center; justify-content: center;
-  outline: none;
-  position: relative;
-  transition: transform .2s;
-  box-shadow: 0 8px 30px #ff2d7877;
-}
-@keyframes glgBtnShift {
-  0%,100% { background-position: 0% 50%; }
-  50%      { background-position: 100% 50%; }
-}
-@keyframes glgBtnGlow {
-  0%,100% { box-shadow: 0 8px 30px #ff2d7866, 0 0 0 0 #ff2d7822; }
-  50%      { box-shadow: 0 8px 50px #ff2d78aa, 0 0 0 16px #ff2d7811; }
-}
-#glg-enter-btn::before {
-  content: '';
-  position: absolute; inset: -8px; border-radius: 50%;
-  border: 2px solid #ff2d7855;
-  animation: glgRipple 2s linear infinite;
-}
-#glg-enter-btn::after {
-  content: '';
-  position: absolute; inset: -18px; border-radius: 50%;
-  border: 1px solid #ff2d7833;
-  animation: glgRipple 2s linear infinite .6s;
-}
-@keyframes glgRipple {
-  0%   { transform: scale(1); opacity: .8; }
-  100% { transform: scale(1.7); opacity: 0; }
-}
-#glg-enter-btn:hover { transform: scale(1.1); }
-#glg-enter-btn:active { transform: scale(.92); }
-
-.glg-enter-hint {
-  font-size: .8rem;
-  color: #ff2d7877;
-  letter-spacing: 3px;
-  text-align: center;
-}
-
-/* ── شاشة التحميل ── */
-#glg-loader {
-  position: fixed; inset: 0; z-index: 9998;
-  background: var(--dk2);
-  display: flex; flex-direction: column;
-  align-items: center; justify-content: center; gap: 20px;
-  opacity: 0; visibility: hidden;
-  transition: opacity .3s;
-}
-#glg-loader.show { opacity: 1; visibility: visible; }
-#glg-loader.hide { opacity: 0; visibility: hidden; }
-.glg-loader-icon { font-size: 2.4rem; animation: glgPulse 1.4s ease-in-out infinite; }
-@keyframes glgPulse { 0%,100%{transform:scale(1)} 50%{transform:scale(1.12)} }
-.glg-loader-title {
-  font-size: clamp(.95rem, 3vw, 1.3rem);
-  color: var(--pk2); font-weight: 700; letter-spacing: 3px;
-}
-.glg-bar-wrap {
-  width: min(300px, 76vw); height: 6px;
-  background: #2a0018; border-radius: 99px;
-  overflow: hidden; border: 1px solid #ff2d7822;
-}
-.glg-bar-fill {
-  height: 100%; width: 0%; border-radius: 99px;
-  background: linear-gradient(90deg, #ff2d78, #d63aff, #ff6fa8, #ff2d78);
-  background-size: 300% 100%;
-  animation: glgBarShine 1s linear infinite;
-  transition: width .05s linear;
-}
-@keyframes glgBarShine { 0%{background-position:0%} 100%{background-position:300%} }
-.glg-bar-pct { font-size: .9rem; color: var(--pk3); font-weight: 700; letter-spacing: 2px; }
-
-/* ── التطبيق الرئيسي ── */
-#glg-app { display: none; flex-direction: column; min-height: 100vh; }
-#glg-app.visible { display: flex; }
-
-/* نجوم الخلفية */
-#glg-stars {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-}
-
-/* القائمة الرئيسية */
-#glg-home {
-  position: relative; z-index: 1;
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center;
-  padding: 50px 20px 100px;
-  transition: opacity .35s, transform .35s;
-}
-#glg-home.hide-out { opacity: 0; transform: scale(.96); pointer-events: none; }
-
-.glg-home-profile {
-  display: flex; flex-direction: column; align-items: center;
-  gap: 12px; margin-bottom: 32px;
-}
-.glg-home-av-ring {
-  position: relative;
-  width: clamp(120px, 30vw, 160px);
-  height: clamp(120px, 30vw, 160px);
-}
-.glg-home-av-ring::before {
-  content: '';
-  position: absolute; inset: 0; border-radius: 50%;
-  background: conic-gradient(from 0deg, #ff2d78, #d63aff, #ffb3d1, #ff6fa8, #ff2d78);
-  animation: glgRingRotate 8s linear infinite;
-  padding: 3px;
-  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-  -webkit-mask-composite: xor; mask-composite: exclude;
-}
-.glg-home-av {
-  position: absolute; inset: 5px; border-radius: 50%;
-  overflow: hidden;
-  box-shadow: 0 0 30px #ff2d7833;
-}
-.glg-home-av img {
-  width: 100%; height: 100%;
-  object-fit: cover; object-position: center top;
-}
-.glg-home-av-ph {
-  width: 100%; height: 100%;
-  background: #1a0018;
-  display: flex; align-items: center; justify-content: center;
-  font-size: 3rem;
-}
-.glg-home-name {
-  font-size: clamp(1.3rem, 4vw, 1.9rem);
-  font-weight: 900; text-align: center;
-  background: linear-gradient(90deg, #ff2d78, #d63aff, #ffb3d1);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text;
-  text-shadow: none;
-  filter: drop-shadow(0 0 12px #ff2d7866);
-}
-.glg-home-sub {
-  font-size: .85rem; color: #ff6fa855;
-  letter-spacing: 2px; margin-top: 2px;
-}
-
-/* شبكة القائمة */
-.glg-menu-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 12px; width: 100%; max-width: 440px;
-}
-.glg-menu-card {
-  position: relative; overflow: hidden; cursor: pointer;
-  border-radius: 20px; padding: 22px 14px 18px;
-  display: flex; flex-direction: column;
-  align-items: center; gap: 10px; text-align: center;
-  background: linear-gradient(145deg, #1c0022ee, #120014ee);
-  border: 1px solid #ff2d7822;
-  transition: border-color .3s, box-shadow .3s, transform .2s;
-}
-.glg-menu-card::before {
-  content: '';
-  position: absolute; top: 0; left: 0; right: 0; height: 1px;
-  background: linear-gradient(90deg, transparent, #ff2d7855, transparent);
-}
-.glg-menu-card::after {
-  content: '';
-  position: absolute; inset: 0;
-  background: radial-gradient(circle at 50% 0%, #ff2d780d, transparent 65%);
-  opacity: 0; transition: opacity .3s;
-}
-.glg-menu-card:hover {
-  border-color: #ff2d7866;
-  box-shadow: 0 8px 32px #ff2d7822, 0 0 0 1px #ff2d7811;
-  transform: translateY(-4px);
-}
-.glg-menu-card:hover::after { opacity: 1; }
-.glg-menu-card:active { transform: scale(.96); }
-.glg-card-shine {
-  position: absolute; inset: 0; border-radius: 20px;
-  background: linear-gradient(135deg, #ffffff08 0%, transparent 50%, #ffffff04 100%);
-  pointer-events: none;
-}
-.glg-card-icon {
-  font-size: 2rem; line-height: 1;
-  filter: drop-shadow(0 0 8px #ff2d7866);
-  transition: transform .3s;
-}
-.glg-menu-card:hover .glg-card-icon { transform: scale(1.15); }
-.glg-card-label {
-  font-size: .88rem; font-weight: 700;
-  color: #ffd6e7cc; line-height: 1.35;
-  position: relative; z-index: 1;
-}
-
-/* زر الإشعارات */
-#glg-notif-fab {
-  position: fixed; bottom: 26px; left: 20px; z-index: 200;
-  width: 54px; height: 54px; border-radius: 50%;
-  border: 1px solid #ff2d7844;
-  background: linear-gradient(145deg, #2a0026, #0f000d);
-  box-shadow: 0 4px 24px #ff2d7833, inset 0 1px 0 #ff2d7822;
-  display: flex; align-items: center; justify-content: center;
-  cursor: pointer; outline: none;
-  transition: box-shadow .25s, transform .2s;
-}
-#glg-notif-fab:hover { box-shadow: 0 6px 36px #ff2d7855; transform: scale(1.08); }
-#glg-notif-fab:active { transform: scale(.93); }
-.glg-notif-fab-icon { font-size: 1.3rem; position: relative; z-index: 1; }
-#glg-notif-badge {
-  position: absolute; top: -4px; right: -4px;
-  background: linear-gradient(135deg, #ff2d78, #d63aff);
-  color: #fff; font-size: .6rem; font-weight: 900;
-  border-radius: 99px; padding: 2px 5px; min-width: 18px;
-  text-align: center; border: 1.5px solid #0f000d;
-  display: none; box-shadow: 0 2px 8px #ff2d7866;
-}
-#glg-notif-badge.show { display: block; }
-
-/* درج الإشعارات */
-#glg-notif-drawer {
-  position: fixed; bottom: 90px; left: 16px; z-index: 201;
-  width: min(310px, calc(100vw - 32px));
-  background: linear-gradient(160deg, #1e0026f8, #110014f8);
-  border: 1px solid #ff2d7833; border-radius: 22px;
-  box-shadow: 0 12px 50px #ff2d7822;
-  backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
-  transform: translateY(16px) scale(.96);
-  opacity: 0; visibility: hidden;
-  transition: transform .3s cubic-bezier(.4,0,.2,1), opacity .3s, visibility .3s;
-  overflow: hidden;
-}
-#glg-notif-drawer.open { transform: translateY(0) scale(1); opacity: 1; visibility: visible; }
-.glg-drawer-header {
-  padding: 16px 18px 12px;
-  display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid #ff2d7811;
-}
-.glg-drawer-title {
-  font-size: .88rem; font-weight: 900;
-  background: linear-gradient(90deg, #ff2d78, #d63aff);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; letter-spacing: 1px;
-}
-.glg-clear-btn {
-  font-size: .72rem; color: #ff6fa866;
-  background: none; border: none; cursor: pointer;
-  font-family: 'Tajawal', sans-serif; transition: color .2s;
-}
-.glg-clear-btn:hover { color: var(--pk2); }
-.glg-notif-list {
-  max-height: 270px; overflow-y: auto;
-  scrollbar-width: thin; scrollbar-color: #ff2d7822 transparent;
-  padding: 6px 0;
-}
-.glg-notif-item {
-  padding: 12px 18px; cursor: pointer;
-  display: flex; align-items: flex-start; gap: 12px;
-  transition: background .2s; border-bottom: 1px solid #ff2d7808;
-}
-.glg-notif-item:last-child { border-bottom: none; }
-.glg-notif-item:hover { background: #ff2d780a; }
-.glg-notif-dot {
-  width: 8px; height: 8px; border-radius: 50%;
-  flex-shrink: 0; margin-top: 5px;
-}
-.glg-notif-dot.green { background: #4ade80; box-shadow: 0 0 8px #4ade8077; }
-.glg-notif-dot.red   { background: #ff2d78; box-shadow: 0 0 8px #ff2d7877; }
-.glg-notif-body { flex: 1; }
-.glg-notif-label { font-size: .82rem; font-weight: 700; color: #ffd6e7cc; margin-bottom: 3px; }
-.glg-notif-msg   { font-size: .76rem; color: #ff6fa877; line-height: 1.45; }
-.glg-notif-time  { font-size: .68rem; color: #ff6fa844; margin-top: 4px; }
-.glg-notif-empty { text-align: center; padding: 28px 16px; color: #ff6fa844; font-size: .85rem; }
-
-/* صفحة القسم */
-#glg-section-page {
-  position: fixed; inset: 0; z-index: 10;
-  background: var(--dk1);
-  display: flex; flex-direction: column;
-  transform: translateX(-100%);
-  transition: transform .4s cubic-bezier(.4,0,.2,1);
-  overflow-y: auto;
-}
-#glg-section-page.slide-in { transform: translateX(0); }
-.glg-sec-header {
-  position: sticky; top: 0; z-index: 5;
-  background: linear-gradient(180deg, #1a0018ee, #0f000dee);
-  backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
-  border-bottom: 1px solid #ff2d7822;
-  box-shadow: 0 4px 24px #0f000d88;
-  display: flex; align-items: center; gap: 12px;
-  padding: 12px 16px; min-height: 56px;
-}
-#glg-back-btn {
-  background: none; border: 1px solid #ff2d7833;
-  color: var(--pk1); font-size: 1.3rem; cursor: pointer;
-  width: 38px; height: 38px; border-radius: 50%;
-  display: flex; align-items: center; justify-content: center;
-  transition: background .2s, border-color .2s, transform .15s;
-  flex-shrink: 0;
-}
-#glg-back-btn:hover { background: #2a0022; border-color: #ff2d7888; }
-#glg-back-btn:active { transform: scale(.88); }
-.glg-sec-title {
-  font-size: clamp(.95rem, 3.2vw, 1.25rem); font-weight: 900;
-  background: linear-gradient(90deg, #ff2d78, #d63aff);
-  -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-  background-clip: text; flex: 1;
-}
-#glg-section-content { flex: 1; padding: 24px 16px 60px; position: relative; z-index: 1; }
-
-@media (max-width: 360px) {
-  .glg-menu-grid { gap: 9px; }
-  .glg-menu-card { padding: 16px 10px 13px; }
-  .glg-card-icon { font-size: 1.7rem; }
-  .glg-card-label { font-size: .8rem; }
-}
+:root{--pk1:#ff2d78;--pk2:#ff6fa8;--pk3:#ffb3d1;--pk4:#ffe0ef;--pu1:#d63aff;--pu2:#f0a0ff;--dk1:#0f000d;--dk2:#1a0018;--dk3:#260020;--red1:#ff1a1a;--red2:#ff6666;}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html,body{width:100%;min-height:100%;background:var(--dk1);font-family:'Tajawal','Amiri',sans-serif;direction:rtl;overflow-x:hidden;-webkit-tap-highlight-color:transparent;}
+#glg-splash{position:fixed;inset:0;z-index:9999;display:flex;flex-direction:column;align-items:center;justify-content:center;overflow:hidden;transition:opacity .7s ease,visibility .7s ease;}
+#glg-splash.hidden{opacity:0;visibility:hidden;pointer-events:none;}
+.glg-splash-bg{position:absolute;inset:0;z-index:0;background:radial-gradient(ellipse at 20% 20%,#ff2d7844 0%,transparent 55%),radial-gradient(ellipse at 80% 10%,#d63aff33 0%,transparent 50%),radial-gradient(ellipse at 50% 95%,#ff2d7866 0%,transparent 60%),linear-gradient(170deg,#1e0028 0%,#0f000d 50%,#1a0008 100%);}
+.glg-particles{position:absolute;inset:0;z-index:1;pointer-events:none;}
+.glg-pt{position:absolute;border-radius:50%;opacity:0;animation:glgPtRise linear infinite;}
+@keyframes glgPtRise{0%{opacity:0;transform:translateY(0) scale(0);}10%{opacity:.9;}90%{opacity:.2;}100%{opacity:0;transform:translateY(-100vh) scale(2);}}
+.glg-hearts{position:absolute;inset:0;z-index:2;pointer-events:none;}
+.glg-heart{position:absolute;font-size:1.1rem;opacity:0;animation:glgHeartUp ease-in-out infinite;}
+@keyframes glgHeartUp{0%{opacity:0;transform:translateY(0) rotate(-10deg);}15%{opacity:.8;}80%{opacity:.3;}100%{opacity:0;transform:translateY(-90vh) rotate(20deg);}}
+.glg-splash-center{position:relative;z-index:10;display:flex;flex-direction:column;align-items:center;gap:18px;padding:0 28px;}
+.glg-avatar-wrap{position:relative;width:clamp(130px,32vw,180px);height:clamp(130px,32vw,180px);}
+.glg-avatar-ring{position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#ff2d78,#d63aff,#ff6fa8,#ffb3d1,#ff2d78);animation:glgRingRotate 5s linear infinite;padding:3px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+@keyframes glgRingRotate{to{transform:rotate(360deg);}}
+.glg-avatar-inner{position:absolute;inset:4px;border-radius:50%;background:#1a0018;box-shadow:0 0 0 2px #ff2d7833,0 0 40px #ff2d7844 inset;overflow:hidden;}
+.glg-avatar-inner img{width:100%;height:100%;object-fit:cover;object-position:center top;display:block;}
+.glg-avatar-ph{width:100%;height:100%;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.glg-avatar-glow{position:absolute;inset:-8px;border-radius:50%;background:transparent;box-shadow:0 0 30px #ff2d7877,0 0 70px #ff2d7833;animation:glgAvatarGlow 2.5s ease-in-out infinite;pointer-events:none;}
+@keyframes glgAvatarGlow{0%,100%{box-shadow:0 0 25px #ff2d7866,0 0 60px #ff2d7822;}50%{box-shadow:0 0 50px #ff2d78bb,0 0 100px #ff2d7855;}}
+.glg-name{font-size:clamp(1.4rem,5vw,2rem);font-weight:900;color:var(--pk1);text-shadow:0 0 18px #ff2d7888,0 0 40px #ff2d7844;text-align:center;letter-spacing:1px;}
+.glg-divider{display:flex;align-items:center;gap:10px;width:min(320px,80vw);}
+.glg-div-line{flex:1;height:1px;background:linear-gradient(90deg,transparent,#ff2d7866,transparent);}
+.glg-div-dot{width:5px;height:5px;border-radius:50%;background:var(--pk1);opacity:.7;}
+.glg-sub1{font-size:clamp(.9rem,3vw,1.1rem);font-weight:700;color:var(--red1);text-shadow:0 0 12px #ff1a1a88;text-align:center;letter-spacing:2px;}
+.glg-glitch-wrap{position:relative;text-align:center;}
+.glg-glitch{font-size:clamp(.82rem,2.6vw,1rem);font-weight:700;color:#111;letter-spacing:1px;line-height:1.5;position:relative;display:inline-block;background:linear-gradient(135deg,#fff0f5,#ffe0ef);padding:6px 16px;border-radius:8px;}
+.glg-glitch::before,.glg-glitch::after{content:attr(data-text);position:absolute;inset:0;padding:6px 16px;border-radius:8px;overflow:hidden;}
+.glg-glitch::before{color:#ff2d78;clip-path:polygon(0 20%,100% 20%,100% 40%,0 40%);animation:glgGlitchA 2s steps(1) infinite;}
+.glg-glitch::after{color:#00f0ff;clip-path:polygon(0 60%,100% 60%,100% 75%,0 75%);animation:glgGlitchB 2s steps(1) infinite;}
+@keyframes glgGlitchA{0%,89%,100%{transform:none;opacity:0;}90%{transform:translateX(-4px) skewX(-3deg);opacity:1;}92%{transform:translateX(4px) skewX(3deg);opacity:1;}94%{transform:translateX(-2px);opacity:1;}96%,98%{transform:none;opacity:0;}97%{transform:translateX(6px);opacity:1;}}
+@keyframes glgGlitchB{0%,89%,100%{transform:none;opacity:0;}90%{transform:translateX(5px) skewX(4deg);opacity:1;}93%{transform:translateX(-5px) skewX(-4deg);opacity:1;}95%,99%{transform:none;opacity:0;}96%{transform:translateX(3px);opacity:1;}}
+#glg-enter-btn{width:clamp(72px,18vw,90px);height:clamp(72px,18vw,90px);border-radius:50%;border:none;cursor:pointer;background:linear-gradient(135deg,#ff2d78,#d63aff 50%,#ff6fa8);background-size:200% 200%;animation:glgBtnShift 3s ease-in-out infinite,glgBtnGlow 2.5s ease-in-out infinite;color:#fff;font-size:1.8rem;display:flex;align-items:center;justify-content:center;outline:none;position:relative;transition:transform .2s;box-shadow:0 8px 30px #ff2d7877;}
+@keyframes glgBtnShift{0%,100%{background-position:0% 50%;}50%{background-position:100% 50%;}}
+@keyframes glgBtnGlow{0%,100%{box-shadow:0 8px 30px #ff2d7866,0 0 0 0 #ff2d7822;}50%{box-shadow:0 8px 50px #ff2d78aa,0 0 0 16px #ff2d7811;}}
+#glg-enter-btn::before{content:'';position:absolute;inset:-8px;border-radius:50%;border:2px solid #ff2d7855;animation:glgRipple 2s linear infinite;}
+#glg-enter-btn::after{content:'';position:absolute;inset:-18px;border-radius:50%;border:1px solid #ff2d7833;animation:glgRipple 2s linear infinite .6s;}
+@keyframes glgRipple{0%{transform:scale(1);opacity:.8;}100%{transform:scale(1.7);opacity:0;}}
+#glg-enter-btn:hover{transform:scale(1.1);}
+#glg-enter-btn:active{transform:scale(.92);}
+.glg-enter-hint{font-size:.8rem;color:#ff2d7877;letter-spacing:3px;text-align:center;}
+#glg-loader{position:fixed;inset:0;z-index:9998;background:var(--dk2);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:20px;opacity:0;visibility:hidden;transition:opacity .3s;}
+#glg-loader.show{opacity:1;visibility:visible;}
+#glg-loader.hide{opacity:0;visibility:hidden;}
+.glg-loader-icon{font-size:2.4rem;animation:glgPulse 1.4s ease-in-out infinite;}
+@keyframes glgPulse{0%,100%{transform:scale(1);}50%{transform:scale(1.12);}}
+.glg-loader-title{font-size:clamp(.95rem,3vw,1.3rem);color:var(--pk2);font-weight:700;letter-spacing:3px;}
+.glg-bar-wrap{width:min(300px,76vw);height:6px;background:#2a0018;border-radius:99px;overflow:hidden;border:1px solid #ff2d7822;}
+.glg-bar-fill{height:100%;width:0%;border-radius:99px;background:linear-gradient(90deg,#ff2d78,#d63aff,#ff6fa8,#ff2d78);background-size:300% 100%;animation:glgBarShine 1s linear infinite;transition:width .05s linear;}
+@keyframes glgBarShine{0%{background-position:0%;}100%{background-position:300%;}}
+.glg-bar-pct{font-size:.9rem;color:var(--pk3);font-weight:700;letter-spacing:2px;}
+#glg-app{display:none;flex-direction:column;min-height:100vh;}
+#glg-app.visible{display:flex;}
+#glg-stars{position:fixed;inset:0;z-index:0;pointer-events:none;}
+#glg-home{position:relative;z-index:1;min-height:100vh;display:flex;flex-direction:column;align-items:center;padding:50px 20px 100px;transition:opacity .35s,transform .35s;}
+#glg-home.hide-out{opacity:0;transform:scale(.96);pointer-events:none;}
+.glg-home-profile{display:flex;flex-direction:column;align-items:center;gap:12px;margin-bottom:32px;}
+.glg-home-av-ring{position:relative;width:clamp(120px,30vw,160px);height:clamp(120px,30vw,160px);}
+.glg-home-av-ring::before{content:'';position:absolute;inset:0;border-radius:50%;background:conic-gradient(from 0deg,#ff2d78,#d63aff,#ffb3d1,#ff6fa8,#ff2d78);animation:glgRingRotate 8s linear infinite;padding:3px;-webkit-mask:linear-gradient(#fff 0 0) content-box,linear-gradient(#fff 0 0);-webkit-mask-composite:xor;mask-composite:exclude;}
+.glg-home-av{position:absolute;inset:5px;border-radius:50%;overflow:hidden;box-shadow:0 0 30px #ff2d7833;}
+.glg-home-av img{width:100%;height:100%;object-fit:cover;object-position:center top;}
+.glg-home-av-ph{width:100%;height:100%;background:#1a0018;display:flex;align-items:center;justify-content:center;font-size:3rem;}
+.glg-home-name{font-size:clamp(1.3rem,4vw,1.9rem);font-weight:900;text-align:center;background:linear-gradient(90deg,#ff2d78,#d63aff,#ffb3d1);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;filter:drop-shadow(0 0 12px #ff2d7866);}
+.glg-home-sub{font-size:.85rem;color:#ff6fa855;letter-spacing:2px;margin-top:2px;}
+.glg-menu-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:12px;width:100%;max-width:440px;}
+.glg-menu-card{position:relative;overflow:hidden;cursor:pointer;border-radius:20px;padding:22px 14px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;text-align:center;background:linear-gradient(145deg,#1c0022ee,#120014ee);border:1px solid #ff2d7822;transition:border-color .3s,box-shadow .3s,transform .2s;}
+.glg-menu-card::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,#ff2d7855,transparent);}
+.glg-menu-card::after{content:'';position:absolute;inset:0;background:radial-gradient(circle at 50% 0%,#ff2d780d,transparent 65%);opacity:0;transition:opacity .3s;}
+.glg-menu-card:hover{border-color:#ff2d7866;box-shadow:0 8px 32px #ff2d7822,0 0 0 1px #ff2d7811;transform:translateY(-4px);}
+.glg-menu-card:hover::after{opacity:1;}
+.glg-menu-card:active{transform:scale(.96);}
+.glg-card-shine{position:absolute;inset:0;border-radius:20px;background:linear-gradient(135deg,#ffffff08 0%,transparent 50%,#ffffff04 100%);pointer-events:none;}
+.glg-card-icon{font-size:2rem;line-height:1;filter:drop-shadow(0 0 8px #ff2d7866);transition:transform .3s;}
+.glg-menu-card:hover .glg-card-icon{transform:scale(1.15);}
+.glg-card-label{font-size:.88rem;font-weight:700;color:#ffd6e7cc;line-height:1.35;position:relative;z-index:1;}
+#glg-notif-fab{position:fixed;bottom:26px;left:20px;z-index:200;width:54px;height:54px;border-radius:50%;border:1px solid #ff2d7844;background:linear-gradient(145deg,#2a0026,#0f000d);box-shadow:0 4px 24px #ff2d7833,inset 0 1px 0 #ff2d7822;display:flex;align-items:center;justify-content:center;cursor:pointer;outline:none;transition:box-shadow .25s,transform .2s;}
+#glg-notif-fab:hover{box-shadow:0 6px 36px #ff2d7855;transform:scale(1.08);}
+#glg-notif-fab:active{transform:scale(.93);}
+.glg-notif-fab-icon{font-size:1.3rem;position:relative;z-index:1;}
+#glg-notif-badge{position:absolute;top:-4px;right:-4px;background:linear-gradient(135deg,#ff2d78,#d63aff);color:#fff;font-size:.6rem;font-weight:900;border-radius:99px;padding:2px 5px;min-width:18px;text-align:center;border:1.5px solid #0f000d;display:none;box-shadow:0 2px 8px #ff2d7866;}
+#glg-notif-badge.show{display:block;}
+#glg-notif-drawer{position:fixed;bottom:90px;left:16px;z-index:201;width:min(310px,calc(100vw - 32px));background:linear-gradient(160deg,#1e0026f8,#110014f8);border:1px solid #ff2d7833;border-radius:22px;box-shadow:0 12px 50px #ff2d7822;backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);transform:translateY(16px) scale(.96);opacity:0;visibility:hidden;transition:transform .3s cubic-bezier(.4,0,.2,1),opacity .3s,visibility .3s;overflow:hidden;}
+#glg-notif-drawer.open{transform:translateY(0) scale(1);opacity:1;visibility:visible;}
+.glg-drawer-header{padding:16px 18px 12px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid #ff2d7811;}
+.glg-drawer-title{font-size:.88rem;font-weight:900;background:linear-gradient(90deg,#ff2d78,#d63aff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px;}
+.glg-clear-btn{font-size:.72rem;color:#ff6fa866;background:none;border:none;cursor:pointer;font-family:'Tajawal',sans-serif;transition:color .2s;}
+.glg-clear-btn:hover{color:var(--pk2);}
+.glg-notif-list{max-height:270px;overflow-y:auto;scrollbar-width:thin;scrollbar-color:#ff2d7822 transparent;padding:6px 0;}
+.glg-notif-item{padding:12px 18px;cursor:pointer;display:flex;align-items:flex-start;gap:12px;transition:background .2s;border-bottom:1px solid #ff2d7808;}
+.glg-notif-item:last-child{border-bottom:none;}
+.glg-notif-item:hover{background:#ff2d780a;}
+.glg-notif-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0;margin-top:5px;}
+.glg-notif-dot.green{background:#4ade80;box-shadow:0 0 8px #4ade8077;}
+.glg-notif-dot.red{background:#ff2d78;box-shadow:0 0 8px #ff2d7877;}
+.glg-notif-body{flex:1;}
+.glg-notif-label{font-size:.82rem;font-weight:700;color:#ffd6e7cc;margin-bottom:3px;}
+.glg-notif-msg{font-size:.76rem;color:#ff6fa877;line-height:1.45;}
+.glg-notif-time{font-size:.68rem;color:#ff6fa844;margin-top:4px;}
+.glg-notif-empty{text-align:center;padding:28px 16px;color:#ff6fa844;font-size:.85rem;}
+#glg-section-page{position:fixed;inset:0;z-index:10;background:var(--dk1);display:flex;flex-direction:column;transform:translateX(-100%);transition:transform .4s cubic-bezier(.4,0,.2,1);overflow-y:auto;}
+#glg-section-page.slide-in{transform:translateX(0);}
+.glg-sec-header{position:sticky;top:0;z-index:5;background:linear-gradient(180deg,#1a0018ee,#0f000dee);backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);border-bottom:1px solid #ff2d7822;box-shadow:0 4px 24px #0f000d88;display:flex;align-items:center;gap:12px;padding:12px 16px;min-height:56px;}
+#glg-back-btn{background:none;border:1px solid #ff2d7833;color:var(--pk1);font-size:1.3rem;cursor:pointer;width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s,transform .15s;flex-shrink:0;}
+#glg-back-btn:hover{background:#2a0022;border-color:#ff2d7888;}
+#glg-back-btn:active{transform:scale(.88);}
+.glg-sec-title{font-size:clamp(.95rem,3.2vw,1.25rem);font-weight:900;background:linear-gradient(90deg,#ff2d78,#d63aff);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;flex:1;}
+#glg-section-content{flex:1;padding:24px 16px 60px;position:relative;z-index:1;}
+@media(max-width:360px){.glg-menu-grid{gap:9px;}.glg-menu-card{padding:16px 10px 13px;}.glg-card-icon{font-size:1.7rem;}.glg-card-label{font-size:.8rem;}}
 `;
-    var style = document.createElement('style');
-    style.textContent = css;
-    document.head.appendChild(style);
+    var s = document.createElement('style');
+    s.textContent = css;
+    document.head.appendChild(s);
   }
 
-  /* ══════════════════════════════════════════
-     بناء DOM
-     ══════════════════════════════════════════ */
   function buildDOM() {
     document.documentElement.setAttribute('lang', 'ar');
     document.documentElement.setAttribute('dir', 'rtl');
     document.title = 'جلجامشة تشان 🌸';
 
-    /* نجوم الخلفية */
     var starsCanvas = document.createElement('canvas');
     starsCanvas.id  = 'glg-stars';
     document.body.appendChild(starsCanvas);
 
     document.body.insertAdjacentHTML('beforeend', `
-      <!-- شاشة البداية -->
       <div id="glg-splash">
         <div class="glg-splash-bg"></div>
         <div class="glg-particles" id="glg-particles"></div>
-        <div class="glg-hearts"    id="glg-hearts"></div>
-
+        <div class="glg-hearts" id="glg-hearts"></div>
         <div class="glg-splash-center">
-
-          <!-- الصورة الدائرية -->
           <div class="glg-avatar-wrap">
             <div class="glg-avatar-ring"></div>
             <div class="glg-avatar-inner" id="glg-av-inner">
@@ -596,58 +164,36 @@ html, body {
             </div>
             <div class="glg-avatar-glow"></div>
           </div>
-
-          <!-- الاسم -->
           <div class="glg-name">جلجامشة تشان 🌸</div>
-
-          <!-- فاصل -->
           <div class="glg-divider">
             <div class="glg-div-line"></div>
             <div class="glg-div-dot"></div>
             <div class="glg-div-line"></div>
           </div>
-
-          <!-- نص أحمر -->
           <div class="glg-sub1">أهلا بكم في عالم الغموض</div>
-
-          <!-- نص الغليتش -->
           <div class="glg-glitch-wrap">
-            <span class="glg-glitch"
-                  data-text="قصتي كانت لتكون أحلى مما كانت.. سأكون">
-              قصتي كانت لتكون أحلى مما كانت.. سأكون
-            </span>
+            <span class="glg-glitch" data-text="قصتي كانت لتكون أحلى مما كانت.. سأكون">قصتي كانت لتكون أحلى مما كانت.. سأكون</span>
           </div>
-
-          <!-- زر الدخول -->
           <div style="display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:8px;">
             <button id="glg-enter-btn" aria-label="دخول">✦</button>
             <span class="glg-enter-hint">اضغطي للدخول</span>
           </div>
-
         </div>
       </div>
 
-      <!-- شاشة التحميل -->
       <div id="glg-loader">
         <span class="glg-loader-icon">🌸</span>
         <p class="glg-loader-title">جاري التحميل ...</p>
-        <div class="glg-bar-wrap">
-          <div class="glg-bar-fill" id="glg-bar-fill"></div>
-        </div>
+        <div class="glg-bar-wrap"><div class="glg-bar-fill" id="glg-bar-fill"></div></div>
         <p class="glg-bar-pct" id="glg-bar-pct">0%</p>
       </div>
 
-      <!-- التطبيق -->
       <div id="glg-app">
         <div id="glg-home"></div>
-
-        <!-- زر الإشعارات -->
         <button id="glg-notif-fab" aria-label="الإشعارات">
           <span class="glg-notif-fab-icon">🔔</span>
           <span id="glg-notif-badge">0</span>
         </button>
-
-        <!-- درج الإشعارات -->
         <div id="glg-notif-drawer" role="dialog" aria-label="الإشعارات">
           <div class="glg-drawer-header">
             <span class="glg-drawer-title">✦ الإشعارات</span>
@@ -655,8 +201,6 @@ html, body {
           </div>
           <div class="glg-notif-list" id="glg-notif-list"></div>
         </div>
-
-        <!-- صفحة القسم -->
         <div id="glg-section-page" aria-hidden="true">
           <header class="glg-sec-header">
             <button id="glg-back-btn" aria-label="رجوع">&#8592;</button>
@@ -668,9 +212,6 @@ html, body {
     `);
   }
 
-  /* ══════════════════════════════════════════
-     نجوم الخلفية
-     ══════════════════════════════════════════ */
   function initStars() {
     var c   = document.getElementById('glg-stars');
     var ctx = c.getContext('2d');
@@ -684,8 +225,7 @@ html, body {
         var r   = Math.random() * 1.3 + .1;
         var a   = Math.random() * .55 + .06;
         var t   = Math.random();
-        var hue = t < .2  ? '255,45,120'  :
-                  t < .35 ? '214,58,255'  : '255,255,255';
+        var hue = t < .2 ? '255,45,120' : t < .35 ? '214,58,255' : '255,255,255';
         ctx.beginPath();
         ctx.arc(x, y, r, 0, Math.PI * 2);
         ctx.fillStyle = 'rgba(' + hue + ',' + a + ')';
@@ -696,63 +236,38 @@ html, body {
     window.addEventListener('resize', draw);
   }
 
-  /* ══════════════════════════════════════════
-     جسيمات وقلوب شاشة البداية
-     ══════════════════════════════════════════ */
   function initSplashFX() {
     var ptWrap = document.getElementById('glg-particles');
     var htWrap = document.getElementById('glg-hearts');
-
-    var cols = ['#ff2d78','#ffb3d1','#d63aff','#ffe0ef','#ff6fa8','#f9a8d4'];
+    var cols   = ['#ff2d78','#ffb3d1','#d63aff','#ffe0ef','#ff6fa8','#f9a8d4'];
     for (var i = 0; i < 45; i++) {
       var pt  = document.createElement('div');
       pt.className = 'glg-pt';
       var sz  = (Math.random() * 5 + 2) + 'px';
       var col = cols[Math.floor(Math.random() * cols.length)];
-      pt.style.cssText =
-        'width:' + sz + ';height:' + sz
-        + ';left:'   + (Math.random() * 100) + '%;'
-        + 'bottom:'  + (Math.random() * 20)  + '%;'
-        + 'background:' + col + ';box-shadow:0 0 6px ' + col + ';'
-        + 'animation-duration:' + (Math.random() * 8 + 5) + 's;'
-        + 'animation-delay:'    + (Math.random() * 9) + 's;';
+      pt.style.cssText = 'width:' + sz + ';height:' + sz + ';left:' + (Math.random() * 100) + '%;bottom:' + (Math.random() * 20) + '%;background:' + col + ';box-shadow:0 0 6px ' + col + ';animation-duration:' + (Math.random() * 8 + 5) + 's;animation-delay:' + (Math.random() * 9) + 's;';
       ptWrap.appendChild(pt);
     }
-
     var hearts = ['💗','💕','🌸','💖','🩷','✿','❀'];
     for (var j = 0; j < 18; j++) {
       var ht  = document.createElement('div');
-      ht.className = 'glg-heart';
+      ht.className  = 'glg-heart';
       ht.textContent = hearts[Math.floor(Math.random() * hearts.length)];
-      ht.style.cssText =
-        'left:'   + (Math.random() * 100) + '%;'
-        + 'bottom:' + (Math.random() * 15)  + '%;'
-        + 'animation-duration:'  + (Math.random() * 6 + 6) + 's;'
-        + 'animation-delay:'     + (Math.random() * 8) + 's;'
-        + 'font-size:'           + (Math.random() * .8 + .7) + 'rem;';
+      ht.style.cssText = 'left:' + (Math.random() * 100) + '%;bottom:' + (Math.random() * 15) + '%;animation-duration:' + (Math.random() * 6 + 6) + 's;animation-delay:' + (Math.random() * 8) + 's;font-size:' + (Math.random() * .8 + .7) + 'rem;';
       htWrap.appendChild(ht);
     }
   }
 
-  /* ══════════════════════════════════════════
-     شاشة البداية والتحميل
-     ══════════════════════════════════════════ */
   function initSplash() {
-    var splash    = document.getElementById('glg-splash');
-    var enterBtn  = document.getElementById('glg-enter-btn');
-    var loader    = document.getElementById('glg-loader');
-    var barFill   = document.getElementById('glg-bar-fill');
-    var barPct    = document.getElementById('glg-bar-pct');
-    var app       = document.getElementById('glg-app');
+    var splash   = document.getElementById('glg-splash');
+    var enterBtn = document.getElementById('glg-enter-btn');
+    var loader   = document.getElementById('glg-loader');
+    var barFill  = document.getElementById('glg-bar-fill');
+    var barPct   = document.getElementById('glg-bar-pct');
+    var app      = document.getElementById('glg-app');
 
     enterBtn.addEventListener('click', function () {
-      /* تشغيل الضحك */
-      try {
-        var audio = new Audio(LAUGH_URL);
-        audio.volume = .75;
-        audio.play().catch(function(){});
-      } catch(e){}
-
+      try { var a = new Audio(LAUGH_URL); a.volume = .75; a.play().catch(function(){}); } catch(e){}
       splash.classList.add('hidden');
       loader.classList.add('show');
       runLoader();
@@ -760,21 +275,10 @@ html, body {
 
     function runLoader() {
       var pct   = 0;
-      var steps = [
-        { target: 30,  speed: 20 },
-        { target: 65,  speed: 32 },
-        { target: 88,  speed: 17 },
-        { target: 100, speed: 25 },
-      ];
-      var si = 0;
-
+      var steps = [{target:30,speed:20},{target:65,speed:32},{target:88,speed:17},{target:100,speed:25}];
+      var si    = 0;
       function tick() {
-        if (pct >= 100) {
-          barFill.style.width = '100%';
-          barPct.textContent  = '100%';
-          setTimeout(showApp, 320);
-          return;
-        }
+        if (pct >= 100) { barFill.style.width = '100%'; barPct.textContent = '100%'; setTimeout(showApp, 320); return; }
         if (pct >= steps[si].target && si < steps.length - 1) si++;
         pct = Math.min(pct + (Math.random() * .8 + .35), 100);
         barFill.style.width = pct + '%';
@@ -793,85 +297,63 @@ html, body {
     }
   }
 
-  /* ══════════════════════════════════════════
-     القائمة الرئيسية
-     ══════════════════════════════════════════ */
   function buildHomeMenu() {
     var menu = document.getElementById('glg-home');
-
-    var avatarHTML =
-      '<div class="glg-home-av-ring">'
-      + '<div class="glg-home-av">'
-      +   '<img src="' + AVATAR_URL + '" alt="جلجامشة تشان"'
-      +     ' onerror="this.parentElement.innerHTML=\'<div class=glg-home-av-ph>🌸</div>\'">'
-      + '</div>'
-      + '</div>';
-
-    var cardsHTML = MENU_ITEMS.map(function (item) {
-      return '<div class="glg-menu-card"'
-        + ' data-id="'     + item.id     + '"'
-        + ' data-file="'   + item.file   + '"'
-        + ' data-global="' + item.global + '"'
-        + ' data-label="'  + item.label  + ' ' + item.icon + '">'
+    var cardsHTML = MENU_ITEMS.map(function(item) {
+      return '<div class="glg-menu-card" data-id="' + item.id + '" data-file="' + item.file + '" data-global="' + item.global + '" data-label="' + item.label + ' ' + item.icon + '">'
         + '<div class="glg-card-shine"></div>'
-        + '<span class="glg-card-icon">'  + item.icon  + '</span>'
+        + '<span class="glg-card-icon">' + item.icon + '</span>'
         + '<span class="glg-card-label">' + item.label + '</span>'
         + '</div>';
     }).join('');
 
     menu.innerHTML =
-        '<div class="glg-home-profile">'
-      +   avatarHTML
-      +   '<h1 class="glg-home-name">🌸 جلجامشة تشان 🌸</h1>'
-      +   '<p class="glg-home-sub">اختاري القسم الذي تريدينه</p>'
+      '<div class="glg-home-profile">'
+      + '<div class="glg-home-av-ring"><div class="glg-home-av"><img src="' + AVATAR_URL + '" alt="جلجامشة تشان" onerror="this.parentElement.innerHTML=\'<div class=glg-home-av-ph>🌸</div>\'"></div></div>'
+      + '<h1 class="glg-home-name">🌸 جلجامشة تشان 🌸</h1>'
+      + '<p class="glg-home-sub">اختاري القسم الذي تريدينه</p>'
       + '</div>'
       + '<div class="glg-menu-grid">' + cardsHTML + '</div>';
 
-    menu.querySelectorAll('.glg-menu-card').forEach(function (card) {
-      card.addEventListener('click', function () {
+    menu.querySelectorAll('.glg-menu-card').forEach(function(card) {
+      card.addEventListener('click', function() {
         openSection(card.dataset.id, card.dataset.file, card.dataset.global, card.dataset.label, card);
       });
     });
   }
 
-  /* ══════════════════════════════════════════
-     زر الإشعارات
-     ══════════════════════════════════════════ */
   function buildNotifFab() {
-    var fab       = document.getElementById('glg-notif-fab');
-    var badge     = document.getElementById('glg-notif-badge');
-    var drawer    = document.getElementById('glg-notif-drawer');
-    var list      = document.getElementById('glg-notif-list');
-    var clearBtn  = document.getElementById('glg-clear-btn');
-    var notifs    = NOTIFICATIONS.slice();
-    var isOpen    = false;
+    var fab      = document.getElementById('glg-notif-fab');
+    var badge    = document.getElementById('glg-notif-badge');
+    var drawer   = document.getElementById('glg-notif-drawer');
+    var list     = document.getElementById('glg-notif-list');
+    var clearBtn = document.getElementById('glg-clear-btn');
+    var notifs   = NOTIFICATIONS.slice();
+    var isOpen   = false;
 
     function renderBadge() {
-      var total = notifs.reduce(function (s, n) { return s + n.badge; }, 0);
+      var total = notifs.reduce(function(s, n) { return s + n.badge; }, 0);
       if (total > 0) { badge.textContent = total; badge.classList.add('show'); }
       else badge.classList.remove('show');
     }
 
     function renderList() {
-      if (!notifs.length) {
-        list.innerHTML = '<div class="glg-notif-empty">🌸 لا توجد إشعارات</div>';
-        return;
-      }
-      list.innerHTML = notifs.map(function (n, i) {
+      if (!notifs.length) { list.innerHTML = '<div class="glg-notif-empty">🌸 لا توجد إشعارات</div>'; return; }
+      list.innerHTML = notifs.map(function(n, i) {
         return '<div class="glg-notif-item" data-idx="' + i + '" data-section="' + n.section + '">'
           + '<span class="glg-notif-dot ' + n.dot + '"></span>'
           + '<div class="glg-notif-body">'
-          +   '<div class="glg-notif-label">' + n.label + '</div>'
-          +   '<div class="glg-notif-msg">'   + n.msg   + '</div>'
-          +   '<div class="glg-notif-time">🕐 ' + n.time + '</div>'
+          + '<div class="glg-notif-label">' + n.label + '</div>'
+          + '<div class="glg-notif-msg">' + n.msg + '</div>'
+          + '<div class="glg-notif-time">🕐 ' + n.time + '</div>'
           + '</div></div>';
       }).join('');
 
-      list.querySelectorAll('.glg-notif-item').forEach(function (item) {
-        item.addEventListener('click', function () {
+      list.querySelectorAll('.glg-notif-item').forEach(function(item) {
+        item.addEventListener('click', function() {
           var sec = item.dataset.section;
           closeDrawer();
-          var mi = MENU_ITEMS.find(function (m) { return m.id === sec; });
+          var mi = MENU_ITEMS.find(function(m) { return m.id === sec; });
           if (mi) openSection(mi.id, mi.file, mi.global, mi.label + ' ' + mi.icon);
         });
       });
@@ -880,47 +362,36 @@ html, body {
     function openDrawer()  { isOpen = true;  renderList(); drawer.classList.add('open'); }
     function closeDrawer() { isOpen = false; drawer.classList.remove('open'); }
 
-    fab.addEventListener('click', function (e) {
-      e.stopPropagation();
-      isOpen ? closeDrawer() : openDrawer();
-    });
-    clearBtn.addEventListener('click', function () {
-      notifs = []; renderBadge(); renderList();
-    });
-    document.addEventListener('click', function (e) {
-      if (isOpen && !drawer.contains(e.target) && e.target !== fab) closeDrawer();
-    });
+    fab.addEventListener('click', function(e) { e.stopPropagation(); isOpen ? closeDrawer() : openDrawer(); });
+    clearBtn.addEventListener('click', function() { notifs = []; renderBadge(); renderList(); });
+    document.addEventListener('click', function(e) { if (isOpen && !drawer.contains(e.target) && e.target !== fab) closeDrawer(); });
     renderBadge();
   }
 
-  /* ══════════════════════════════════════════
-     فتح الأقسام
-     ══════════════════════════════════════════ */
   function pulseCard(card) {
     if (!card) return;
     card.style.transition = 'transform .12s ease';
     card.style.transform  = 'scale(1.06)';
-    setTimeout(function () { card.style.transform = ''; }, 170);
+    setTimeout(function() { card.style.transform = ''; }, 170);
   }
 
   function openSection(id, file, globalName, label, cardEl) {
     if (checkedFiles.get(file) === false) { pulseCard(cardEl); return; }
     if (checkedFiles.get(file) === true)  { _doOpen(id, file, globalName, label, cardEl); return; }
-
     fetch(file, { method: 'HEAD' })
-      .then(function (res) {
-        if (res.ok) { checkedFiles.set(file, true);  _doOpen(id, file, globalName, label, cardEl); }
+      .then(function(res) {
+        if (res.ok) { checkedFiles.set(file, true); _doOpen(id, file, globalName, label, cardEl); }
         else        { checkedFiles.set(file, false); pulseCard(cardEl); }
       })
-      .catch(function () { checkedFiles.set(file, false); pulseCard(cardEl); });
+      .catch(function() { checkedFiles.set(file, false); pulseCard(cardEl); });
   }
 
   function _doOpen(id, file, globalName, label, cardEl) {
-    var home    = document.getElementById('glg-home');
-    var secPage = document.getElementById('glg-section-page');
-    var secTitle= document.getElementById('glg-sec-title');
-    var secCont = document.getElementById('glg-section-content');
-    var fab     = document.getElementById('glg-notif-fab');
+    var home     = document.getElementById('glg-home');
+    var secPage  = document.getElementById('glg-section-page');
+    var secTitle = document.getElementById('glg-sec-title');
+    var secCont  = document.getElementById('glg-section-content');
+    var fab      = document.getElementById('glg-notif-fab');
 
     home.classList.add('hide-out');
     fab.style.display    = 'none';
@@ -928,14 +399,14 @@ html, body {
     secCont.innerHTML    = '';
     secPage.setAttribute('aria-hidden', 'false');
 
-    requestAnimationFrame(function () {
-      requestAnimationFrame(function () { secPage.classList.add('slide-in'); });
+    requestAnimationFrame(function() {
+      requestAnimationFrame(function() { secPage.classList.add('slide-in'); });
     });
 
     if (!loadedScripts.has(file)) {
       var s = document.createElement('script');
       s.src = file;
-      s.onload = function () { loadedScripts.add(file); };
+      s.onload = function() { loadedScripts.add(file); };
       document.body.appendChild(s);
     }
   }
@@ -944,18 +415,11 @@ html, body {
     var home    = document.getElementById('glg-home');
     var secPage = document.getElementById('glg-section-page');
     var fab     = document.getElementById('glg-notif-fab');
-
     secPage.classList.remove('slide-in');
     secPage.setAttribute('aria-hidden', 'true');
-    setTimeout(function () {
-      home.classList.remove('hide-out');
-      fab.style.display = '';
-    }, 50);
+    setTimeout(function() { home.classList.remove('hide-out'); fab.style.display = ''; }, 50);
   }
 
-  /* ══════════════════════════════════════════
-     التشغيل
-     ══════════════════════════════════════════ */
   injectStyles();
   buildDOM();
   initStars();
@@ -963,7 +427,7 @@ html, body {
   initSplash();
 
   document.getElementById('glg-back-btn').addEventListener('click', closeSection);
-  window.addEventListener('popstate', function () {
+  window.addEventListener('popstate', function() {
     var sp = document.getElementById('glg-section-page');
     if (sp.classList.contains('slide-in')) closeSection();
   });
