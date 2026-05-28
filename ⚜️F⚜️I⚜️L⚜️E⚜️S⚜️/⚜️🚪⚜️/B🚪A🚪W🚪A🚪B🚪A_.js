@@ -814,7 +814,7 @@ addPressEffect(document.getElementById('tm-btn-shadow'), function(){
   TM.hide();
   window._fadDirectOpen = true;
   showNavLoader(function(){
-    window.location.href = '👣F👣D👣H👣/👣F👣D👣H👣.html';
+    window.location.href = '👣F👣D👣H👣/F🔥D🔥H.html';
   });
 });
 
