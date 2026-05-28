@@ -235,28 +235,40 @@ function openJs(m) {
   var base   = window.location.href.replace(/[^\/]*$/, '');
   var absJs  = jsPath.match(/^https?:\/\//) ? jsPath : base + jsPath;
 
-  var html =
-    '<!DOCTYPE html><html lang="ar" dir="rtl"><head>'
-    + '<meta charset="UTF-8"/>'
-    + '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
-    + '<style>*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;min-height:100vh;}</style>'
-    + '</head><body>'
-    + '<script src="' + absJs + '"><\/script>'
-    + '</body></html>';
-
-  var blob = new Blob([html], { type: 'text/html' });
-  var url  = URL.createObjectURL(blob);
-
   var overlay = document.getElementById('iframe-overlay');
   var frame   = document.getElementById('iframe-frame');
   var loader  = document.getElementById('iframe-loader');
   var nameEl  = document.getElementById('iframe-member-name');
 
-  nameEl.textContent       = m.name;
-  loader.style.display     = 'flex';
-  frame._blobUrl           = url;
-  frame.src                = url;
+  nameEl.textContent   = m.name;
+  loader.style.display = 'flex';
   overlay.classList.add('active');
+
+  fetch(absJs)
+    .then(function(res) {
+      if (!res.ok) throw new Error('fetch failed');
+      return res.text();
+    })
+    .then(function(jsCode) {
+      var html =
+        '<!DOCTYPE html><html lang="ar" dir="rtl"><head>'
+        + '<meta charset="UTF-8"/>'
+        + '<meta name="viewport" content="width=device-width,initial-scale=1.0"/>'
+        + '<style>*{box-sizing:border-box;margin:0;padding:0}html,body{width:100%;min-height:100vh;}</style>'
+        + '</head><body>'
+        + '<script>' + jsCode + '<\/script>'
+        + '</body></html>';
+
+      var blob = new Blob([html], { type: 'text/html' });
+      var url  = URL.createObjectURL(blob);
+      frame._blobUrl = url;
+      frame.src      = url;
+    })
+    .catch(function() {
+      loader.style.display = 'none';
+      overlay.classList.remove('active');
+      alert('تعذّر تحميل الملف:\n' + absJs);
+    });
 }
 
 function closeIframe() {
