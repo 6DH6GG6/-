@@ -302,8 +302,8 @@
     const cardEl = document.getElementById('card-' + idx);
 
     if (c.html && c.html.trim() !== '') {
-      // فتح النافذة المنبثقة مباشرة
-      openPopup(c.html, c.username);
+      // انتقال مباشر للصفحة
+      window.location.href = c.html;
     } else {
       // تحديد / إلغاء تحديد
       if (selectedCard === idx) {
