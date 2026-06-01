@@ -170,7 +170,7 @@ html,body{width:100%;min-height:100vh;background:var(--void);overflow-x:hidden;f
 
 <script>
 var MEMBERS = [
-  { id:'01', name:'جلجامشة الوردية',  img:'https://i.imgur.com/sDYtHw5.jpg',  js:'👣F👣D👣H👣/GLGMSHA/GLGMSHA.html' },
+  { id:'01', name:'جلجامشة الوردية',  img:'https://i.imgur.com/sDYtHw5.jpg',  js:'GLGMSHA.html' },
   { id:'02', name:'سيد الظلام',        img:'https://i.imgur.com/8Km9tLL.jpg',  js:'member02.js' },
   { id:'03', name:'الأمير الأسود',     img:'',                                  js:'member03.js' },
   { id:'04', name:'حارس العرش',        img:'',                                  js:'member04.js' },
@@ -225,7 +225,7 @@ MEMBERS.forEach(function(m, i) {
     + '</div>';
 
   el.addEventListener('click', function() {
-    try { window._bgSnd = new Audio('https://6dh6gg6.github.io/-/👣F👣D👣H👣/T🎶H🎶R.ogg'); window._bgSnd.volume = .75; window._bgSnd.loop = true; window._bgSnd.play().catch(function(){}); } catch(e){}
+    try { window._bgSnd = new Audio('https://6dh6gg6.github.io/-/THR.ogg'); window._bgSnd.volume = .75; window._bgSnd.loop = true; window._bgSnd.play().catch(function(){}); } catch(e){}
     openMember(m);
   });
   grid.insertBefore(el, noRes);
@@ -233,9 +233,6 @@ MEMBERS.forEach(function(m, i) {
 
 var allCards = document.querySelectorAll('.card');
 
-// =====================================================
-// الدالة الرئيسية - تدعم HTML و JS وأي مسار
-// =====================================================
 function openMember(m) {
   var path = m.js;
   var base = window.location.href.replace(/[^\/]*$/, '');
@@ -250,14 +247,12 @@ function openMember(m) {
   loader.style.display = 'flex';
   overlay.classList.add('active');
 
-  // إذا كان المسار HTML → افتحه مباشرة في iframe بدون fetch
   if (path.match(/\.html?(\?.*)?$/i)) {
     frame._blobUrl = null;
     frame.src = absPath;
     return;
   }
 
-  // إذا كان JS → fetch ثم شغّله داخل iframe
   fetch(absPath)
     .then(function(res) {
       if (!res.ok) throw new Error('fetch failed ' + res.status);
@@ -278,7 +273,6 @@ function openMember(m) {
       frame.src      = url;
     })
     .catch(function() {
-      // فشل الـ fetch → افتح المسار مباشرة في الـ iframe بدون أي رسالة خطأ
       loader.style.display = 'none';
       frame._blobUrl = null;
       frame.src = absPath;
