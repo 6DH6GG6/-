@@ -45,316 +45,190 @@
     position: relative;
     overflow: hidden;
   }
-
   .header::before {
     content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 2px;
+    position: absolute; top: 0; left: 0; right: 0; height: 2px;
     background: linear-gradient(90deg, transparent, var(--gold), var(--crimson-glow), var(--gold), transparent);
   }
-
   .header::after {
     content: '';
-    position: absolute;
-    bottom: 0; left: 50%; transform: translateX(-50%);
+    position: absolute; bottom: 0; left: 50%; transform: translateX(-50%);
     width: 60%; height: 1px;
     background: linear-gradient(90deg, transparent, rgba(201,168,76,0.4), transparent);
   }
 
-  /* ─── AVATAR ─── */
-  .avatar-wrap {
-    position: relative;
-    display: inline-block;
-    margin-bottom: 24px;
-  }
-
+  .avatar-wrap { position: relative; display: inline-block; margin-bottom: 24px; }
   .avatar-ring {
-    width: 120px;
-    height: 120px;
-    border-radius: 50%;
-    padding: 3px;
+    width: 120px; height: 120px; border-radius: 50%; padding: 3px;
     background: linear-gradient(135deg, var(--gold), var(--crimson), var(--gold-dark), var(--gold));
-    box-shadow:
-      0 0 30px rgba(201,168,76,0.25),
-      0 0 60px rgba(139,26,26,0.15),
-      inset 0 0 20px rgba(0,0,0,0.5);
+    box-shadow: 0 0 30px rgba(201,168,76,0.25), 0 0 60px rgba(139,26,26,0.15), inset 0 0 20px rgba(0,0,0,0.5);
   }
-
   .avatar-ring img {
-    width: 100%;
-    height: 100%;
-    border-radius: 50%;
-    object-fit: cover;
-    display: block;
-    border: 2px solid var(--shadow-deep);
+    width: 100%; height: 100%; border-radius: 50%; object-fit: cover;
+    display: block; border: 2px solid var(--shadow-deep);
   }
-
   .status-dot {
-    position: absolute;
-    bottom: 6px;
-    left: 6px;
-    width: 14px;
-    height: 14px;
-    background: #2ecc71;
-    border-radius: 50%;
-    border: 2px solid var(--shadow-deep);
-    box-shadow: 0 0 8px rgba(46,204,113,0.6);
+    position: absolute; bottom: 6px; left: 6px;
+    width: 14px; height: 14px; background: #2ecc71; border-radius: 50%;
+    border: 2px solid var(--shadow-deep); box-shadow: 0 0 8px rgba(46,204,113,0.6);
     animation: pulse-dot 2.5s ease-in-out infinite;
   }
-
   @keyframes pulse-dot {
-    0%, 100% { opacity: 1; box-shadow: 0 0 8px rgba(46,204,113,0.6); }
-    50% { opacity: 0.15; box-shadow: 0 0 4px rgba(46,204,113,0.2); }
+    0%,100% { opacity:1; box-shadow:0 0 8px rgba(46,204,113,0.6); }
+    50% { opacity:0.15; box-shadow:0 0 4px rgba(46,204,113,0.2); }
   }
-
-  /* ─── TITLE TEXT ─── */
   .dev-name {
-    font-family: 'Amiri', serif;
-    font-size: 28px;
-    font-weight: 700;
-    color: var(--gold);
-    letter-spacing: 3px;
-    text-shadow: 0 0 20px rgba(201,168,76,0.4);
-    margin-bottom: 10px;
+    font-family: 'Amiri', serif; font-size: 28px; font-weight: 700;
+    color: var(--gold); letter-spacing: 3px;
+    text-shadow: 0 0 20px rgba(201,168,76,0.4); margin-bottom: 10px;
   }
-
-  .dev-name .ornament {
-    color: var(--crimson-glow);
-    font-size: 20px;
-    margin: 0 8px;
-  }
-
-  .tagline {
-    font-size: 14px;
-    color: var(--text-secondary);
-    letter-spacing: 4px;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-    font-weight: 300;
-  }
-
-  .tagline-2 {
-    font-size: 13px;
-    color: var(--text-dim);
-    letter-spacing: 3px;
-    font-weight: 300;
-    font-style: italic;
-  }
-
-  .divider {
-    width: 200px;
-    height: 1px;
-    margin: 20px auto;
-    background: linear-gradient(90deg, transparent, var(--gold-dark), var(--crimson), var(--gold-dark), transparent);
-  }
+  .dev-name .ornament { color: var(--crimson-glow); font-size: 20px; margin: 0 8px; }
+  .tagline { font-size: 14px; color: var(--text-secondary); letter-spacing: 4px; text-transform: uppercase; margin-bottom: 8px; font-weight: 300; }
+  .tagline-2 { font-size: 13px; color: var(--text-dim); letter-spacing: 3px; font-weight: 300; font-style: italic; }
+  .divider { width: 200px; height: 1px; margin: 20px auto; background: linear-gradient(90deg, transparent, var(--gold-dark), var(--crimson), var(--gold-dark), transparent); }
 
   /* ─── GRID ─── */
-  .grid-section {
-    padding: 48px 32px;
-    max-width: 1400px;
-    margin: 0 auto;
-  }
-
+  .grid-section { padding: 48px 32px; max-width: 1400px; margin: 0 auto; }
   .section-label {
-    text-align: center;
-    font-size: 11px;
-    letter-spacing: 6px;
-    color: var(--text-dim);
-    text-transform: uppercase;
-    margin-bottom: 36px;
-    position: relative;
+    text-align: center; font-size: 11px; letter-spacing: 6px;
+    color: var(--text-dim); text-transform: uppercase; margin-bottom: 36px;
   }
+  .section-label::before, .section-label::after { content: '◆'; color: var(--gold-dark); margin: 0 16px; font-size: 8px; }
 
-  .section-label::before,
-  .section-label::after {
-    content: '◆';
-    color: var(--gold-dark);
-    margin: 0 16px;
-    font-size: 8px;
-  }
-
-  .grid {
-    display: grid;
-    grid-template-columns: repeat(5, 1fr);
-    gap: 16px;
-  }
+  .grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; }
 
   .card {
     background: linear-gradient(145deg, var(--shadow-mid), var(--shadow-deep));
     border: 1px solid rgba(201,168,76,0.12);
-    border-radius: 6px;
-    overflow: hidden;
-    cursor: pointer;
-    position: relative;
+    border-radius: 6px; overflow: hidden; cursor: pointer; position: relative;
     transition: border-color 0.25s, box-shadow 0.25s, transform 0.2s;
   }
-
   .card:hover {
     border-color: rgba(201,168,76,0.45);
     box-shadow: 0 8px 32px rgba(0,0,0,0.6), 0 0 20px rgba(201,168,76,0.08);
     transform: translateY(-3px);
   }
-
-  .card::before {
-    content: '';
-    position: absolute;
-    top: 0; left: 0; right: 0;
-    height: 1px;
-    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
-    opacity: 0;
-    transition: opacity 0.25s;
+  /* حالة التحديد — بدون مسار */
+  .card.selected {
+    border-color: rgba(201,168,76,0.7) !important;
+    box-shadow: 0 0 0 2px rgba(201,168,76,0.35), 0 8px 32px rgba(0,0,0,0.6) !important;
+    transform: translateY(-3px);
   }
-
+  .card.selected .card-btn {
+    background: linear-gradient(135deg, rgba(201,168,76,0.25), rgba(139,26,26,0.2));
+    border-color: rgba(201,168,76,0.55);
+  }
+  .card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
+    background: linear-gradient(90deg, transparent, rgba(201,168,76,0.3), transparent);
+    opacity: 0; transition: opacity 0.25s;
+  }
   .card:hover::before { opacity: 1; }
 
-  .card-img {
-    width: 100%;
-    aspect-ratio: 1/1;
-    object-fit: cover;
-    display: block;
-    background: var(--shadow-accent);
-    filter: brightness(0.85) contrast(1.05);
-    transition: filter 0.25s;
-  }
+  .card-img { width: 100%; aspect-ratio: 1/1; object-fit: cover; display: block; background: var(--shadow-accent); filter: brightness(0.85) contrast(1.05); transition: filter 0.25s; }
+  .card:hover .card-img { filter: brightness(1) contrast(1.05); }
+  .card-img-placeholder { width: 100%; aspect-ratio: 1/1; background: linear-gradient(135deg, var(--shadow-accent), var(--shadow-mid)); display: flex; align-items: center; justify-content: center; color: var(--text-dim); font-size: 28px; }
 
-  .card:hover .card-img {
-    filter: brightness(1) contrast(1.05);
-  }
-
-  .card-img-placeholder {
-    width: 100%;
-    aspect-ratio: 1/1;
-    background: linear-gradient(135deg, var(--shadow-accent), var(--shadow-mid));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-dim);
-    font-size: 28px;
-  }
-
-  .card-info {
-    padding: 10px 12px;
-    background: rgba(8,8,16,0.9);
-    border-top: 1px solid rgba(201,168,76,0.08);
-  }
-
-  .card-username {
-    font-size: 13px;
-    font-weight: 600;
-    color: var(--text-primary);
-    margin-bottom: 6px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-  }
-
+  .card-info { padding: 10px 12px; background: rgba(8,8,16,0.9); border-top: 1px solid rgba(201,168,76,0.08); }
+  .card-username { font-size: 13px; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
   .card-btn {
-    width: 100%;
-    padding: 6px 0;
+    width: 100%; padding: 6px 0;
     background: linear-gradient(135deg, rgba(139,105,20,0.2), rgba(139,26,26,0.15));
-    border: 1px solid rgba(201,168,76,0.25);
-    border-radius: 3px;
-    color: var(--gold-light);
-    font-size: 11px;
-    font-family: 'Cairo', sans-serif;
-    letter-spacing: 1px;
-    cursor: pointer;
-    transition: background 0.2s, border-color 0.2s;
+    border: 1px solid rgba(201,168,76,0.25); border-radius: 3px;
+    color: var(--gold-light); font-size: 11px; font-family: 'Cairo', sans-serif;
+    letter-spacing: 1px; cursor: pointer; transition: background 0.2s, border-color 0.2s;
   }
+  .card-btn:hover { background: linear-gradient(135deg, rgba(201,168,76,0.3), rgba(192,57,43,0.2)); border-color: rgba(201,168,76,0.5); }
 
-  .card-btn:hover {
-    background: linear-gradient(135deg, rgba(201,168,76,0.3), rgba(192,57,43,0.2));
-    border-color: rgba(201,168,76,0.5);
-  }
-
-  /* ─── DROPDOWN MENU ─── */
+  /* ─── DROPDOWN ─── */
   .dropdown {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    z-index: 999;
+    position: absolute; top: 100%; right: 0; z-index: 999;
     min-width: 220px;
     background: linear-gradient(160deg, #0e0e18, #080810);
-    border: 1px solid rgba(201,168,76,0.3);
-    border-radius: 4px;
+    border: 1px solid rgba(201,168,76,0.3); border-radius: 4px;
     box-shadow: 0 16px 48px rgba(0,0,0,0.8), 0 0 20px rgba(201,168,76,0.06);
-    overflow: hidden;
-    display: none;
+    overflow: hidden; display: none;
   }
-
   .dropdown.open { display: block; }
-
-  .dropdown-header {
-    padding: 10px 14px;
-    font-size: 10px;
-    letter-spacing: 3px;
-    color: var(--gold-dark);
-    text-transform: uppercase;
-    border-bottom: 1px solid rgba(201,168,76,0.1);
-    background: rgba(201,168,76,0.04);
-  }
-
+  .dropdown-header { padding: 10px 14px; font-size: 10px; letter-spacing: 3px; color: var(--gold-dark); text-transform: uppercase; border-bottom: 1px solid rgba(201,168,76,0.1); background: rgba(201,168,76,0.04); }
   .dropdown-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 11px 14px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    border-bottom: 1px solid rgba(201,168,76,0.05);
-    transition: background 0.15s, color 0.15s;
-    font-family: 'Cairo', sans-serif;
-    text-decoration: none;
+    display: flex; align-items: center; gap: 10px; padding: 11px 14px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+    border-bottom: 1px solid rgba(201,168,76,0.05); transition: background 0.15s, color 0.15s;
+    font-family: 'Cairo', sans-serif; text-decoration: none;
   }
-
-  .dropdown-item:hover {
-    background: rgba(201,168,76,0.08);
-    color: var(--gold-light);
-  }
-
-  .dropdown-item .icon {
-    width: 18px;
-    font-size: 14px;
-    text-align: center;
-    color: var(--gold-dark);
-  }
-
+  .dropdown-item:hover { background: rgba(201,168,76,0.08); color: var(--gold-light); }
+  .dropdown-item .icon { width: 18px; font-size: 14px; text-align: center; color: var(--gold-dark); }
   .dropdown-item:hover .icon { color: var(--gold); }
 
-  /* ─── FOOTER ─── */
-  .footer {
-    text-align: center;
-    padding: 24px;
-    border-top: 1px solid rgba(201,168,76,0.08);
-    color: var(--text-dim);
-    font-size: 11px;
-    letter-spacing: 3px;
+  /* ─── IFRAME POPUP ─── */
+  .popup-overlay {
+    position: fixed; inset: 0; z-index: 2000;
+    background: rgba(0,0,0,0.85);
+    display: none; align-items: center; justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .popup-overlay.open { display: flex; }
+
+  .popup-box {
+    position: relative;
+    width: min(92vw, 1100px);
+    height: min(88vh, 800px);
+    background: var(--shadow-mid);
+    border: 1px solid rgba(201,168,76,0.35);
+    border-radius: 8px;
+    box-shadow: 0 0 0 1px rgba(201,168,76,0.1), 0 32px 80px rgba(0,0,0,0.9);
+    display: flex; flex-direction: column; overflow: hidden;
   }
 
-  /* ─── OVERLAY ─── */
-  .overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 500;
-    display: none;
+  .popup-bar {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 16px;
+    background: linear-gradient(90deg, #080810, #0e0e18);
+    border-bottom: 1px solid rgba(201,168,76,0.15);
+    flex-shrink: 0;
   }
+  .popup-title { font-size: 12px; letter-spacing: 2px; color: var(--gold-dark); font-family: 'Cairo', sans-serif; }
+  .popup-path { font-size: 11px; color: var(--text-dim); direction: ltr; font-family: monospace; }
+  .popup-close {
+    width: 28px; height: 28px; border-radius: 50%;
+    background: rgba(139,26,26,0.3); border: 1px solid rgba(192,57,43,0.4);
+    color: #e8d08a; font-size: 14px; cursor: pointer; display: flex;
+    align-items: center; justify-content: center; transition: background 0.2s;
+    flex-shrink: 0;
+  }
+  .popup-close:hover { background: rgba(192,57,43,0.5); }
+
+  .popup-iframe {
+    flex: 1; border: none; width: 100%; background: #fff;
+  }
+
+  /* ─── FOOTER ─── */
+  .footer { text-align: center; padding: 24px; border-top: 1px solid rgba(201,168,76,0.08); color: var(--text-dim); font-size: 11px; letter-spacing: 3px; }
+
+  .overlay { position: fixed; inset: 0; z-index: 500; display: none; }
   .overlay.open { display: block; }
 
-  @media (max-width: 900px) {
-    .grid { grid-template-columns: repeat(3, 1fr); }
-  }
-  @media (max-width: 560px) {
-    .grid { grid-template-columns: repeat(2, 1fr); }
-    .header { padding: 32px 20px; }
-  }
+  @media (max-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } .header { padding: 32px 20px; } }
 </style>
 </head>
 <body>
 
-<!-- OVERLAY to close dropdowns -->
+<!-- overlay for dropdowns -->
 <div class="overlay" id="overlay" onclick="closeAll()"></div>
+
+<!-- IFRAME POPUP -->
+<div class="popup-overlay" id="popupOverlay" onclick="closePopup(event)">
+  <div class="popup-box" id="popupBox">
+    <div class="popup-bar">
+      <span class="popup-title">◆ &nbsp; عرض الصفحة</span>
+      <span class="popup-path" id="popupPath"></span>
+      <button class="popup-close" onclick="closePopup(null)">✕</button>
+    </div>
+    <iframe class="popup-iframe" id="popupIframe" src="about:blank" allowfullscreen></iframe>
+  </div>
+</div>
 
 <!-- HEADER -->
 <header class="header">
@@ -376,29 +250,25 @@
   <div class="grid" id="mainGrid"></div>
 </section>
 
-<!-- FOOTER -->
-<footer class="footer">
-  ◆ &nbsp; امبراطور الظلال &nbsp; ◆
-</footer>
+<footer class="footer">◆ &nbsp; امبراطور الظلال &nbsp; ◆</footer>
 
 <script>
-  // ── بيانات البطاقات ──
   const cards = [
-    { username: "عقرب الظلام",    img: "https://i.pravatar.cc/200?img=1",  js: "👣F👣D👣H👣/GLGMSHA/GLGMSHA.html" },
-    { username: "صياد الأرواح",   img: "https://i.pravatar.cc/200?img=2",  js: "scripts/sayyad.js" },
-    { username: "سيف الليل",      img: "https://i.pravatar.cc/200?img=3",  js: "scripts/saif.js" },
-    { username: "نمر السواد",     img: "https://i.pravatar.cc/200?img=4",  js: "scripts/namir.js" },
-    { username: "ذئب الأعماق",    img: "https://i.pravatar.cc/200?img=5",  js: "scripts/dhi2b.js" },
-    { username: "رماد الأبطال",   img: "https://i.pravatar.cc/200?img=6",  js: "scripts/ramad.js" },
-    { username: "قاتل الفجر",     img: "https://i.pravatar.cc/200?img=7",  js: "scripts/qatel.js" },
-    { username: "جمر الأحقاد",    img: "https://i.pravatar.cc/200?img=8",  js: "scripts/jamr.js" },
-    { username: "حارس الأسرار",   img: "https://i.pravatar.cc/200?img=9",  js: "scripts/hares.js" },
-    { username: "شبح المنتقم",    img: "https://i.pravatar.cc/200?img=10", js: "scripts/shabah.js" },
-    { username: "بركان الغضب",    img: "https://i.pravatar.cc/200?img=11", js: "scripts/burkaan.js" },
-    { username: "عاصفة الدمار",   img: "https://i.pravatar.cc/200?img=12", js: "scripts/asefa.js" },
-    { username: "طيف الدماء",     img: "https://i.pravatar.cc/200?img=13", js: "scripts/tayf.js" },
-    { username: "إبليس الصحراء",  img: "https://i.pravatar.cc/200?img=14", js: "scripts/iblees.js" },
-    { username: "ملك الخراب",     img: "https://i.pravatar.cc/200?img=15", js: "scripts/malik.js" },
+    { username: "عقرب الظلام",   img: "https://i.pravatar.cc/200?img=1",  js: "scripts/akrab.js",   html: "👣F👣D👣H👣/GLGMSHA/GLGMSHA.html" },
+    { username: "صياد الأرواح",  img: "https://i.pravatar.cc/200?img=2",  js: "scripts/sayyad.js",  html: "" },
+    { username: "سيف الليل",     img: "https://i.pravatar.cc/200?img=3",  js: "scripts/saif.js",    html: "pages/saif.html" },
+    { username: "نمر السواد",    img: "https://i.pravatar.cc/200?img=4",  js: "scripts/namir.js",   html: "" },
+    { username: "ذئب الأعماق",   img: "https://i.pravatar.cc/200?img=5",  js: "scripts/dhi2b.js",   html: "pages/dhi2b.html" },
+    { username: "رماد الأبطال",  img: "https://i.pravatar.cc/200?img=6",  js: "scripts/ramad.js",   html: "" },
+    { username: "قاتل الفجر",    img: "https://i.pravatar.cc/200?img=7",  js: "scripts/qatel.js",   html: "pages/qatel.html" },
+    { username: "جمر الأحقاد",   img: "https://i.pravatar.cc/200?img=8",  js: "scripts/jamr.js",    html: "" },
+    { username: "حارس الأسرار",  img: "https://i.pravatar.cc/200?img=9",  js: "scripts/hares.js",   html: "pages/hares.html" },
+    { username: "شبح المنتقم",   img: "https://i.pravatar.cc/200?img=10", js: "scripts/shabah.js",  html: "" },
+    { username: "بركان الغضب",   img: "https://i.pravatar.cc/200?img=11", js: "scripts/burkaan.js", html: "pages/burkaan.html" },
+    { username: "عاصفة الدمار",  img: "https://i.pravatar.cc/200?img=12", js: "scripts/asefa.js",   html: "" },
+    { username: "طيف الدماء",    img: "https://i.pravatar.cc/200?img=13", js: "scripts/tayf.js",    html: "pages/tayf.html" },
+    { username: "إبليس الصحراء", img: "https://i.pravatar.cc/200?img=14", js: "scripts/iblees.js",  html: "" },
+    { username: "ملك الخراب",    img: "https://i.pravatar.cc/200?img=15", js: "scripts/malik.js",   html: "pages/malik.html" },
   ];
 
   const menuItems = [
@@ -409,12 +279,11 @@
     { icon: "⚙️", label: "الإعدادات",       action: "settings" },
   ];
 
-  let activeDropdown = null;
+  let selectedCard = null;
 
   function closeAll() {
     document.querySelectorAll('.dropdown.open').forEach(d => d.classList.remove('open'));
     document.getElementById('overlay').classList.remove('open');
-    activeDropdown = null;
   }
 
   function toggleDropdown(id) {
@@ -424,55 +293,82 @@
     if (!wasOpen) {
       d.classList.add('open');
       document.getElementById('overlay').classList.add('open');
-      activeDropdown = id;
     }
   }
 
+  /* ─── النقر على البطاقة نفسها ─── */
+  function handleCardClick(idx) {
+    const c = cards[idx];
+    const cardEl = document.getElementById('card-' + idx);
+
+    if (c.html && c.html.trim() !== '') {
+      // فتح النافذة المنبثقة مباشرة
+      openPopup(c.html, c.username);
+    } else {
+      // تحديد / إلغاء تحديد
+      if (selectedCard === idx) {
+        cardEl.classList.remove('selected');
+        selectedCard = null;
+      } else {
+        if (selectedCard !== null) {
+          document.getElementById('card-' + selectedCard)?.classList.remove('selected');
+        }
+        cardEl.classList.add('selected');
+        selectedCard = idx;
+      }
+    }
+  }
+
+  /* ─── النافذة المنبثقة ─── */
+  function openPopup(path, name) {
+    document.getElementById('popupIframe').src = path;
+    document.getElementById('popupPath').textContent = path;
+    document.getElementById('popupOverlay').classList.add('open');
+  }
+
+  function closePopup(e) {
+    if (e && e.target !== document.getElementById('popupOverlay')) return;
+    document.getElementById('popupOverlay').classList.remove('open');
+    document.getElementById('popupIframe').src = 'about:blank';
+  }
+
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closePopup(null); });
+
   function handleAction(action, js, username) {
     closeAll();
-    const msgs = {
-      run:      `▶ تشغيل: ${js}`,
-      copy:     `✔ تم نسخ المسار: ${js}`,
-      preview:  `🔍 معاينة كود: ${username}`,
-      download: `⬇ تحميل: ${js}`,
-      settings: `⚙ إعدادات: ${username}`,
-    };
-    // Toast notification
+    const msgs = { run:`▶ تشغيل: ${js}`, copy:`✔ تم نسخ المسار: ${js}`, preview:`🔍 معاينة: ${username}`, download:`⬇ تحميل: ${js}`, settings:`⚙ إعدادات: ${username}` };
     const toast = document.createElement('div');
-    toast.style.cssText = `
-      position:fixed; bottom:28px; left:50%; transform:translateX(-50%);
-      background:linear-gradient(135deg,#0e0e18,#1a1a2a);
-      border:1px solid rgba(201,168,76,0.4); border-radius:4px;
-      padding:12px 24px; color:#e8d08a; font-size:13px; font-family:'Cairo',sans-serif;
-      letter-spacing:1px; z-index:9999; box-shadow:0 8px 32px rgba(0,0,0,0.7);
-    `;
+    toast.style.cssText = `position:fixed;bottom:28px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,#0e0e18,#1a1a2a);border:1px solid rgba(201,168,76,0.4);border-radius:4px;padding:12px 24px;color:#e8d08a;font-size:13px;font-family:'Cairo',sans-serif;letter-spacing:1px;z-index:9999;box-shadow:0 8px 32px rgba(0,0,0,0.7);`;
     toast.textContent = msgs[action] || action;
     document.body.appendChild(toast);
     setTimeout(() => toast.remove(), 2500);
   }
 
-  // Build grid
+  /* ─── بناء الشبكة ─── */
   const grid = document.getElementById('mainGrid');
   cards.forEach((c, i) => {
     const div = document.createElement('div');
     div.className = 'card';
+    div.id = 'card-' + i;
     div.style.position = 'relative';
+    div.onclick = () => handleCardClick(i);
+
+    // مؤشر صغير إذا كان فيه مسار html
+    const htmlBadge = c.html ? `<span style="position:absolute;top:6px;right:6px;z-index:2;background:rgba(201,168,76,0.18);border:1px solid rgba(201,168,76,0.35);border-radius:3px;font-size:9px;padding:2px 6px;color:var(--gold-light);letter-spacing:1px;pointer-events:none;">HTML</span>` : '';
+
     div.innerHTML = `
+      ${htmlBadge}
       <img class="card-img" src="${c.img}" alt="${c.username}"
-           onerror="this.style.display='none'; this.nextElementSibling.style.display='flex'">
+           onerror="this.style.display='none';this.nextElementSibling.style.display='flex'">
       <div class="card-img-placeholder" style="display:none">⚔</div>
       <div class="card-info">
         <div class="card-username">${c.username}</div>
-        <button class="card-btn" onclick="event.stopPropagation(); toggleDropdown(${i})">
-          ◆ فتح القائمة
+        <button class="card-btn" onclick="event.stopPropagation();toggleDropdown(${i})">
+          ◆ فتح القائمة .js
         </button>
         <div class="dropdown" id="drop-${i}">
           <div class="dropdown-header">${c.js}</div>
-          ${menuItems.map(m => `
-            <div class="dropdown-item" onclick="handleAction('${m.action}','${c.js}','${c.username}')">
-              <span class="icon">${m.icon}</span>${m.label}
-            </div>
-          `).join('')}
+          ${menuItems.map(m=>`<div class="dropdown-item" onclick="handleAction('${m.action}','${c.js}','${c.username}')"><span class="icon">${m.icon}</span>${m.label}</div>`).join('')}
         </div>
       </div>
     `;
