@@ -1,7 +1,7 @@
 IMG_REGISTER({
   cmd: 'اجلبلي',
   type: 'chat+image',
-  path: '/storage/emulated/0/Pictures/100PINT/Pins/65d4bdd976aac54f5c3a1ccbb228a080.jpg',
+  path: 'IMG/🌆/275138944101e217c95949a771568e21.jpg',
   messages: [
     '🖤 ها هي...',
     '⚡ جلبتها من أعماق الظلام',
