@@ -386,7 +386,7 @@
         <div class="vertex-node node-cinema"  data-script="cinema.js"  data-index="1">
           <div class="hex-card"><span class="node-icon">🦊</span><span class="node-label">عالم الانمي</span></div>
         </div>
-        <div class="vertex-node node-hacker"  data-script="hacker.js"  data-index="2">
+        <div class="vertex-node node-hacker"  data-script="⚜️F⚜️I⚜️L⚜️E⚜️S⚜️/BT/bot.js"  data-index="2">
           <div class="hex-card"><span class="node-icon">👁️‍🗨️</span><span class="node-label">نظام الاختراق</span></div>
         </div>
         <div class="vertex-node node-slime"   data-script="slime.js"   data-index="3">
