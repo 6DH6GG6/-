@@ -322,40 +322,11 @@ window.ADMIN={
   },
 
   sendFile:function(item,addMsg){sendItem(item,addMsg);},
-
-  // ── IMG: تسجيل مدخل من ملفات IMG/ ──────────────────────
-  // يُستدعى من window.IMG_REGISTER عبر img.js
-  _registerEntry:function(key, entry){
-    if(!key || !entry) return;
-    catalog[key] = entry;
-    // أضف للأوامر إن كانت مبنية
-    if(allCommands.length){
-      // تحقق عدم التكرار
-      var exists = allCommands.some(function(c){return c.cmd===key;});
-      if(!exists){
-        allCommands.push({cmd:key, label:entry.label||key, item:entry});
-      }
-    }
-  },
 };
 
 function sendItem(item,addMsg){
   if(!item)return;
   var type=item.type||getType(item.name||item.path||'');
-
-  if(type==='chat+image'){
-    var msgs=Array.isArray(item.messages)?item.messages:[];
-    msgs.forEach(function(m,i){
-      setTimeout(function(){addMsg('bot',m,'text');},i*180);
-    });
-    if(item.path){
-      setTimeout(function(){
-        var el=buildRenderer({type:'image',path:item.path,name:item.path});
-        addMsg('bot',el,'dom');
-      },msgs.length*180);
-    }
-    return;
-  }
 
   if(type==='mini-gate'||item.gateSecret){
     addMsg('bot',null,'mini-gate');
@@ -385,14 +356,8 @@ function sendItem(item,addMsg){
 
 loadCatalog(function(){
   buildCommands();
+  // سجّل أوامر المطور في slaym.js بعد تحميل الكتالوج
   registerSlamCommands();
-  // فرّغ طابور IMG_REGISTER إن كانت ملفات IMG/ حُمِّلت قبل admin.js
-  if(window._IMG_QUEUE && window._IMG_QUEUE.length){
-    window._IMG_QUEUE.forEach(function(q){
-      window.ADMIN._registerEntry(q.key, q.entry);
-    });
-    window._IMG_QUEUE=[];
-  }
 });
 
 })();
