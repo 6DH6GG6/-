@@ -20,7 +20,7 @@ BOT_REGISTER({
     },
     {
       type: 'image',
-      path: 'FILES/🌆/032c017c80ddd679743fddb46fddf2f2.jpg'
+      src: 'https://example.com/FILES/🌆/032c017c80ddd679743fddb46fddf2f2.jpg'
     }
   ]
 });
