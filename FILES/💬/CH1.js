@@ -20,7 +20,7 @@ BOT_REGISTER({
     },
     {
       type: 'image',
-      path: 'IMG/hamas.jpg'
+      path: 'FILES/🌆/032c017c80ddd679743fddb46fddf2f2.jpg'
     }
   ]
 });
