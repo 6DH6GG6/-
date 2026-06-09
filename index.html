@@ -19,6 +19,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   transition:opacity .9s ease;
 }
 #screen1.fade-out{opacity:0;pointer-events:none}
+
 #screen1::before{
   content:'';position:absolute;
   top:5%;left:50%;transform:translateX(-50%);
@@ -26,19 +27,23 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   background:radial-gradient(circle at 38% 38%,#fff8e7,#f0d080 40%,#c9a84c 70%,#6b3a00 100%);
   box-shadow:0 0 60px 20px rgba(201,168,76,.3),0 0 110px 40px rgba(201,168,76,.1);
 }
+
 .s1-fog{
   position:absolute;height:90px;left:-10%;width:120%;border-radius:50%;
   background:radial-gradient(ellipse at 50% 80%,rgba(180,160,220,.1),transparent 70%);
   animation:fogDrift var(--fd,18s) linear infinite;pointer-events:none;
 }
 @keyframes fogDrift{0%,100%{transform:translateX(0);opacity:.6}50%{transform:translateX(4%);opacity:.85}}
+
 .s1-candle{
   position:absolute;border-radius:50%;
   background:radial-gradient(circle,rgba(255,180,60,.5),transparent 70%);
   animation:candleFlicker var(--cf,2s) ease-in-out infinite alternate;pointer-events:none;
 }
 @keyframes candleFlicker{0%{opacity:.5;transform:scale(1)}100%{opacity:.75;transform:scale(1.1)}}
+
 #s1-sakura{position:absolute;inset:0;z-index:2;pointer-events:none}
+
 #s1-castle{
   position:absolute;bottom:0;left:50%;transform:translateX(-50%);
   width:min(900px,100vw);z-index:1;opacity:.65;
@@ -53,6 +58,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   margin-bottom:clamp(10px,2vw,22px);
 }
 .gate-ring-wrap:hover{transform:scale(1.07)}
+
 .ring-outer{
   position:absolute;inset:0;border-radius:50%;
   border:2px solid transparent;border-top-color:var(--gold);border-right-color:var(--gold2);
@@ -72,6 +78,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 @keyframes spinCW{to{transform:rotate(360deg)}}
 @keyframes spinCCW{to{transform:rotate(-360deg)}}
 @keyframes ringPulse{0%,100%{transform:scale(1);opacity:.4}50%{transform:scale(1.07);opacity:.8}}
+
 .ring-inner{
   position:relative;width:72%;height:72%;border-radius:50%;
   background:radial-gradient(circle at 38% 35%,rgba(60,30,0,.95),rgba(10,0,20,.98));
@@ -81,28 +88,30 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   transition:box-shadow .4s;
 }
 .gate-ring-wrap:hover .ring-inner{box-shadow:0 0 70px rgba(201,168,76,.55),inset 0 0 30px rgba(201,168,76,.1)}
+
 .gate-icon{font-size:clamp(32px,6.5vw,56px);animation:iconPulse 3s ease-in-out infinite}
 @keyframes iconPulse{
   0%,100%{filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}
-  50%{filter:drop-shadow(0 0 18px rgba(201,168,76,.95)) drop-shadow(0 0 35px rgba(255,160,0,.4))}}
+  50%{filter:drop-shadow(0 0 18px rgba(201,168,76,.95)) drop-shadow(0 0 35px rgba(255,160,0,.4))}
+}
 
 #ember-canvas{position:fixed;inset:0;z-index:50;pointer-events:none;opacity:0;transition:opacity .4s;}
 #ember-canvas.active{opacity:1;}
 
 .gate-ring-wrap.ember-active .ring-outer{
   animation:spinCW .9s linear infinite !important;
-  border-top-color:#cc44ff;border-right-color:#ff88ff;
-  box-shadow:0 0 28px rgba(180,0,255,.5) !important;
+  border-top-color:#ff4400;border-right-color:#ff8844;
+  box-shadow:0 0 28px rgba(255,80,0,.5) !important;
 }
 .gate-ring-wrap.ember-active .ring-outer2{
   animation:spinCCW .7s linear infinite !important;
-  border-color:rgba(200,50,255,.4);border-bottom-color:transparent;
+  border-color:rgba(255,100,0,.4);border-bottom-color:transparent;
 }
 .gate-ring-wrap.ember-active .ring-inner{
-  box-shadow:0 0 50px rgba(160,0,255,.5),inset 0 0 24px rgba(120,0,200,.25) !important;
-  border-color:rgba(200,80,255,.6) !important;
+  box-shadow:0 0 50px rgba(220,60,0,.5),inset 0 0 24px rgba(180,40,0,.25) !important;
+  border-color:rgba(255,100,0,.6) !important;
 }
-.gate-ring-wrap.ember-active .gate-icon{filter:drop-shadow(0 0 12px rgba(200,0,255,.8)) !important;}
+.gate-ring-wrap.ember-active .gate-icon{filter:drop-shadow(0 0 12px rgba(255,80,0,.9)) !important;}
 
 @keyframes glitchShake{
   0%{transform:translate(0,0) skewX(0deg)}5%{transform:translate(-6px,2px) skewX(-4deg)}
@@ -184,6 +193,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 
 <script>
 'use strict';
+
 (function(){
   var cv=document.getElementById('s1-sakura'),ctx=cv.getContext('2d'),W,H,petals=[];
   function resize(){W=cv.width=window.innerWidth;H=cv.height=window.innerHeight;}
@@ -238,11 +248,11 @@ var EmberEffect=(function(){
       var ey=cy+Math.sin(e.angle)*e.r+e.rise*((1-e.life)*40);
       ctx.beginPath();ctx.arc(ex,ey,e.size*e.life,0,Math.PI*2);
       var alpha=e.life*.85;
-      ctx.fillStyle='rgba(180,0,255,'+alpha+')';
-      ctx.shadowColor='rgba(160,0,255,'+(alpha*.8)+')';
-      ctx.shadowBlur=8;ctx.fill();ctx.shadowBlur=0;
-      ctx.beginPath();ctx.arc(ex,ey,e.size*.5*e.life,0,Math.PI*2);
-      ctx.fillStyle='rgba(220,120,255,'+(alpha*.5)+')';ctx.fill();
+      ctx.fillStyle='rgba(255,80,0,'+alpha+')';
+      ctx.shadowColor='rgba(255,60,0,'+(alpha*.8)+')';
+      ctx.shadowBlur=10;ctx.fill();ctx.shadowBlur=0;
+      ctx.beginPath();ctx.arc(ex,ey,e.size*.4*e.life,0,Math.PI*2);
+      ctx.fillStyle='rgba(255,200,100,'+(alpha*.6)+')';ctx.fill();
     }
     rafId=requestAnimationFrame(loop);
   }
