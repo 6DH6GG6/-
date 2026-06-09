@@ -274,7 +274,34 @@ var EmberEffect=(function(){
 })();
 
 var gateClicked=false;
+var _skipReady=false;
+var _t1=null,_t2=null;
 var btn=document.getElementById('s1-gate-btn');
+
+function doTransition(){
+  btn.classList.remove('ember-active');
+  btn.classList.remove('glitch-active');
+  EmberEffect.stop(btn);
+  clearTimeout(_t1);clearTimeout(_t2);
+  document.getElementById('screen1').classList.add('fade-out');
+  setTimeout(function(){
+    var s=document.createElement('script');
+    s.src='admin.js';
+    s.onload=function(){
+      var s2=document.createElement('script');
+      s2.src='bot.js';
+      document.head.appendChild(s2);
+    };
+    document.head.appendChild(s);
+  },300);
+}
+
+/* نقر في أي مكان بعد تفعيل الزر = تخطي فوري */
+document.addEventListener('click',function(e){
+  if(!_skipReady)return;
+  if(e.target.closest('#s1-gate-btn'))return;
+  doTransition();
+},{passive:true});
 
 btn.addEventListener('click',function(){
   if(gateClicked)return;
@@ -283,23 +310,13 @@ btn.addEventListener('click',function(){
   var sfx=document.getElementById('sfx-atomic');
   if(sfx){sfx.currentTime=0;sfx.volume=0.6;sfx.play().catch(function(){});}
   EmberEffect.start(btn);
-  setTimeout(function(){
+  /* بعد 800ms يصبح النقر في أي مكان متاحاً للتخطي */
+  setTimeout(function(){_skipReady=true;},800);
+  _t1=setTimeout(function(){
     btn.classList.remove('ember-active');
     btn.classList.add('glitch-active');
-    setTimeout(function(){
-      btn.classList.remove('glitch-active');
-      EmberEffect.stop(btn);
-      document.getElementById('screen1').classList.add('fade-out');
-      setTimeout(function(){
-        var s=document.createElement('script');
-        s.src='admin.js';
-        s.onload=function(){
-          var s2=document.createElement('script');
-          s2.src='bot.js';
-          document.head.appendChild(s2);
-        };
-        document.head.appendChild(s);
-      },300);
+    _t2=setTimeout(function(){
+      doTransition();
     },1000);
   },5000);
 });
