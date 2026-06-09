@@ -9,7 +9,7 @@
 
 var FILES=[
   'FILES/💬/CH1.js',
-  'CH2.js',
+  'FILES/💬/CH2.js',
   'CH3.js'
   /* أضف ملفات شات جديدة هنا */
 ];
