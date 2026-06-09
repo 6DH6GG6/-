@@ -3,7 +3,7 @@
 
 
 var MODULES=[
-  'FILES/💬/chat.js',
+  'FILES/💬/⚜️Chat⚜️.js',
   'img.js',
   'vid.js',
   'audio.js',
