@@ -50,12 +50,64 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   filter:drop-shadow(0 0 20px rgba(201,168,76,.15));
 }
 
+/* ── نص الترحيب ── */
+#welcome-block{
+  position:relative;z-index:6;
+  display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.5vw,14px);
+  margin-bottom:clamp(14px,2.5vw,26px);
+  text-align:center;
+  padding:0 16px;
+  pointer-events:none;
+}
+
+#welcome-title{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(18px,4.5vw,38px);
+  color:#f5c800;
+  letter-spacing:clamp(3px,1vw,8px);
+  text-shadow:0 0 18px rgba(245,200,0,.7),0 0 40px rgba(245,200,0,.35);
+  animation:titleGlow 2.5s ease-in-out infinite alternate;
+}
+@keyframes titleGlow{
+  0%{text-shadow:0 0 14px rgba(245,200,0,.6),0 0 30px rgba(245,200,0,.25);}
+  100%{text-shadow:0 0 28px rgba(255,215,0,.95),0 0 60px rgba(255,200,0,.5),0 0 90px rgba(255,180,0,.25);}
+}
+
+#welcome-sep{
+  width:clamp(120px,35vw,300px);height:1px;
+  background:linear-gradient(90deg,transparent,rgba(201,168,76,.6),rgba(245,200,0,.9),rgba(201,168,76,.6),transparent);
+  box-shadow:0 0 10px rgba(245,200,0,.3);
+}
+
+#welcome-desc{
+  font-family:'Cairo',sans-serif;
+  font-size:clamp(11px,2.2vw,16px);
+  color:rgba(240,220,160,.85);
+  line-height:1.85;
+  max-width:min(480px,88vw);
+  letter-spacing:.5px;
+  text-shadow:0 0 12px rgba(201,168,76,.2);
+}
+
+#welcome-show{
+  font-family:'Cinzel Decorative',serif;
+  font-size:clamp(12px,2.8vw,20px);
+  color:var(--gold);
+  letter-spacing:clamp(2px,0.8vw,6px);
+  text-shadow:0 0 16px rgba(201,168,76,.55);
+  animation:showPulse 1.8s ease-in-out infinite alternate;
+}
+@keyframes showPulse{
+  0%{opacity:.65;text-shadow:0 0 10px rgba(201,168,76,.4);}
+  100%{opacity:1;text-shadow:0 0 24px rgba(245,200,0,.85),0 0 50px rgba(201,168,76,.4);}
+}
+
+/* ── حلقة الزر ── */
 .gate-ring-wrap{
   position:relative;z-index:5;
-  width:clamp(140px,24vw,230px);height:clamp(140px,24vw,230px);
+  width:clamp(120px,20vw,200px);height:clamp(120px,20vw,200px);
   display:flex;align-items:center;justify-content:center;
   cursor:pointer;transition:transform .3s;
-  margin-bottom:clamp(10px,2vw,22px);
 }
 .gate-ring-wrap:hover{transform:scale(1.07)}
 
@@ -89,7 +141,7 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 }
 .gate-ring-wrap:hover .ring-inner{box-shadow:0 0 70px rgba(201,168,76,.55),inset 0 0 30px rgba(201,168,76,.1)}
 
-.gate-icon{font-size:clamp(32px,6.5vw,56px);animation:iconPulse 3s ease-in-out infinite}
+.gate-icon{font-size:clamp(28px,5.5vw,48px);animation:iconPulse 3s ease-in-out infinite}
 @keyframes iconPulse{
   0%,100%{filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}
   50%{filter:drop-shadow(0 0 18px rgba(201,168,76,.95)) drop-shadow(0 0 35px rgba(255,160,0,.4))}
@@ -180,6 +232,22 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
     <path d="M400 460 Q400 390 450 390 Q500 390 500 460" fill="rgba(0,0,0,.8)" stroke="rgba(201,168,76,.2)" stroke-width="1.5"/>
   </svg>
   <canvas id="s1-sakura"></canvas>
+
+  <!-- ══ نص الترحيب ══ -->
+  <div id="welcome-block">
+    <div id="welcome-title">سيداتي &amp; سادتي</div>
+    <div id="welcome-sep"></div>
+    <div id="welcome-desc">
+      امبراطور الظل يدعوكم لأمسية ممتعة<br>
+      مع أول إنطلاقة لبوت فريد من نوعه<br>
+      وأقوى بوت وأول عصابة تنشئ شيئاً كهذا<br>
+      على مر تاريخ المواقع
+    </div>
+    <div id="welcome-sep"></div>
+    <div id="welcome-show">✦ ليبدأ العرض ✦</div>
+  </div>
+
+  <!-- ══ زر البوابة ══ -->
   <div class="gate-ring-wrap" id="s1-gate-btn">
     <div class="ring-pulse"></div>
     <div class="ring-outer"></div>
@@ -296,7 +364,6 @@ function doTransition(){
   },300);
 }
 
-/* نقر في أي مكان بعد تفعيل الزر = تخطي فوري */
 document.addEventListener('click',function(e){
   if(!_skipReady)return;
   if(e.target.closest('#s1-gate-btn'))return;
@@ -310,7 +377,6 @@ btn.addEventListener('click',function(){
   var sfx=document.getElementById('sfx-atomic');
   if(sfx){sfx.currentTime=0;sfx.volume=0.6;sfx.play().catch(function(){});}
   EmberEffect.start(btn);
-  /* بعد 800ms يصبح النقر في أي مكان متاحاً للتخطي */
   setTimeout(function(){_skipReady=true;},800);
   _t1=setTimeout(function(){
     btn.classList.remove('ember-active');
