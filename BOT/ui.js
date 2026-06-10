@@ -45,6 +45,10 @@ var CSS=`
   50%{opacity:.6;transform:scale(1.08) rotate(var(--sr,3deg))}
   100%{opacity:0;transform:scale(.4) rotate(var(--sr2,15deg)) translateY(-30px)}
 }
+@keyframes sel-toolbar-in{
+  from{opacity:0;transform:translateY(-8px)}
+  to{opacity:1;transform:translateY(0)}
+}
 
 #bot-wrap{
   position:fixed;inset:0;z-index:500;
@@ -129,6 +133,36 @@ var CSS=`
   box-shadow:0 0 10px rgba(180,0,0,.3);
 }
 
+#bot-sel-toolbar{
+  display:none;
+  align-items:center;gap:6px;
+  padding:7px 12px;
+  background:rgba(6,0,0,.98);
+  border-bottom:1px solid rgba(180,0,0,.3);
+  flex-shrink:0;
+  z-index:12;
+  animation:sel-toolbar-in .2s ease forwards;
+  flex-wrap:wrap;
+}
+#bot-sel-toolbar.show{display:flex;}
+#bot-sel-count{
+  font-family:var(--bot-font-sub);
+  font-size:10px;color:rgba(200,60,40,.7);
+  letter-spacing:2px;flex:1;
+}
+.sel-tb-btn{
+  background:rgba(12,0,0,.7);
+  border:1px solid rgba(140,0,0,.4);
+  color:#ff9977;
+  font-family:var(--bot-font-sub);font-size:9px;
+  padding:5px 10px;border-radius:var(--bot-radius);
+  cursor:pointer;transition:all .2s;letter-spacing:1px;
+  white-space:nowrap;
+}
+.sel-tb-btn:hover{border-color:rgba(220,0,0,.6);box-shadow:0 0 8px rgba(180,0,0,.3);}
+.sel-tb-btn.danger{border-color:rgba(180,0,0,.4);color:#ffaa88;}
+.sel-tb-btn.primary{background:rgba(60,0,0,.5);border-color:rgba(200,0,0,.6);}
+
 #bot-msgs{
   flex:1;overflow-y:auto;
   padding:14px 12px 10px;
@@ -145,9 +179,16 @@ var CSS=`
   display:flex;align-items:flex-end;gap:8px;
   animation:bot-msg-in .3s ease forwards;
   max-width:90%;position:relative;
+  cursor:pointer;
+  transition:opacity .2s;
 }
 .bot-msg.user{align-self:flex-start;flex-direction:row-reverse;}
 .bot-msg.bot{align-self:flex-end;}
+.bot-msg.selected .bot-bubble{
+  border-color:rgba(220,0,0,.8) !important;
+  box-shadow:0 0 12px rgba(180,0,0,.35);
+}
+.bot-msg.selected{opacity:.85;}
 
 .bot-bubble{
   padding:10px 14px;
@@ -156,6 +197,7 @@ var CSS=`
   line-height:1.75;
   position:relative;
   word-break:break-word;
+  transition:border-color .2s,box-shadow .2s;
 }
 .bot-msg.user .bot-bubble{
   background:var(--bot-surface2);
@@ -279,14 +321,6 @@ var CSS=`
   box-shadow:0 0 14px rgba(180,0,0,.3);
 }
 .bot-action-btn:active{transform:scale(.92);}
-.bot-action-badge{
-  position:absolute;top:-4px;right:-4px;
-  width:14px;height:14px;border-radius:50%;
-  background:#cc0000;color:#fff;
-  font-size:8px;display:flex;
-  align-items:center;justify-content:center;
-  font-family:var(--bot-font-main);
-}
 
 #bot-send{
   background:linear-gradient(135deg,#1a0000,#4d0000 40%,#770000 60%,#4d0000);
@@ -406,6 +440,15 @@ var HTML=`
     </div>
   </div>
 
+  <div id="bot-sel-toolbar">
+    <span id="bot-sel-count">0 رسالة</span>
+    <button class="sel-tb-btn primary" id="sel-btn-select-mode">☑ تحديد</button>
+    <button class="sel-tb-btn" id="sel-btn-select-all">⊞ تحديد الكل</button>
+    <button class="sel-tb-btn" id="sel-btn-copy">📋 نسخ</button>
+    <button class="sel-tb-btn danger" id="sel-btn-delete">🗑 حذف</button>
+    <button class="sel-tb-btn" id="sel-btn-cancel">✕ إلغاء</button>
+  </div>
+
   <div id="bot-msgs" style="position:relative;">
     <button id="bot-scroll-btn">▼ رسائل جديدة</button>
   </div>
@@ -454,9 +497,13 @@ var inputEl=document.getElementById('bot-input');
 var sendEl=document.getElementById('bot-send');
 var scrollBtn=document.getElementById('bot-scroll-btn');
 var toastEl=document.getElementById('bot-toast');
+var selToolbar=document.getElementById('bot-sel-toolbar');
+var selCount=document.getElementById('bot-sel-count');
 
 var _autoScroll=true;
 var _toastTimer=null;
+var _selMode=false;
+var _selectedIds=new Set();
 
 (function initThunder(){
   var svg=document.getElementById('bot-thunder-svg');
@@ -535,6 +582,89 @@ function getTimeStr(){
   return (h<10?'0':'')+h+':'+(m<10?'0':'')+m;
 }
 
+function enterSelMode(){
+  _selMode=true;
+  selToolbar.classList.add('show');
+  updateSelCount();
+}
+
+function exitSelMode(){
+  _selMode=false;
+  _selectedIds.clear();
+  selToolbar.classList.remove('show');
+  msgsEl.querySelectorAll('.bot-msg.selected').forEach(function(m){
+    m.classList.remove('selected');
+  });
+}
+
+function toggleSelect(wrap){
+  var id=wrap.dataset.id;
+  if(_selectedIds.has(id)){
+    _selectedIds.delete(id);
+    wrap.classList.remove('selected');
+  } else {
+    _selectedIds.add(id);
+    wrap.classList.add('selected');
+  }
+  updateSelCount();
+}
+
+function updateSelCount(){
+  selCount.textContent=_selectedIds.size+' رسالة محددة';
+}
+
+function getSelectedTexts(){
+  var texts=[];
+  msgsEl.querySelectorAll('.bot-msg.selected').forEach(function(m){
+    var txt=m.querySelector('.bot-bubble-text');
+    if(txt)texts.push(txt.textContent);
+  });
+  return texts;
+}
+
+document.getElementById('sel-btn-select-mode').addEventListener('click',function(){
+  if(!_selMode)enterSelMode();
+});
+
+document.getElementById('sel-btn-select-all').addEventListener('click',function(){
+  if(!_selMode)enterSelMode();
+  msgsEl.querySelectorAll('.bot-msg').forEach(function(m){
+    if(m.id==='bot-typing-indicator')return;
+    _selectedIds.add(m.dataset.id);
+    m.classList.add('selected');
+  });
+  updateSelCount();
+});
+
+document.getElementById('sel-btn-copy').addEventListener('click',function(){
+  var texts=getSelectedTexts();
+  if(!texts.length){toast('لم تحدد أي رسالة');return;}
+  if(navigator.clipboard)navigator.clipboard.writeText(texts.join('\n\n'));
+  toast('تم نسخ '+texts.length+' رسالة ✓');
+  exitSelMode();
+});
+
+document.getElementById('sel-btn-delete').addEventListener('click',function(){
+  if(!_selectedIds.size){toast('لم تحدد أي رسالة');return;}
+  showModal('حذف الرسائل','هل تريد حذف '+_selectedIds.size+' رسالة؟',[
+    {label:'✓ نعم',primary:true,fn:function(){
+      msgsEl.querySelectorAll('.bot-msg.selected').forEach(function(m){
+        m.style.animation='shatter .4s ease forwards';
+        m.style.setProperty('--sr',(Math.random()*6-3)+'deg');
+        m.style.setProperty('--sr2',(Math.random()*20-10)+'deg');
+        setTimeout(function(){if(m.parentNode)m.parentNode.removeChild(m);},400);
+      });
+      exitSelMode();
+      toast('تم الحذف');
+    }},
+    {label:'✕ لا',fn:null}
+  ]);
+});
+
+document.getElementById('sel-btn-cancel').addEventListener('click',function(){
+  exitSelMode();
+});
+
 function addMsg(role,content,type,opts){
   type=type||'text';
 
@@ -571,7 +701,36 @@ function addMsg(role,content,type,opts){
   wrap.appendChild(bubble);
   wrap.appendChild(timeEl);
 
-  enableLongPress(wrap);
+  var _pressTimer=null;
+  var _pressStartY=0;
+
+  wrap.addEventListener('touchstart',function(e){
+    _pressStartY=e.touches[0].clientY;
+    _pressTimer=setTimeout(function(){
+      if(!_selMode)enterSelMode();
+      toggleSelect(wrap);
+    },500);
+  },{passive:true});
+
+  wrap.addEventListener('touchmove',function(e){
+    if(Math.abs(e.touches[0].clientY-_pressStartY)>10){
+      clearTimeout(_pressTimer);
+    }
+  },{passive:true});
+
+  wrap.addEventListener('touchend',function(){
+    clearTimeout(_pressTimer);
+  });
+
+  wrap.addEventListener('click',function(){
+    if(_selMode)toggleSelect(wrap);
+  });
+
+  wrap.addEventListener('contextmenu',function(e){
+    e.preventDefault();
+    if(!_selMode)enterSelMode();
+    toggleSelect(wrap);
+  });
 
   msgsEl.appendChild(wrap);
   scrollToBottom();
@@ -588,45 +747,6 @@ function addMsg(role,content,type,opts){
   return bubble;
 }
 
-function enableLongPress(wrap){
-  var timer=null;
-  var startY=0;
-
-  function start(e){
-    startY=e.touches?e.touches[0].clientY:e.clientY;
-    timer=setTimeout(function(){showMsgMenu(wrap);},600);
-  }
-  function cancel(){clearTimeout(timer);}
-  function move(e){
-    var y=e.touches?e.touches[0].clientY:e.clientY;
-    if(Math.abs(y-startY)>10)cancel();
-  }
-
-  wrap.addEventListener('touchstart',start,{passive:true});
-  wrap.addEventListener('touchend',cancel);
-  wrap.addEventListener('touchmove',move,{passive:true});
-  wrap.addEventListener('contextmenu',function(e){
-    e.preventDefault();showMsgMenu(wrap);
-  });
-}
-
-function showMsgMenu(wrap){
-  showModal('خيارات الرسالة','',[ 
-    {label:'📋 نسخ',fn:function(){
-      var txt=wrap.querySelector('.bot-bubble-text');
-      if(txt&&navigator.clipboard)navigator.clipboard.writeText(txt.textContent);
-      toast('تم النسخ ✓');
-    }},
-    {label:'🗑 حذف',fn:function(){
-      wrap.style.animation='shatter .4s ease forwards';
-      wrap.style.setProperty('--sr',(Math.random()*6-3)+'deg');
-      wrap.style.setProperty('--sr2',(Math.random()*20-10)+'deg');
-      setTimeout(function(){if(wrap.parentNode)wrap.parentNode.removeChild(wrap);},400);
-    }},
-    {label:'✕ إلغاء',fn:null}
-  ]);
-}
-
 function buildContent(content,type,opts){
   type=type||'text';
 
@@ -639,7 +759,6 @@ function buildContent(content,type,opts){
 
   if(type==='dom'&&content instanceof Element)return content;
 
-  var UI=window.BOT_UI;
   var MEDIA=window.BOT_MEDIA;
   var FILES=window.BOT_FILES;
 
@@ -651,8 +770,8 @@ function buildContent(content,type,opts){
   if(type==='html'&&FILES)return FILES.buildHTML(content,opts);
   if((type==='glb'||type==='3d')&&FILES)return FILES.build3D(content,opts);
   if((type==='apk'||type==='app')&&FILES)return FILES.buildAPK(content,opts);
-  if((type==='archive')&&FILES)return FILES.buildArchive(content,opts);
-  if((type==='office')&&FILES)return FILES.buildOffice(content,opts);
+  if(type==='archive'&&FILES)return FILES.buildArchive(content,opts);
+  if(type==='office'&&FILES)return FILES.buildOffice(content,opts);
   if((type==='js'||type==='json'||type==='code'||type==='txt')&&FILES)return FILES.buildTextFile(content,opts);
   if(type==='file'&&FILES)return FILES.buildFile(content,opts);
   if(type==='gate')return buildGateInline(content);
@@ -756,6 +875,7 @@ document.getElementById('bot-clear-btn').addEventListener('click',function(){
     {label:'✓ نعم',primary:true,fn:function(){
       msgsEl.innerHTML='<button id="bot-scroll-btn" style="display:none;">▼ رسائل جديدة</button>';
       scrollBtn=document.getElementById('bot-scroll-btn');
+      exitSelMode();
       C.history.clear();
       toast('تم مسح المحادثة');
     }},
@@ -775,7 +895,9 @@ document.getElementById('bot-search-btn').addEventListener('click',function(){
 inputEl.addEventListener('keydown',function(e){
   if(e.key==='Enter'&&!e.shiftKey){
     e.preventDefault();
-    C.emit('input:send',{text:this.value.trim()});
+    var t=this.value.trim();
+    if(!t)return;
+    C.emit('input:send',{text:t});
     this.value='';
     this.style.height='auto';
   }
