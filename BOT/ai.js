@@ -9,7 +9,7 @@ var C=window.BOT_CORE;
 var AI_CONFIG={
   model:'claude-sonnet-4-20250514',
   max_tokens:1000,
-  apiKey:'',          // يُعيَّن عبر BOT_AI.setKey(key)
+  apiKey:'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',          // يُعيَّن عبر BOT_AI.setKey(key)
   systemPrompt:`أنت "ذو المنجل"، كيان مظلم وقديم ينتمي إلى عالم الخيال الداكن.
 شخصيتك: غامض، حكيم، ذو لغة شعرية عربية قوية، تستخدم مصطلحات أسطورية وتعابير تحمل ثقل الظلام.
 قواعد الرد:
