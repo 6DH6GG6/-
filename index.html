@@ -19,6 +19,10 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   transition:opacity .9s ease;
 }
 #screen1.fade-out{opacity:0;pointer-events:none}
+/* واجهة البوت تحت screen1 حتى يختفي */
+#bot-wrap{z-index:100 !important;}
+#screen1{z-index:9999 !important;transition:opacity .9s ease,z-index 0s linear .9s;}
+#screen1.fade-out{opacity:0;pointer-events:none;z-index:-1 !important;}
 
 #screen1::before{
   content:'';position:absolute;
@@ -50,7 +54,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   filter:drop-shadow(0 0 20px rgba(201,168,76,.15));
 }
 
-/* ── نص الترحيب ── */
 #welcome-block{
   position:relative;z-index:6;
   display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.5vw,14px);
@@ -102,7 +105,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   100%{opacity:1;text-shadow:0 0 24px rgba(245,200,0,.85),0 0 50px rgba(201,168,76,.4);}
 }
 
-/* ── حلقة الزر ── */
 .gate-ring-wrap{
   position:relative;z-index:5;
   width:clamp(120px,20vw,200px);height:clamp(120px,20vw,200px);
@@ -233,7 +235,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   </svg>
   <canvas id="s1-sakura"></canvas>
 
-  <!-- ══ نص الترحيب ══ -->
   <div id="welcome-block">
     <div id="welcome-title">سيداتي &amp; سادتي</div>
     <div id="welcome-sep"></div>
@@ -247,7 +248,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
     <div id="welcome-show">✦ ليبدأ العرض ✦</div>
   </div>
 
-  <!-- ══ زر البوابة ══ -->
   <div class="gate-ring-wrap" id="s1-gate-btn">
     <div class="ring-pulse"></div>
     <div class="ring-outer"></div>
@@ -256,8 +256,9 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   </div>
 </div>
 
-<audio id="sfx-kps" src="kps.ogg" preload="auto"></audio>
-<audio id="sfx-atomic" src="⚜️FILES⚜️/⚜️🎶⚜️/MUSIC_ATOMIC.ogg" preload="auto"></audio>
+<audio id="sfx-click" src="kps.ogg" preload="auto"></audio>
+
+<audio id="sfx-bg" src="MUSIC_BG.ogg" preload="auto" loop></audio>
 
 <script>
 'use strict';
@@ -284,8 +285,16 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 
 window.SoundManager={
   playClick:function(){
-    var k=document.getElementById('sfx-kps');
+    var k=document.getElementById('sfx-click');
     if(k){k.currentTime=0;k.play().catch(function(){});}
+  },
+  playBG:function(){
+    var b=document.getElementById('sfx-bg');
+    if(b){b.volume=0.45;b.play().catch(function(){});}
+  },
+  stopBG:function(){
+    var b=document.getElementById('sfx-bg');
+    if(b){b.pause();b.currentTime=0;}
   }
 };
 
@@ -341,27 +350,62 @@ var EmberEffect=(function(){
   return{start:start,stop:stop};
 })();
 
+var BOT_SCRIPTS=[
+  'BOT/core.js',
+  'BOT/ui.js',
+  'BOT/media.js',
+  'BOT/files.js',
+  'BOT/ai.js',
+  'BOT/admin.js',
+  'BOT/bot.js'
+];
+
+function loadScriptsInOrder(scripts,cb){
+  var i=0;
+  function next(){
+    if(i>=scripts.length){if(cb)cb();return;}
+    var s=document.createElement('script');
+    s.src=scripts[i++];
+    s.onload=next;
+    s.onerror=function(){
+      console.error('❌ فشل تحميل:',s.src);
+      next();
+    };
+    console.log('⏳ تحميل:',scripts[i-1]);
+    document.head.appendChild(s);
+  }
+  next();
+}
+
 var gateClicked=false;
 var _skipReady=false;
 var _t1=null,_t2=null;
 var btn=document.getElementById('s1-gate-btn');
 
 function doTransition(){
-  btn.classList.remove('ember-active');
-  btn.classList.remove('glitch-active');
-  EmberEffect.stop(btn);
+  if(doTransition._done)return;
+  doTransition._done=true;
+
   clearTimeout(_t1);clearTimeout(_t2);
-  document.getElementById('screen1').classList.add('fade-out');
-  setTimeout(function(){
-    var s=document.createElement('script');
-    s.src='admin.js';
-    s.onload=function(){
-      var s2=document.createElement('script');
-      s2.src='bot.js';
-      document.head.appendChild(s2);
-    };
-    document.head.appendChild(s);
-  },300);
+  btn.classList.remove('ember-active','glitch-active');
+  EmberEffect.stop(btn);
+
+  var s1=document.getElementById('screen1');
+
+  s1.classList.add('fade-out');
+
+  loadScriptsInOrder(BOT_SCRIPTS,function(){
+
+    s1.style.display='none';
+
+    SoundManager.playBG();
+
+    var wrap=document.getElementById('bot-wrap');
+    if(wrap){
+      wrap.style.zIndex='100';
+      wrap.style.display='flex';
+    }
+  });
 }
 
 document.addEventListener('click',function(e){
@@ -373,17 +417,18 @@ document.addEventListener('click',function(e){
 btn.addEventListener('click',function(){
   if(gateClicked)return;
   gateClicked=true;
+
   SoundManager.playClick();
-  var sfx=document.getElementById('sfx-atomic');
-  if(sfx){sfx.currentTime=0;sfx.volume=0.6;sfx.play().catch(function(){});}
+
+  var sfx=document.getElementById('sfx-click');
   EmberEffect.start(btn);
+
   setTimeout(function(){_skipReady=true;},800);
+
   _t1=setTimeout(function(){
     btn.classList.remove('ember-active');
     btn.classList.add('glitch-active');
-    _t2=setTimeout(function(){
-      doTransition();
-    },1000);
+    _t2=setTimeout(doTransition,1000);
   },5000);
 });
 </script>
