@@ -1,15 +1,13 @@
 (function(){
 'use strict';
 
-
 var MODULES=[
-  'FILES/💬/⚜️Chat⚜️.js',
+  'chat.js',
   'img.js',
   'vid.js',
   'audio.js',
   '3d.js'
 ];
-
 
 var catalog={};
 
