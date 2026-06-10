@@ -14,13 +14,18 @@ function _addMsg(role,content,type,opts){
 window._botAddMsg=_addMsg;
 window._botDispatch=dispatchMessage;
 
+var _dispatching=false;
+
 function dispatchMessage(text){
+  if(_dispatching)return;
+  _dispatching=true;
+
   var UI=window.BOT_UI;
   var AI=window.BOT_AI;
-  if(!UI)return;
+  if(!UI){_dispatching=false;return;}
 
   var t=(text||'').trim();
-  if(!t)return;
+  if(!t){_dispatching=false;return;}
 
   UI.addMsg('user',t,'text');
 
@@ -31,7 +36,7 @@ function dispatchMessage(text){
     });
   }
 
-  if(handled)return;
+  if(handled){_dispatching=false;return;}
 
   if(AI&&AI.config&&AI.config.apiKey){
     var typingEl=UI.addTypingIndicator();
@@ -42,6 +47,11 @@ function dispatchMessage(text){
       } else {
         UI.addMsg('bot','⚠ انقطع خيط الظلام... حاول مرة أخرى','text');
       }
+      _dispatching=false;
+    }).catch(function(){
+      UI.removeTypingIndicator();
+      UI.addMsg('bot','⚠ خطأ في الاتصال','text');
+      _dispatching=false;
     });
     return;
   }
@@ -49,12 +59,12 @@ function dispatchMessage(text){
   var def=(window.ADMIN&&window.ADMIN.chatResponses&&window.ADMIN.chatResponses.default)
     ||'لم أفهم طلبك 🔴 اكتب «اوامر» لعرض القائمة';
   UI.addMsg('bot',def,'text');
+  _dispatching=false;
 }
 
 C.on('input:send',function(d){
   var text=(d&&d.text)||'';
-  if(!text||d._handled)return;
-  d._handled=true;
+  if(!text)return;
   dispatchMessage(text);
 });
 
@@ -74,44 +84,40 @@ C.on('file:attached',function(d){
       C.readAsDataURL(file,function(err,dataUrl){
         if(err)return;
         var b64=dataUrl.split(',')[1];
-        var typingEl=UI&&UI.addTypingIndicator();
+        UI&&UI.addTypingIndicator();
         AI.analyzeImage(b64,file.type).then(function(reply){
           UI&&UI.removeTypingIndicator();
           if(reply)UI&&UI.addMsg('bot',reply,'text');
         });
       });
     }
+    return;
   }
-  else if(type==='video'){UI&&UI.addMsg('user',{src:url,name:file.name},'video');}
-  else if(type==='audio'){UI&&UI.addMsg('user',{src:url,name:file.name},'audio');}
-  else if(type==='html'){
+
+  if(type==='video'){UI&&UI.addMsg('user',{src:url,name:file.name},'video');return;}
+  if(type==='audio'){UI&&UI.addMsg('user',{src:url,name:file.name},'audio');return;}
+
+  if(type==='html'){
     C.readAsText(file,function(err,content){
       UI&&UI.addMsg('user',{name:file.name,content:content,url:url},'html');
     });
+    return;
   }
-  else if(type==='glb'||type==='3d'){
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'glb');
-  }
-  else if(type==='pdf'){
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'pdf');
-  }
-  else if(type==='apk'){
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'apk');
-  }
-  else if(type==='archive'){
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'archive');
-  }
-  else if(type==='office'){
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'office');
-  }
-  else if(['js','json','txt','code','md','csv'].includes(type)){
+
+  if(type==='glb'||type==='3d'){UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'glb');return;}
+  if(type==='pdf'){UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'pdf');return;}
+  if(type==='apk'){UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'apk');return;}
+  if(type==='archive'){UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'archive');return;}
+  if(type==='office'){UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'office');return;}
+
+  if(['js','json','txt','code','md','csv'].includes(type)){
     C.readAsText(file,function(err,content){
       UI&&UI.addMsg('user',{name:file.name,content:content},'txt');
     });
+    return;
   }
-  else{
-    UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'file');
-  }
+
+  UI&&UI.addMsg('user',{name:file.name,url:url,size:C.formatSize(file.size)},'file');
 });
 
 C.on('editor:open',function(d){
