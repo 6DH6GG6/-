@@ -10,44 +10,51 @@ var CSS=`
 *{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
 
 @keyframes bot-msg-in{
-  from{opacity:0;transform:translateY(12px)}
-  to{opacity:1;transform:translateY(0)}
+  from{opacity:0;transform:translateY(14px) scale(.97)}
+  to{opacity:1;transform:translateY(0) scale(1)}
 }
-@keyframes bot-name-thunder{
-  0%,100%{text-shadow:0 0 6px #c00,0 0 14px #900}
-  50%{text-shadow:0 0 2px #fff,0 0 30px #f00,0 0 60px #c00,0 0 100px #800;filter:brightness(2.5)}
-  52%{text-shadow:0 0 6px #c00,0 0 14px #900;filter:brightness(1)}
-  54%{text-shadow:0 0 2px #fff,0 0 30px #f00,0 0 60px #c00;filter:brightness(2)}
-  56%{text-shadow:0 0 6px #c00,0 0 14px #900;filter:brightness(1)}
+
+@keyframes bot-name-gradient{
+  0%{background-position:0% 50%}
+  50%{background-position:100% 50%}
+  100%{background-position:0% 50%}
 }
+
 @keyframes ember-float{
   0%{transform:translateY(0) translateX(0) scale(1);opacity:.9}
   50%{transform:translateY(-28px) translateX(var(--ex,4px)) scale(.7);opacity:.6}
   100%{transform:translateY(-56px) translateX(var(--ex2,8px)) scale(.3);opacity:0}
 }
+
 @keyframes typing-dot{
   0%,80%,100%{transform:scale(0);opacity:.4}
   40%{transform:scale(1);opacity:1}
 }
+
 @keyframes pulse-red{
   0%,100%{box-shadow:0 0 10px rgba(200,0,0,.3)}
   50%{box-shadow:0 0 28px rgba(255,0,0,.6)}
 }
-@keyframes ui-sweep{
-  0%{left:-100%}100%{left:200%}
-}
+
 @keyframes waveform{
   0%,100%{height:4px}
   50%{height:var(--wh,16px)}
 }
+
 @keyframes shatter{
   0%{opacity:1;transform:scale(1) rotate(0deg)}
   50%{opacity:.6;transform:scale(1.08) rotate(var(--sr,3deg))}
   100%{opacity:0;transform:scale(.4) rotate(var(--sr2,15deg)) translateY(-30px)}
 }
+
 @keyframes sel-toolbar-in{
   from{opacity:0;transform:translateY(-8px)}
   to{opacity:1;transform:translateY(0)}
+}
+
+@keyframes cursor-blink{
+  0%,100%{opacity:1}
+  50%{opacity:0}
 }
 
 #bot-wrap{
@@ -57,6 +64,7 @@ var CSS=`
   font-family:var(--bot-font-main);
   overflow:hidden;
 }
+
 #bot-bg-grid{
   position:absolute;inset:0;pointer-events:none;z-index:0;
   background-image:
@@ -64,6 +72,7 @@ var CSS=`
     linear-gradient(90deg,rgba(180,0,0,.04) 1px,transparent 1px);
   background-size:36px 36px;
 }
+
 #bot-bg-vignette{
   position:absolute;inset:0;pointer-events:none;z-index:1;
   background:radial-gradient(ellipse 70% 60% at 50% 50%,transparent 40%,rgba(0,0,0,.5) 100%);
@@ -77,10 +86,12 @@ var CSS=`
   background:linear-gradient(180deg,rgba(12,0,0,.99),rgba(6,0,0,.97));
   flex-shrink:0;
 }
+
 #bot-header::after{
   content:'';position:absolute;bottom:0;left:0;right:0;height:1px;
   background:linear-gradient(90deg,transparent,rgba(200,0,0,.4),transparent);
 }
+
 #bot-avatar{
   width:50px;height:50px;border-radius:50%;
   object-fit:cover;
@@ -90,26 +101,37 @@ var CSS=`
   cursor:pointer;
   transition:box-shadow .3s;
 }
+
 #bot-avatar:hover{box-shadow:0 0 30px rgba(220,0,0,.6);}
+
 #bot-name-wrap{flex:1;min-width:0;}
+
 #bot-name{
   font-family:var(--bot-font-title);
   font-size:clamp(14px,3.5vw,19px);
-  color:#ff2200;
-  animation:bot-name-thunder 1s ease-in-out infinite;
+  background:linear-gradient(90deg,#1a6fff,#00cfff,#ffe066,#1a6fff,#00cfff);
+  background-size:300% 300%;
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+  background-clip:text;
+  animation:bot-name-gradient 4s ease infinite;
   letter-spacing:2px;line-height:1.2;
   display:inline-flex;align-items:center;gap:6px;
+  filter:drop-shadow(0 0 8px rgba(0,180,255,.35));
 }
+
 #bot-thunder-svg{
   width:1em;height:1em;
-  filter:drop-shadow(0 0 4px #f00);
   flex-shrink:0;
+  filter:drop-shadow(0 0 4px #00cfff);
 }
+
 #bot-status{
   font-size:10px;color:rgba(220,0,0,.55);
   letter-spacing:3px;margin-top:2px;
   display:flex;align-items:center;gap:5px;
 }
+
 #bot-status-dot{
   width:6px;height:6px;border-radius:50%;
   background:#cc0000;
@@ -117,21 +139,8 @@ var CSS=`
   animation:pulse-red 1.5s ease-in-out infinite;
   display:inline-block;
 }
-.bot-header-actions{
-  display:flex;gap:6px;align-items:center;flex-shrink:0;
-}
-.bot-hdr-btn{
-  background:rgba(10,0,0,.5);
-  border:1px solid rgba(140,0,0,.3);
-  color:rgba(220,0,0,.6);
-  width:32px;height:32px;border-radius:var(--bot-radius);
-  cursor:pointer;display:flex;align-items:center;justify-content:center;
-  font-size:13px;transition:all .2s;
-}
-.bot-hdr-btn:hover{
-  color:#ff2200;border-color:rgba(200,0,0,.6);
-  box-shadow:0 0 10px rgba(180,0,0,.3);
-}
+
+
 
 #bot-sel-toolbar{
   display:none;
@@ -144,12 +153,15 @@ var CSS=`
   animation:sel-toolbar-in .2s ease forwards;
   flex-wrap:wrap;
 }
+
 #bot-sel-toolbar.show{display:flex;}
+
 #bot-sel-count{
   font-family:var(--bot-font-sub);
   font-size:10px;color:rgba(200,60,40,.7);
   letter-spacing:2px;flex:1;
 }
+
 .sel-tb-btn{
   background:rgba(12,0,0,.7);
   border:1px solid rgba(140,0,0,.4);
@@ -159,6 +171,7 @@ var CSS=`
   cursor:pointer;transition:all .2s;letter-spacing:1px;
   white-space:nowrap;
 }
+
 .sel-tb-btn:hover{border-color:rgba(220,0,0,.6);box-shadow:0 0 8px rgba(180,0,0,.3);}
 .sel-tb-btn.danger{border-color:rgba(180,0,0,.4);color:#ffaa88;}
 .sel-tb-btn.primary{background:rgba(60,0,0,.5);border-color:rgba(200,0,0,.6);}
@@ -171,23 +184,29 @@ var CSS=`
   scroll-behavior:smooth;
   overscroll-behavior:contain;
 }
+
 #bot-msgs::-webkit-scrollbar{width:3px;}
 #bot-msgs::-webkit-scrollbar-thumb{background:rgba(180,0,0,.3);border-radius:2px;}
 #bot-msgs::-webkit-scrollbar-track{background:transparent;}
 
 .bot-msg{
   display:flex;align-items:flex-end;gap:8px;
-  animation:bot-msg-in .3s ease forwards;
+  animation:bot-msg-in .35s cubic-bezier(.22,.68,0,1.2) forwards;
   max-width:90%;position:relative;
   cursor:pointer;
   transition:opacity .2s;
+  opacity:0;
 }
+
+.bot-msg.visible{opacity:1;}
 .bot-msg.user{align-self:flex-start;flex-direction:row-reverse;}
 .bot-msg.bot{align-self:flex-end;}
+
 .bot-msg.selected .bot-bubble{
   border-color:rgba(220,0,0,.8) !important;
   box-shadow:0 0 12px rgba(180,0,0,.35);
 }
+
 .bot-msg.selected{opacity:.85;}
 
 .bot-bubble{
@@ -199,18 +218,21 @@ var CSS=`
   word-break:break-word;
   transition:border-color .2s,box-shadow .2s;
 }
+
 .bot-msg.user .bot-bubble{
   background:var(--bot-surface2);
   border:1px solid rgba(180,0,0,.35);
   border-top:1px solid rgba(220,0,0,.5);
   color:var(--bot-text2);
 }
+
 .bot-msg.bot .bot-bubble{
   background:var(--bot-surface);
   border:1px solid var(--bot-border);
   border-top:1px solid rgba(200,0,0,.55);
   color:var(--bot-text);
 }
+
 .bot-msg.bot .bot-bubble::before{
   content:'';position:absolute;
   bottom:-1px;right:-6px;
@@ -220,6 +242,13 @@ var CSS=`
 }
 
 .bot-bubble-text{white-space:pre-wrap;display:block;}
+
+.bot-cursor{
+  display:inline-block;width:2px;height:1em;
+  background:#ff4422;
+  margin-left:2px;vertical-align:text-bottom;
+  animation:cursor-blink .6s ease-in-out infinite;
+}
 
 .bot-mini-avatar{
   width:26px;height:26px;border-radius:50%;
@@ -238,6 +267,7 @@ var CSS=`
   position:absolute;top:0;right:0;left:0;bottom:0;
   pointer-events:none;overflow:visible;
 }
+
 .bot-ember{
   position:absolute;width:5px;height:5px;border-radius:50%;
   background:radial-gradient(circle,#ff4400,#cc0000 60%,transparent);
@@ -249,11 +279,13 @@ var CSS=`
   display:flex;align-items:center;gap:5px;
   padding:12px 16px;
 }
+
 .bot-typing span{
   width:7px;height:7px;border-radius:50%;
   background:#880000;display:inline-block;
   animation:typing-dot .8s ease-in-out infinite;
 }
+
 .bot-typing span:nth-child(2){animation-delay:.2s;}
 .bot-typing span:nth-child(3){animation-delay:.4s;}
 
@@ -270,6 +302,7 @@ var CSS=`
   font-size:10px;letter-spacing:2px;
   transition:all .2s;
 }
+
 #bot-scroll-btn:hover{background:rgba(120,0,0,.9);}
 
 #bot-input-area{
@@ -281,7 +314,9 @@ var CSS=`
   flex-shrink:0;
   margin-bottom:env(safe-area-inset-bottom,0px);
 }
+
 #bot-input-wrap{flex:1;position:relative;}
+
 #bot-input{
   width:100%;
   background:rgba(10,0,0,.7);
@@ -296,10 +331,12 @@ var CSS=`
   resize:none;min-height:44px;max-height:160px;
   overflow-y:auto;line-height:1.6;display:block;
 }
+
 #bot-input:focus{
   border-color:#cc0000;
   box-shadow:0 0 16px rgba(160,0,0,.2);
 }
+
 #bot-input::placeholder{
   color:rgba(180,0,0,.3);font-size:12px;letter-spacing:2px;
 }
@@ -315,11 +352,13 @@ var CSS=`
   transition:all .2s;flex-shrink:0;
   position:relative;
 }
+
 .bot-action-btn:hover{
   color:#ff2200;
   border-color:rgba(200,0,0,.6);
   box-shadow:0 0 14px rgba(180,0,0,.3);
 }
+
 .bot-action-btn:active{transform:scale(.92);}
 
 #bot-send{
@@ -332,10 +371,12 @@ var CSS=`
   display:flex;align-items:center;justify-content:center;
   transition:all .2s;flex-shrink:0;
 }
+
 #bot-send:hover{
   box-shadow:0 0 20px rgba(180,0,0,.5);
   border-color:rgba(220,0,0,.8);
 }
+
 #bot-send:active{transform:scale(.92);}
 
 #bot-attach-input{display:none;}
@@ -354,6 +395,7 @@ var CSS=`
   pointer-events:none;
   white-space:nowrap;
 }
+
 #bot-toast.show{
   opacity:1;transform:translateX(-50%) translateY(0);
 }
@@ -363,7 +405,9 @@ var CSS=`
   background:rgba(0,0,0,.85);
   display:none;align-items:center;justify-content:center;
 }
+
 #bot-modal-overlay.show{display:flex;}
+
 #bot-modal-box{
   background:rgba(8,0,0,.98);
   border:1px solid rgba(180,0,0,.5);
@@ -374,21 +418,25 @@ var CSS=`
   max-width:min(400px,90vw);
   display:flex;flex-direction:column;gap:12px;
 }
+
 #bot-modal-title{
   font-family:var(--bot-font-title);
   font-size:13px;color:#ff4422;
   letter-spacing:3px;text-align:center;
 }
+
 #bot-modal-body{
   font-family:var(--bot-font-main);
   font-size:13px;color:var(--bot-text);
   line-height:1.7;text-align:center;
   direction:rtl;
 }
+
 .bot-modal-btns{
   display:flex;gap:8px;justify-content:center;
   flex-wrap:wrap;
 }
+
 .bot-modal-btn{
   background:rgba(15,0,0,.7);
   border:1px solid rgba(140,0,0,.4);
@@ -398,10 +446,12 @@ var CSS=`
   padding:8px 16px;border-radius:var(--bot-radius);
   cursor:pointer;transition:all .2s;
 }
+
 .bot-modal-btn:hover{
   border-color:rgba(220,0,0,.7);
   box-shadow:0 0 12px rgba(180,0,0,.3);
 }
+
 .bot-modal-btn.primary{
   background:linear-gradient(135deg,#2a0000,#660000);
   color:#ffddcc;
@@ -425,7 +475,7 @@ var HTML=`
       <div id="bot-name">
         <svg id="bot-thunder-svg" viewBox="0 0 14 22" fill="none">
           <polyline points="9,1 3,12 7,12 5,21 11,10 7,10 9,1"
-            fill="#ff2200" stroke="#cc0000" stroke-width=".5"/>
+            fill="#00cfff" stroke="#1a6fff" stroke-width=".5"/>
         </svg>
         ذو المنجل
       </div>
@@ -434,16 +484,12 @@ var HTML=`
         في الخدمة
       </div>
     </div>
-    <div class="bot-header-actions">
-      <button class="bot-hdr-btn" id="bot-clear-btn" title="مسح المحادثة">🗑</button>
-      <button class="bot-hdr-btn" id="bot-search-btn" title="بحث">🔍</button>
-    </div>
+
   </div>
 
   <div id="bot-sel-toolbar">
     <span id="bot-sel-count">0 رسالة</span>
-    <button class="sel-tb-btn primary" id="sel-btn-select-mode">☑ تحديد</button>
-    <button class="sel-tb-btn" id="sel-btn-select-all">⊞ تحديد الكل</button>
+    <button class="sel-tb-btn primary" id="sel-btn-select-all">⊞ تحديد الكل</button>
     <button class="sel-tb-btn" id="sel-btn-copy">📋 نسخ</button>
     <button class="sel-tb-btn danger" id="sel-btn-delete">🗑 حذف</button>
     <button class="sel-tb-btn" id="sel-btn-cancel">✕ إلغاء</button>
@@ -504,15 +550,17 @@ var _autoScroll=true;
 var _toastTimer=null;
 var _selMode=false;
 var _selectedIds=new Set();
+var _msgQueue=[];
+var _queueRunning=false;
 
 (function initThunder(){
   var svg=document.getElementById('bot-thunder-svg');
   if(!svg)return;
   setInterval(function(){
-    svg.style.filter='drop-shadow(0 0 8px #fff) drop-shadow(0 0 16px #f00) brightness(3)';
+    svg.style.filter='drop-shadow(0 0 8px #00ffff) drop-shadow(0 0 16px #1a6fff) brightness(3)';
     svg.style.transform='scaleY(1.15)';
     setTimeout(function(){
-      svg.style.filter='drop-shadow(0 0 4px #f00)';
+      svg.style.filter='drop-shadow(0 0 4px #00cfff)';
       svg.style.transform='scaleY(1)';
     },120);
   },1000);
@@ -564,16 +612,55 @@ function spawnEmbers(wrapEl){
 function typeText(el,text,done){
   var i=0;
   el.textContent='';
+
+  var cursor=document.createElement('span');
+  cursor.className='bot-cursor';
+  el.parentNode&&el.parentNode.appendChild(cursor);
+
+  var speed=text.length>200?10:text.length>80?14:18;
+
   function next(){
     if(i<text.length){
       el.textContent+=text[i++];
       scrollToBottom();
-      setTimeout(next,16+Math.random()*10);
+      setTimeout(next,speed+Math.random()*8);
     } else {
+      if(cursor.parentNode)cursor.parentNode.removeChild(cursor);
       if(typeof done==='function')done();
     }
   }
   next();
+}
+
+function processQueue(){
+  if(_queueRunning||!_msgQueue.length)return;
+  _queueRunning=true;
+
+  var item=_msgQueue.shift();
+  var wrap=_buildMsgWrap(item.role,item.content,item.type,item.opts);
+  msgsEl.appendChild(wrap);
+
+  requestAnimationFrame(function(){
+    wrap.classList.add('visible');
+    scrollToBottom();
+  });
+
+  if(item.role==='bot'&&item.type==='text'&&typeof item.content==='string'){
+    var textEl=wrap.querySelector('.bot-bubble-text');
+    if(textEl){
+      typeText(textEl,item.content,function(){
+        C.emit('tts:speak',{text:item.content});
+        _queueRunning=false;
+        processQueue();
+      });
+      return;
+    }
+  }
+
+  setTimeout(function(){
+    _queueRunning=false;
+    processQueue();
+  },120);
 }
 
 function getTimeStr(){
@@ -622,10 +709,6 @@ function getSelectedTexts(){
   return texts;
 }
 
-document.getElementById('sel-btn-select-mode').addEventListener('click',function(){
-  if(!_selMode)enterSelMode();
-});
-
 document.getElementById('sel-btn-select-all').addEventListener('click',function(){
   if(!_selMode)enterSelMode();
   msgsEl.querySelectorAll('.bot-msg').forEach(function(m){
@@ -665,7 +748,7 @@ document.getElementById('sel-btn-cancel').addEventListener('click',function(){
   exitSelMode();
 });
 
-function addMsg(role,content,type,opts){
+function _buildMsgWrap(role,content,type,opts){
   type=type||'text';
 
   var wrap=document.createElement('div');
@@ -703,10 +786,13 @@ function addMsg(role,content,type,opts){
 
   var _pressTimer=null;
   var _pressStartY=0;
+  var _pressActive=false;
 
   wrap.addEventListener('touchstart',function(e){
     _pressStartY=e.touches[0].clientY;
+    _pressActive=true;
     _pressTimer=setTimeout(function(){
+      if(!_pressActive)return;
       if(!_selMode)enterSelMode();
       toggleSelect(wrap);
     },500);
@@ -715,11 +801,13 @@ function addMsg(role,content,type,opts){
   wrap.addEventListener('touchmove',function(e){
     if(Math.abs(e.touches[0].clientY-_pressStartY)>10){
       clearTimeout(_pressTimer);
+      _pressActive=false;
     }
   },{passive:true});
 
   wrap.addEventListener('touchend',function(){
     clearTimeout(_pressTimer);
+    _pressActive=false;
   });
 
   wrap.addEventListener('click',function(){
@@ -732,19 +820,30 @@ function addMsg(role,content,type,opts){
     toggleSelect(wrap);
   });
 
-  msgsEl.appendChild(wrap);
-  scrollToBottom();
-
-  if(role==='bot'&&type==='text'&&typeof content==='string'){
-    typeText(inner,content,function(){
-      C.emit('tts:speak',{text:content});
-    });
-  }
-
   C.history.add(role,content,type);
   C.emit('msg:added',{role:role,content:content,type:type,el:wrap});
 
-  return bubble;
+  return wrap;
+}
+
+function addMsg(role,content,type,opts){
+  type=type||'text';
+
+  if(role==='bot'&&type==='text'){
+    _msgQueue.push({role:role,content:content,type:type,opts:opts});
+    processQueue();
+    return null;
+  }
+
+  var wrap=_buildMsgWrap(role,content,type,opts);
+  msgsEl.appendChild(wrap);
+
+  requestAnimationFrame(function(){
+    wrap.classList.add('visible');
+    scrollToBottom();
+  });
+
+  return wrap.querySelector('.bot-bubble');
 }
 
 function buildContent(content,type,opts){
@@ -812,7 +911,7 @@ function buildWebpageCard(item){
 
 function addTypingIndicator(){
   var wrap=document.createElement('div');
-  wrap.className='bot-msg bot';
+  wrap.className='bot-msg bot visible';
   wrap.id='bot-typing-indicator';
   var av=document.createElement('img');
   av.className='bot-mini-avatar';
@@ -870,57 +969,10 @@ document.getElementById('bot-modal-overlay').addEventListener('click',function(e
   if(e.target===this)hideModal();
 });
 
-document.getElementById('bot-clear-btn').addEventListener('click',function(){
-  showModal('مسح المحادثة','هل تريد مسح جميع الرسائل؟',[
-    {label:'✓ نعم',primary:true,fn:function(){
-      msgsEl.innerHTML='<button id="bot-scroll-btn" style="display:none;">▼ رسائل جديدة</button>';
-      scrollBtn=document.getElementById('bot-scroll-btn');
-      exitSelMode();
-      C.history.clear();
-      toast('تم مسح المحادثة');
-    }},
-    {label:'✕ لا',fn:null}
-  ]);
-});
 
-document.getElementById('bot-search-btn').addEventListener('click',function(){
-  var q=prompt('🔍 ابحث في المحادثة:');
-  if(!q)return;
-  var found=C.history.get().filter(function(m){
-    return typeof m.content==='string'&&m.content.includes(q);
-  });
-  toast(found.length?('وُجد '+found.length+' نتيجة'):'لا توجد نتائج');
-});
-
-inputEl.addEventListener('keydown',function(e){
-  if(e.key==='Enter'&&!e.shiftKey){
-    e.preventDefault();
-    var t=this.value.trim();
-    if(!t)return;
-    C.emit('input:send',{text:t});
-    this.value='';
-    this.style.height='auto';
-  }
-});
-
-sendEl.addEventListener('click',function(){
-  var t=inputEl.value.trim();
-  if(!t)return;
-  C.emit('input:send',{text:t});
-  inputEl.value='';
-  inputEl.style.height='auto';
-});
 
 document.getElementById('bot-attach-btn').addEventListener('click',function(){
   document.getElementById('bot-attach-input').click();
-});
-
-document.getElementById('bot-attach-input').addEventListener('change',function(){
-  var files=Array.from(this.files||[]);
-  files.forEach(function(f){
-    C.emit('file:attached',{file:f});
-  });
-  this.value='';
 });
 
 document.getElementById('bot-code-btn').addEventListener('click',function(){
@@ -939,7 +991,9 @@ window.BOT_UI={
   typeText:typeText,
   spawnEmbers:spawnEmbers,
   msgsEl:msgsEl,
-  inputEl:inputEl
+  inputEl:inputEl,
+  enterSelMode:enterSelMode,
+  exitSelMode:exitSelMode
 };
 
 C.registerModule('ui',window.BOT_UI);
