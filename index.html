@@ -13,15 +13,11 @@
 html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Cinzel',serif}
 
 #screen1{
-  position:fixed;inset:0;z-index:20;
+  position:fixed;inset:0;z-index:9999;
   background:radial-gradient(ellipse 80% 55% at 50% 0%,#1a0a2e 0%,#0d0118 45%,#04000a 100%);
   display:flex;flex-direction:column;align-items:center;justify-content:center;
-  transition:opacity .9s ease;
+  transition:opacity .9s ease,z-index 0s linear .9s;
 }
-#screen1.fade-out{opacity:0;pointer-events:none}
-/* واجهة البوت تحت screen1 حتى يختفي */
-#bot-wrap{z-index:100 !important;}
-#screen1{z-index:9999 !important;transition:opacity .9s ease,z-index 0s linear .9s;}
 #screen1.fade-out{opacity:0;pointer-events:none;z-index:-1 !important;}
 
 #screen1::before{
@@ -54,13 +50,17 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   filter:drop-shadow(0 0 20px rgba(201,168,76,.15));
 }
 
+/* ✅ النص في النصف العلوي */
 #welcome-block{
-  position:relative;z-index:6;
-  display:flex;flex-direction:column;align-items:center;gap:clamp(6px,1.5vw,14px);
-  margin-bottom:clamp(14px,2.5vw,26px);
+  position:absolute;
+  top:0;left:0;right:0;
+  height:50%;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:clamp(6px,1.5vw,14px);
   text-align:center;
   padding:0 16px;
   pointer-events:none;
+  z-index:6;
 }
 
 #welcome-title{
@@ -105,13 +105,18 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
   100%{opacity:1;text-shadow:0 0 24px rgba(245,200,0,.85),0 0 50px rgba(201,168,76,.4);}
 }
 
+/* ✅ الزر في مركز الشاشة */
 .gate-ring-wrap{
-  position:relative;z-index:5;
+  position:absolute;
+  top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  z-index:5;
   width:clamp(120px,20vw,200px);height:clamp(120px,20vw,200px);
   display:flex;align-items:center;justify-content:center;
-  cursor:pointer;transition:transform .3s;
+  cursor:pointer;
+  transition:transform .3s;
 }
-.gate-ring-wrap:hover{transform:scale(1.07)}
+.gate-ring-wrap:hover{transform:translate(-50%,-50%) scale(1.07);}
 
 .ring-outer{
   position:absolute;inset:0;border-radius:50%;
@@ -168,37 +173,27 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 .gate-ring-wrap.ember-active .gate-icon{filter:drop-shadow(0 0 12px rgba(255,80,0,.9)) !important;}
 
 @keyframes glitchShake{
-  0%{transform:translate(0,0) skewX(0deg)}5%{transform:translate(-6px,2px) skewX(-4deg)}
-  10%{transform:translate(6px,-3px) skewX(5deg)}15%{transform:translate(-4px,4px) skewX(-6deg)}
-  20%{transform:translate(8px,-2px) skewX(3deg)}25%{transform:translate(-5px,5px) skewX(-5deg)}
-  30%{transform:translate(7px,-4px) skewX(7deg)}35%{transform:translate(-8px,2px) skewX(-4deg)}
-  40%{transform:translate(5px,3px) skewX(5deg)}45%{transform:translate(-3px,-5px) skewX(-3deg)}
-  50%{transform:translate(9px,2px) skewX(6deg)}55%{transform:translate(-6px,-3px) skewX(-7deg)}
-  60%{transform:translate(4px,6px) skewX(4deg)}65%{transform:translate(-7px,-2px) skewX(-5deg)}
-  70%{transform:translate(6px,4px) skewX(3deg)}75%{transform:translate(-4px,-6px) skewX(-6deg)}
-  80%{transform:translate(8px,2px) skewX(5deg)}85%{transform:translate(-5px,5px) skewX(-4deg)}
-  90%{transform:translate(3px,-4px) skewX(6deg)}95%{transform:translate(-6px,3px) skewX(-3deg)}
-  100%{transform:translate(0,0) skewX(0deg)}
+  0%{transform:translate(-50%,-50%) skewX(0deg)}
+  5%{transform:translate(calc(-50% - 6px),calc(-50% + 2px)) skewX(-4deg)}
+  10%{transform:translate(calc(-50% + 6px),calc(-50% - 3px)) skewX(5deg)}
+  15%{transform:translate(calc(-50% - 4px),calc(-50% + 4px)) skewX(-6deg)}
+  20%{transform:translate(calc(-50% + 8px),calc(-50% - 2px)) skewX(3deg)}
+  25%{transform:translate(calc(-50% - 5px),calc(-50% + 5px)) skewX(-5deg)}
+  30%{transform:translate(calc(-50% + 7px),calc(-50% - 4px)) skewX(7deg)}
+  50%{transform:translate(calc(-50% + 9px),calc(-50% + 2px)) skewX(6deg)}
+  75%{transform:translate(calc(-50% - 4px),calc(-50% - 6px)) skewX(-6deg)}
+  100%{transform:translate(-50%,-50%) skewX(0deg)}
 }
 @keyframes glitchColor{
   0%{filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}
   10%{filter:hue-rotate(90deg) drop-shadow(4px 0 0 rgba(255,0,80,.9)) drop-shadow(-4px 0 0 rgba(0,255,255,.9)) brightness(2)}
-  20%{filter:hue-rotate(180deg) drop-shadow(-3px 0 0 rgba(255,0,80,.9)) drop-shadow(3px 0 0 rgba(0,255,255,.9)) brightness(2.5)}
-  30%{filter:hue-rotate(270deg) drop-shadow(5px 0 0 rgba(255,0,80,.9)) drop-shadow(-5px 0 0 rgba(0,255,255,.9)) brightness(1.8)}
-  40%{filter:hue-rotate(0deg) drop-shadow(-4px 0 0 rgba(255,0,80,.9)) drop-shadow(4px 0 0 rgba(0,255,255,.9)) brightness(3)}
   50%{filter:invert(1) brightness(2)}
-  60%{filter:hue-rotate(120deg) drop-shadow(6px 0 0 rgba(255,0,80,.9)) drop-shadow(-6px 0 0 rgba(0,255,255,.9)) brightness(2.2)}
-  70%{filter:hue-rotate(240deg) drop-shadow(-5px 0 0 rgba(255,0,80,.9)) drop-shadow(5px 0 0 rgba(0,255,255,.9)) brightness(1.9)}
-  80%{filter:invert(0.7) brightness(2.5)}
-  90%{filter:hue-rotate(60deg) drop-shadow(3px 0 0 rgba(255,0,80,.9)) drop-shadow(-3px 0 0 rgba(0,255,255,.9)) brightness(2)}
   100%{filter:drop-shadow(0 0 6px rgba(201,168,76,.5))}
 }
 @keyframes glitchBorderFlash{
   0%,100%{border-color:rgba(201,168,76,.5)}
   15%{border-color:rgba(255,0,80,1);box-shadow:0 0 30px rgba(255,0,80,.9),inset 0 0 20px rgba(255,0,80,.3)}
-  30%{border-color:rgba(0,255,255,1);box-shadow:0 0 30px rgba(0,255,255,.9),inset 0 0 20px rgba(0,255,255,.3)}
   50%{border-color:rgba(255,255,0,1);box-shadow:0 0 50px rgba(255,255,0,.9),inset 0 0 30px rgba(255,255,0,.3)}
-  70%{border-color:rgba(255,0,80,1);box-shadow:0 0 30px rgba(255,0,80,.9),inset 0 0 20px rgba(255,0,80,.3)}
   85%{border-color:rgba(0,255,255,1);box-shadow:0 0 30px rgba(0,255,255,.9),inset 0 0 20px rgba(0,255,255,.3)}
 }
 .gate-ring-wrap.glitch-active{animation:glitchShake 1s steps(2) forwards !important;transform-origin:center center;}
@@ -257,7 +252,6 @@ html,body{width:100%;height:100%;overflow:hidden;background:#000;font-family:'Ci
 </div>
 
 <audio id="sfx-click" src="kps.ogg" preload="auto"></audio>
-
 <audio id="sfx-bg" src="MUSIC_BG.ogg" preload="auto" loop></audio>
 
 <script>
@@ -391,20 +385,20 @@ function doTransition(){
   EmberEffect.stop(btn);
 
   var s1=document.getElementById('screen1');
-
   s1.classList.add('fade-out');
 
   loadScriptsInOrder(BOT_SCRIPTS,function(){
+    // ✅ ui.js ينشئ #bot-wrap بنفسه — ننتظره ثم نُظهره
+    setTimeout(function(){
+      s1.style.display='none';
+      SoundManager.playBG();
 
-    s1.style.display='none';
-
-    SoundManager.playBG();
-
-    var wrap=document.getElementById('bot-wrap');
-    if(wrap){
-      wrap.style.zIndex='100';
-      wrap.style.display='flex';
-    }
+      var wrap=document.getElementById('bot-wrap');
+      if(wrap){
+        wrap.style.display='flex';
+        wrap.style.zIndex='500';
+      }
+    },50);
   });
 }
 
@@ -417,14 +411,9 @@ document.addEventListener('click',function(e){
 btn.addEventListener('click',function(){
   if(gateClicked)return;
   gateClicked=true;
-
   SoundManager.playClick();
-
-  var sfx=document.getElementById('sfx-click');
   EmberEffect.start(btn);
-
   setTimeout(function(){_skipReady=true;},800);
-
   _t1=setTimeout(function(){
     btn.classList.remove('ember-active');
     btn.classList.add('glitch-active');
